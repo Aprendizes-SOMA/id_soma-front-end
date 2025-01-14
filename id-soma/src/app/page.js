@@ -1,12 +1,13 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import Index from "./pages/Index";
+import HomePage from "./pages/Index";
 import CollaboratorsPage from "./pages/colaboradores";
-import LoginAdmin from "./pages/Login";
+import LoginAdmin from "./pages/admin/login";
+import ListCollaborators from "../app/pages/admin/listColaboradores";
 
 export default function Home() {
   return (
-    <CollaboratorsPage/>
+    <HomePage/>
   );
 }
 // teste de commit

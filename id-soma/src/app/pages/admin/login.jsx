@@ -1,5 +1,5 @@
 import React from "react";
-import styles from '../styles/Login.module.css'; 
+import styles from '../../styles/Login.module.css'; 
 
 const LoginAdmin = () => {
     return (
@@ -16,7 +16,7 @@ const LoginAdmin = () => {
               <input
                 id="username"
                 type="text"
-                placeholder="Digite seu usuário"
+                placeholder="Digite seu usuário" 
                 className={styles.input}
               />
             </div>
