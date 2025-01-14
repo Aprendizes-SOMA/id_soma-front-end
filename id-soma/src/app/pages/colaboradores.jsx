@@ -1,7 +1,9 @@
-// pages/users/Collaborators.js
+"use client"; // Marca este componente como Client Component
+
 import styles from "../styles/Collaborators.module.css";
 
 export default function CollaboratorsPage() {
+
   return (
     <div className={styles.container}>
       {/* Logo */}
@@ -17,9 +19,10 @@ export default function CollaboratorsPage() {
       </h2>
 
       {/* Dados do Colaborador */}
-      <h3 className="collaboratorDatah3">Dados do Colaborador</h3>
+      <div className={styles.collaboratorTitle}>
+        <h2 className={styles.sectionTitle}>Dados do Colaborador</h2>
+      </div>
       <div className={styles.collaboratorData}>
-        
         <p>
           <strong>Nome:</strong> João Silva
         </p>
@@ -29,24 +32,41 @@ export default function CollaboratorsPage() {
       </div>
 
       {/* Dados dos Dependentes */}
+      <div className={styles.dependentsTitle}>
+        <h2 className={styles.sectionTitle}>Dados dos Dependentes</h2>
+      </div>
       <div className={styles.dependentsSection}>
-        <h3>Dados dos Dependentes</h3>
         <div className={styles.dependentRow}>
-          <p>Nome: Dependente 1</p>
-          <p>Parentesco: Filho(a)</p>
+          <p>
+            <strong>Nome: </strong>
+            Dependente 1
+          </p>
+          <p>
+            <strong>Parentesco:</strong> Filho(a)
+          </p>
         </div>
         <div className={styles.dependentRow}>
-          <p>Nome: Dependente 2</p>
-          <p>Parentesco: Filho(a)</p>
+          <p>
+            <strong>Nome: </strong>
+            Dependente 2
+          </p>
+          <p>
+            <strong>Parentesco: </strong>Filho(a)
+          </p>
         </div>
         <div className={styles.dependentRow}>
-          <p>Nome: Dependente 3</p>
+          <p>
+            <strong>Nome: </strong>
+            Dependente 3
+          </p>
           <p>Parentesco: Cônjuge</p>
         </div>
       </div>
 
       {/* Botão Voltar */}
-      <button className={styles.button}>VOLTAR</button>
+      <button className={styles.button}>
+        VOLTAR
+      </button>
     </div>
   );
 }

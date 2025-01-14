@@ -1,110 +1,113 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #fff;
-    font-family: Arial, sans-serif;
-  }
-  
-  .logo {
-    width: 100%;
-    height: 200px; /* Ajuste o espaço da logo */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: -70px;
-  }
-  
-  .logo img {
-    width: 100%;
-    height: 50%;
-    object-fit: contain;
-  }
-  
-  .title {
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    color: #000;
-    margin-bottom: 30px; /* Espaçamento entre o título e o texto descritivo */
-  }
-  
-  .successMessage {
-    font-size: 16px;
-    color: #000000;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-   
-  .collaboratorDatah3{
-    font-size: 10px;
-    color: #000000;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .collaboratorData {
-    width: 100%;
-    max-width: 310px;
-    border: 1px solid #aaa4a4;
-    padding: 5px;
-    border-radius: 8px;
-    background-color: #ffffff;
-    margin-bottom: 20px;
-  }
-  
-  .collaboratorData p {
-    margin: 5px 0;
-    font-size: 13px;
-    color: #333;
-  }
-  
-  .dependentsSection {
-    width: 100%;
-    max-width: 350px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    background-color: #f9f9f9;
-    margin-bottom: 20px;
-  }
-  
-  .dependentsSection h3 {
-    font-size: 16px;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .dependentRow {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #ccc;
-    padding: 5px 0;
-  }
-  
-  .dependentRow:last-child {
-    border-bottom: none;
-  }
-  
-  .dependentRow p {
-    font-size: 14px;
-    color: #333;
-    margin: 0;
-  }
-  
-  .button {
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    background-color: #f5a623;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease;
-  }
-  
-  .button:hover {
-    background-color: #e6951f;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.logo {
+  width: 100%;
+  height: 200px; /* Ajuste o espaço da logo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: -70px;
+}
+
+.logo img {
+  width: 100%;
+  height: 50%;
+  object-fit: contain;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  color: #000;
+  margin-bottom: 20px;
+}
+
+.successMessage {
+  font-size: 16px;
+  color: #000000;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 10px 0; 
+  text-align: center;
+}
+
+.collaboratorData {
+  width: 100%;
+  max-width: 340px;
+  border: 1px solid #aaa4a4;
+  padding: 5px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  margin-bottom: 30px;
+}
+
+.collaboratorData p {
+  margin: 5px 0;
+  font-size: 13px;
+  color: #333;
+}
+
+.dependentsSection {
+  width: 100%;
+  max-width: 340px;
+  border: 1px solid #aaa4a4;
+  padding: 5px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.dependentRow {
+  display: flex;
+  flex-direction: column; /* Muda para coluna */
+  border-bottom: 1px solid #ccc;
+  padding: 8px 0;
+  align-items: flex-start; /* Alinha os textos à esquerda */
+}
+
+.dependentRow:last-child {
+  border-bottom: none;
+}
+
+.dependentRow p {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  background-color: #f5a623;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+  margin-top: 70px;
+}
+
+.button:hover {
+  background-color: #e6951f;
+}
+
+@media (min-width: 1024px) {
+.button {
+  margin-top: 30px; 
+}	
+}

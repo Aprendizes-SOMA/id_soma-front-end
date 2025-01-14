@@ -5,6 +5,6 @@ import CollaboratorsPage from "./pages/colaboradores";
 
 export default function Home() {
   return (
-    <Index/>
+    <CollaboratorsPage/>
   );
 }
