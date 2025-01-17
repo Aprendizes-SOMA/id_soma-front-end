@@ -1,24 +1,21 @@
-"use client"; // Marca este componente como Client Component
+"use client";
 
-import styles from "../styles/Collaborators.module.css";
+import styles from "../../styles/collaborator.module.css";
+import Button from "../../components/Button"
 
-export default function CollaboratorsPage() {
-
+export default function Collaborator() {
   return (
     <div className={styles.container}>
-      {/* Logo */}
       <div className={styles.logo}>
         <img src="/logo.png" alt="SOMA Verificação" />
       </div>
       <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
 
-      {/* Verificação Concluída */}
       <h2 className={styles.successMessage}>
         Verificação Concluída!{" "}
         <img src="/successmark.png" alt="Verificação Concluída" />
       </h2>
 
-      {/* Dados do Colaborador */}
       <div className={styles.collaboratorTitle}>
         <h2 className={styles.sectionTitle}>Dados do Colaborador</h2>
       </div>
@@ -31,7 +28,6 @@ export default function CollaboratorsPage() {
         </p>
       </div>
 
-      {/* Dados dos Dependentes */}
       <div className={styles.dependentsTitle}>
         <h2 className={styles.sectionTitle}>Dados dos Dependentes</h2>
       </div>
@@ -63,10 +59,7 @@ export default function CollaboratorsPage() {
         </div>
       </div>
 
-      {/* Botão Voltar */}
-      <button className={styles.button}>
-        VOLTAR
-      </button>
+      <Button href="/" content="Voltar" />
     </div>
   );
 }
