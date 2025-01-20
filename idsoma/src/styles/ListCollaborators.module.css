@@ -1,0 +1,89 @@
+/* Contêiner principal */
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Linha Superior */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    gap: 10px; /* Reduz o espaço entre os elementos */
+  }
+  
+  /* Título */
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin: 0; /* Remove o espaçamento extra */
+  }
+  
+  /* Barra de Pesquisa */
+  .searchBar {
+    display: flex;
+    align-items: center;
+    margin-left: auto; 
+    gap: 5px; 
+  }
+  
+  /* Contêiner do Input com Ícone */
+  .searchInputContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 200px;
+  }
+  
+  /* Ícone de Pesquisa */
+  .searchIcon {
+    position: absolute; 
+    right: 10px; 
+    width: 15px;
+    height: 15px;
+    pointer-events: none; 
+  }
+  
+  /* Campo de Pesquisa */
+  .searchInput {
+    width: 100%;
+    padding: 10px 10px 10px 40px; 
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box; 
+  }
+  
+  
+  .searchButton img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .searchButton:hover {
+    background-color: #e6951f;
+  }
+  
+  /* Botão Adicionar Colaborador */
+  .addButton {
+    background-color: #f5a623;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 0; /* Elimina qualquer espaço extra à esquerda */
+  }
+  
+  .addButton:hover {
+    background-color: #e6951f;
+  }
