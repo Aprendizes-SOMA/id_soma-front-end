@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "../../styles/collaborator.module.css";
-import Button from "../../components/Button"
+import Button from "../../components/Button";
 
 export default function Collaborator() {
   return (
