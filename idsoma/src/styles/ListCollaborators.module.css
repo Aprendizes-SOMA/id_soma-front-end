@@ -39,6 +39,7 @@
   display: flex;
   align-items: center;
   width: 200px;
+  border-color: #f5a623;
 }
 
 /* Ícone de Pesquisa */
@@ -58,6 +59,11 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   box-sizing: border-box;
+
+}
+.searchInput:focus {
+  outline: none;
+  border-color: #f5a623;
 }
 
 .searchButton img {
@@ -80,7 +86,7 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-left: 0; /* Elimina qualquer espaço extra à esquerda */
+  margin-left: 0; 
 }
 
 .addButton:hover {
@@ -89,35 +95,37 @@
 
 /* Tabela */
 .tableContainer {
-  max-height: 550px; /* Define a altura máxima da tabela */
-  overflow-y: auto; /* Permite rolagem vertical */
+  max-height: 550px;
+  overflow-y: auto; 
 }
 
 .table {
-  width: 100%; /* Faz a tabela ocupar toda a largura do contêiner */
-  border-collapse: collapse; /* Remove o espaço entre as bordas */
-  table-layout: fixed; /* Força a largura fixa para todas as colunas */
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
   margin-top: 20px;
 }
 
 .table th,
 .table td {
-  text-align: left; /* Alinhamento do texto */
-  padding: 12px; /* Espaçamento interno */
-  word-wrap: break-word; /* Garante que textos grandes sejam quebrados */
+  text-align: left;
+  padding: 12px; 
+  word-wrap: break-word; 
 }
 
 .table th {
   font-size: 16px;
   color: #333;
-  position: sticky; /* Cabeçalho fixo ao rolar */
+  position: sticky;
+  background-color: #ffffff;
   top: 0;
-  background-color: white; /* Fundo branco para o cabeçalho */
   z-index: 1;
 }
 
 /* Contêiner dos Ícones */
 .dependentsActions {
   display: flex;
-  gap: 90px; /* Espaço entre os ícones */
+  gap: 90px; 
+  cursor: pointer;
 }
+

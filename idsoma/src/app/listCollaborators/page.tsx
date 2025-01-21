@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import ModalAddCollaborator from "../../components/ModalAddCollaborator"; // Importa o modal
 import styles from "../../styles/ListCollaborators.module.css";
 
 // Tipo para um colaborador
@@ -12,193 +13,37 @@ interface Collaborator {
 }
 
 export default function ListCollaborators() {
-  const [collaborators, setCollaborators] = useState<Collaborator[]>([]); // Define o estado com um array de colaboradores
+  const [collaborators, setCollaborators] = useState<Collaborator[]>([]); // Lista de colaboradores
+  const [searchTerm, setSearchTerm] = useState<string>(""); // Estado do campo de pesquisa
+  const [isModalOpen, setIsModalOpen] = useState(false); // Controle de visibilidade do modal
+
+  const handleAddCollaborator = (data: { name: string; cpf: string; role: string }) => {
+    const newId = collaborators.length + 1; // Gera um novo ID
+    setCollaborators([...collaborators, { id: newId, ...data }]); // Adiciona o novo colaborador à lista
+    setIsModalOpen(false); // Fecha o modal após adicionar
+  };
 
   // Simulação de dados para a lista de colaboradores
   useEffect(() => {
     setCollaborators([
-      {
-        id: 1,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 2,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 3,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 4,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 5,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 6,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 7,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 8,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 9,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 10,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 11,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 12,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 13,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 14,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 15,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 16,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 17,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 18,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 19,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 20,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 21,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      }, 
-      {
-        id: 22,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 23,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 24,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 25,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 26,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 27,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 28,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 29,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
-      {
-        id: 30,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-      },
+      { id: 1, name: "Francisco Lima", cpf: "11122233345", role: "Coordenador" },
+      { id: 2, name: "Maria Silva", cpf: "22233344456", role: "Analista" },
+      { id: 3, name: "João Sousa", cpf: "33344455567", role: "Supervisor" },
+      { id: 4, name: "Ana Costa", cpf: "44455566678", role: "Técnico" },
+      { id: 5, name: "Carlos Almeida", cpf: "55566677789", role: "Gerente" },
+      { id: 6, name: "Beatriz Oliveira", cpf: "66677788899", role: "Engenheira" },
+      { id: 7, name: "Lucas Santos", cpf: "77788899900", role: "Programador" },
+      { id: 8, name: "Gabriel Costa", cpf: "88899900011", role: "Desenvolvedor" },
+      { id: 9, name: "Carla Silva", cpf: "99900011122", role: "Analista" },
+      { id: 10, name: "Patrícia Gomes", cpf: "00011122233", role: "Técnica" },
+      { id: 11, name: "Roberto Almeida", cpf: "11122233344", role: "Supervisor" },
     ]);
   }, []);
+
+  // Filtra colaboradores com base no termo de pesquisa
+  const filteredCollaborators = collaborators.filter((collaborator) =>
+    collaborator.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className={styles.container}>
@@ -216,10 +61,17 @@ export default function ListCollaborators() {
               type="text"
               placeholder="Pesquisar"
               className={styles.searchInput}
+              value={searchTerm} // Vincula ao estado de pesquisa
+              onChange={(e) => setSearchTerm(e.target.value)} // Atualiza o estado ao digitar
             />
           </div>
         </div>
-        <button className={styles.addButton}>ADICIONAR NOVO COLABORADOR</button>
+        <button
+          className={styles.addButton}
+          onClick={() => setIsModalOpen(true)} // Abre o modal
+        >
+          ADICIONAR NOVO COLABORADOR
+        </button>
       </div>
 
       {/* Tabela de Colaboradores com Rolagem */}
@@ -234,29 +86,48 @@ export default function ListCollaborators() {
             </tr>
           </thead>
           <tbody>
-            {collaborators.map((collaborator) => (
-              <tr key={collaborator.id}>
-                <td>{collaborator.name}</td>
-                <td>{collaborator.cpf}</td>
-                <td>{collaborator.role}</td>
-                <td className={styles.dependentsActions}>
-                  <img src="/icon-view.png" alt="Ver" className={styles.icon} />
-                  <img
-                    src="/icon-edit.png"
-                    alt="Editar"
-                    className={styles.icon}
-                  />
-                  <img
-                    src="/icon-delete.png"
-                    alt="Excluir"
-                    className={styles.icon}
-                  />
+            {filteredCollaborators.length > 0 ? (
+              filteredCollaborators.map((collaborator) => (
+                <tr key={collaborator.id}>
+                  <td>{collaborator.name}</td>
+                  <td>{collaborator.cpf}</td>
+                  <td>{collaborator.role}</td>
+                  <td className={styles.dependentsActions}>
+                    <img
+                      src="/icon-view.png"
+                      alt="Ver"
+                      className={styles.icon}
+                    />
+                    <img
+                      src="/icon-edit.png"
+                      alt="Editar"
+                      className={styles.icon}
+                    />
+                    <img
+                      src="/icon-delete.png"
+                      alt="Excluir"
+                      className={styles.icon}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} style={{ textAlign: "center" }}>
+                  Nenhum colaborador encontrado.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
+
+      {/* Modal para Adicionar Colaborador */}
+      <ModalAddCollaborator
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // Fecha o modal
+        onSave={handleAddCollaborator} // Adiciona o colaborador
+      />
     </div>
   );
 }
