@@ -17,11 +17,186 @@ export default function ListCollaborators() {
   // Simulação de dados para a lista de colaboradores
   useEffect(() => {
     setCollaborators([
-      { id: 1, name: "Francisco Lima", cpf: "11122233345", role: "Coordenador" },
-      { id: 2, name: "Francisco Lima", cpf: "11122233345", role: "Coordenador" },
-      { id: 3, name: "Francisco Lima", cpf: "11122233345", role: "Coordenador" },
-      { id: 4, name: "Francisco Lima", cpf: "11122233345", role: "Coordenador" },
-      { id: 5, name: "Francisco Lima", cpf: "11122233345", role: "Coordenador" },
+      {
+        id: 1,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 2,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 3,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 4,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 5,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 6,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 7,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 8,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 9,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 10,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 11,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 12,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 13,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 14,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 15,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 16,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 17,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 18,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 19,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 20,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 21,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      }, 
+      {
+        id: 22,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 23,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 24,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 25,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 26,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 27,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 28,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 29,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
+      {
+        id: 30,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+      },
     ]);
   }, []);
 
@@ -32,7 +207,11 @@ export default function ListCollaborators() {
         <h1 className={styles.title}>Lista de Colaboradores</h1>
         <div className={styles.searchBar}>
           <div className={styles.searchInputContainer}>
-            <img src="/lupa.png" alt="Pesquisar" className={styles.searchIcon} />
+            <img
+              src="/lupa.png"
+              alt="Pesquisar"
+              className={styles.searchIcon}
+            />
             <input
               type="text"
               placeholder="Pesquisar"
@@ -43,31 +222,41 @@ export default function ListCollaborators() {
         <button className={styles.addButton}>ADICIONAR NOVO COLABORADOR</button>
       </div>
 
-      {/* Tabela de Colaboradores */}
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>CPF</th>
-            <th>Cargo</th>
-            <th>Dependentes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {collaborators.map((collaborator) => (
-            <tr key={collaborator.id}>
-              <td>{collaborator.name}</td>
-              <td>{collaborator.cpf}</td>
-              <td>{collaborator.role}</td>
-              <td className={styles.dependentsActions}>
-                <img src="/icon-view.png" alt="Ver" className={styles.icon} />
-                <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
-                <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
-              </td>
+      {/* Tabela de Colaboradores com Rolagem */}
+      <div className={styles.tableContainer}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>Cargo</th>
+              <th>Dependentes</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {collaborators.map((collaborator) => (
+              <tr key={collaborator.id}>
+                <td>{collaborator.name}</td>
+                <td>{collaborator.cpf}</td>
+                <td>{collaborator.role}</td>
+                <td className={styles.dependentsActions}>
+                  <img src="/icon-view.png" alt="Ver" className={styles.icon} />
+                  <img
+                    src="/icon-edit.png"
+                    alt="Editar"
+                    className={styles.icon}
+                  />
+                  <img
+                    src="/icon-delete.png"
+                    alt="Excluir"
+                    className={styles.icon}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
