@@ -1,5 +1,6 @@
 import React from "react";
 import styles from '../../styles/loginAdmin.module.css'; 
+import Button from "../../components/Button";
 
 const LoginAdmin = () => {
     return (
@@ -18,6 +19,7 @@ const LoginAdmin = () => {
                 type="text"
                 placeholder="Digite seu usuário" 
                 className={styles.input}
+                required
               />
             </div>
 
@@ -34,9 +36,7 @@ const LoginAdmin = () => {
 
           
             <div className={styles.buttonContainer}>
-              <button type="submit" className={styles.button}>
-                ENTRAR
-              </button>
+               <Button href="/listCollaborators" type="submit" content="ENTRAR" />
             </div>
           </form>
         </div>
