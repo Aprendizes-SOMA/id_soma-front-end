@@ -1,1 +1,0 @@
-# id_soma-front-end
