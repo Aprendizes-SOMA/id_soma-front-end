@@ -18,11 +18,6 @@ export default function DeleteModal({
       <div className={styles["modal-card"]}>
                 <header className={styles["modal-card-head"]}>
                     <p>{title}</p>
-                    <button
-                        className={styles.delete}
-                        aria-label="close"
-                        onClick={onClose}
-                    ></button>
                 </header>
                 <section className={styles["modal-card-body"]}>
                     <p>{message}</p>

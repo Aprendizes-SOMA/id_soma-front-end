@@ -55,13 +55,19 @@
   .input {
     width: 50%;
     padding: 10px;
-    font-size: 16px;
+    font-size: 14px;
+    color: #666; /* Tom mais claro para o texto */
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
   }
+  
+  .input::placeholder {
+    color: #aaa; /* Tom ainda mais claro para o placeholder */
+  }
+  
   
   .modalActions {
     display: flex;

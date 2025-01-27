@@ -206,7 +206,7 @@ export default function ListCollaborators() {
           onClose={() => setIsDeleteModalOpen(false)}
           onDelete={handleConfirmDelete}
           title="Confirmar Exclusão"
-          message={`Tem certeza que deseja excluir o colaborador "${selectedCollaborator.name}"?`}
+          message={`Tem certeza que deseja excluir o colaborador "${selectedCollaborator.name}"? Essa ação é permanente.`}
         />
       )}
     </div>
