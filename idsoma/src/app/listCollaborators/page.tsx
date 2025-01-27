@@ -1,10 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import ModalCollaborator from "../../components/ModalCollaborator"; // Novo modal unificado
+import ModalCollaborator from "../../components/ModalCollaborator"; // Modal para adicionar/editar colaborador
+import ModalDependents from "../../components/ModalDependents"; // Modal para gerenciar dependentes
+import DeleteModal from "../../components/ModalDe"; // Modal específico para exclusão
 import styles from "../../styles/ListCollaborators.module.css";
 
-// Tipo para um colaborador
+interface Dependent {
+  id: number;
+  name: string;
+  relationship: string;
+}
+
 interface Collaborator {
   id: number;
   name: string;
@@ -14,23 +21,27 @@ interface Collaborator {
 }
 
 export default function ListCollaborators() {
-  const [collaborators, setCollaborators] = useState<Collaborator[]>([]); // Lista de colaboradores
-  const [searchTerm, setSearchTerm] = useState<string>(""); // Termo de pesquisa
-  const [isModalOpen, setIsModalOpen] = useState(false); // Controle do modal
-  const [modalTitle, setModalTitle] = useState<string>(""); // Título do modal
+  const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDependentsModalOpen, setIsDependentsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Controle do modal de exclusão
+  const [modalTitle, setModalTitle] = useState<string>("");
   const [formData, setFormData] = useState<Collaborator>({
     id: 0,
     name: "",
     cpf: "",
     role: "",
-  }); // Dados do colaborador no modal
-  const [editMode, setEditMode] = useState(false); // Modo de edição
+    dependents: [],
+  });
+  const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null); // Colaborador selecionado para dependentes ou exclusão
+  const [editMode, setEditMode] = useState(false);
 
   // Adiciona um colaborador
   const handleAddCollaborator = (data: { name: string; cpf: string; role: string }) => {
-    const newId = collaborators.length + 1; // Gera ID único
-    setCollaborators([...collaborators, { id: newId, ...data }]);
-    setIsModalOpen(false); // Fecha o modal
+    const newId = collaborators.length + 1;
+    setCollaborators([...collaborators, { id: newId, ...data, dependents: [] }]);
+    setIsModalOpen(false);
   };
 
   // Edita um colaborador
@@ -40,7 +51,7 @@ export default function ListCollaborators() {
         collaborator.id === formData.id ? { ...collaborator, ...data } : collaborator
       )
     );
-    setIsModalOpen(false); // Fecha o modal
+    setIsModalOpen(false);
   };
 
   // Salva os dependentes de um colaborador
@@ -53,14 +64,34 @@ export default function ListCollaborators() {
           : collaborator
       )
     );
-    setIsDependentsModalOpen(false); // Fecha o modal
+    setIsDependentsModalOpen(false);
   };
 
-  // Simulação de dados para a lista de colaboradores
+  // Confirma a exclusão do colaborador
+  const handleConfirmDelete = () => {
+    if (!selectedCollaborator) return;
+    setCollaborators((prev) => prev.filter((c) => c.id !== selectedCollaborator.id));
+    setSelectedCollaborator(null); // Limpa o colaborador selecionado
+    setIsDeleteModalOpen(false); // Fecha o modal de exclusão
+  };
+
+  // Simulação de dados
   useEffect(() => {
     setCollaborators([
-      { id: 1, name: "Francisco Lima", cpf: "11122233345", role: "Coordenador" },
-      { id: 2, name: "Maria Silva", cpf: "22233344456", role: "Analista" },
+      {
+        id: 1,
+        name: "Francisco Lima",
+        cpf: "11122233345",
+        role: "Coordenador",
+        dependents: [],
+      },
+      {
+        id: 2,
+        name: "Maria Silva",
+        cpf: "22233344456",
+        role: "Analista",
+        dependents: [],
+      },
     ]);
   }, []);
 
@@ -68,74 +99,58 @@ export default function ListCollaborators() {
   const handleAddClick = () => {
     setModalTitle("Adicionar Colaborador");
     setFormData({ id: 0, name: "", cpf: "", role: "", dependents: [] });
-    setEditMode(false); // Desativa modo de edição
+    setEditMode(false);
     setIsModalOpen(true);
   };
 
   // Abre o modal para editar colaborador
   const handleEditClick = (collaborator: Collaborator) => {
     setModalTitle("Editar Colaborador");
-    setFormData(collaborator); // Preenche com os dados do colaborador
-    setEditMode(true); // Ativa modo de edição
+    setFormData(collaborator);
+    setEditMode(true);
     setIsModalOpen(true);
   };
 
   // Abre o modal para gerenciar dependentes
   const handleManageDependents = (collaborator: Collaborator) => {
-    setSelectedCollaborator(collaborator); // Define o colaborador atual
-    setIsDependentsModalOpen(true); // Abre o modal
+    setSelectedCollaborator(collaborator);
+    setIsDependentsModalOpen(true);
   };
 
+  // Abre o modal de exclusão
+  const handleDeleteClick = (collaborator: Collaborator) => {
+    setSelectedCollaborator(collaborator); // Define o colaborador para exclusão
+    setIsDeleteModalOpen(true);
+  };
+
+  // Filtra colaboradores com base no termo de pesquisa
   const filteredCollaborators = collaborators.filter((collaborator) =>
     collaborator.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  function handleView(id: number): void {
-    throw new Error("Function not implemented.");
-  }
-
-  function handleEdit(id: number): void {
-    throw new Error("Function not implemented.");
-  }
-
-  function handleDelete(id: number): void {
-    throw new Error("Function not implemented.");
-  }
-
-  function handleEditCollab(data: { name: string; cpf: string; role: string; }): void {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <div className={styles.container}>
-      {/* Linha Superior */}
+      {/* Cabeçalho */}
       <div className={styles.header}>
         <h1 className={styles.title}>Lista de Colaboradores</h1>
         <div className={styles.searchBar}>
           <div className={styles.searchInputContainer}>
-            <img
-              src="/lupa.png"
-              alt="Pesquisar"
-              className={styles.searchIcon}
-            />
+            <img src="/lupa.png" alt="Pesquisar" className={styles.searchIcon} />
             <input
               type="text"
               placeholder="Pesquisar"
               className={styles.searchInput}
-              value={searchTerm} // Vincula ao estado de pesquisa
-              onChange={(e) => setSearchTerm(e.target.value)} // Atualiza o estado ao digitar
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
-        <button
-          className={styles.addButton}
-          onClick={() => setIsModalOpen(true)} // Abre o modal
-        >
+        <button className={styles.addButton} onClick={handleAddClick}>
           ADICIONAR NOVO COLABORADOR
         </button>
       </div>
 
-      {/* Tabela de Colaboradores com Rolagem */}
+      {/* Tabela de Colaboradores */}
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
@@ -154,50 +169,50 @@ export default function ListCollaborators() {
                   <td>{collaborator.cpf}</td>
                   <td>{collaborator.role}</td>
                   <td className={styles.dependentsActions}>
-                    {/* Botão de Visualizar */}
+                    {/* Botão de Gerenciar Dependentes */}
                     <button
-                      onClick={() => console.log(`Visualizando: ${collaborator.id}`)}
+                      onClick={() => handleManageDependents(collaborator)}
                       className={styles.iconButton}
                     >
-                      <img src="/icon-view.png" alt="Ver" className={styles.icon} />
+                      <img src="/icon-view.png" alt="Dependentes" className={styles.icon} />
                     </button>
+
+                    {/* Botão de Editar */}
                     <button
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => handleEditClick(collaborator)}
                       className={styles.iconButton}
                     >
-                      <img
-                        src="/icon-edit.png"
-                        alt="Editar"
-                        className={styles.icon}
-                      />
+                      <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
                     </button>
+
+                    {/* Botão de Excluir */}
                     <button
-                      onClick={() => handleDelete(collaborator.id)}
+                      onClick={() => handleDeleteClick(collaborator)}
                       className={styles.iconButton}
                     >
-                      <img
-                        src="/icon-delete.png"
-                        alt="Excluir"
-                        className={styles.icon}
-                      />
+                      <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
                     </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={4} style={{ textAlign: "center" }}>Nenhum colaborador encontrado.</td>
+                <td colSpan={4} style={{ textAlign: "center" }}>
+                  Nenhum colaborador encontrado.
+                </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
 
-      {/* Modal Reutilizável */}
+      {/* Modal de Colaborador */}
       <ModalCollaborator
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)} // Fecha o modal
-        onSave={handleAddCollaborator} // Adiciona o colaborador
+        onClose={() => setIsModalOpen(false)}
+        onSave={editMode ? handleEditCollaborator : handleAddCollaborator}
+        title={modalTitle}
+        initialData={formData}
       />
 
       {/* Modal de Dependentes */}
@@ -207,6 +222,17 @@ export default function ListCollaborators() {
           onClose={() => setIsDependentsModalOpen(false)}
           onSave={handleSaveDependents}
           initialDependents={selectedCollaborator.dependents}
+        />
+      )}
+
+      {/* Modal de Exclusão */}
+      {selectedCollaborator && (
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onDelete={handleConfirmDelete}
+          title="Confirmar Exclusão"
+          message={`Tem certeza que deseja excluir o colaborador "${selectedCollaborator.name}"?`}
         />
       )}
     </div>
