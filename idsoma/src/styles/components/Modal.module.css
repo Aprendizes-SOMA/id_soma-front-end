@@ -92,3 +92,31 @@
     background: #e6951f;
   }
   
+  .dependentsList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .dependentItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0;
+  }
+  
+  .addDependentButton {
+    background-color: #f5a623;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .addDependentButton:hover {
+    background-color: #e6951f;
+  }
+  

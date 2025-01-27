@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import ModalCollaborator from "../../components/ModalCollaborator";
-import styles from "../../styles/ListCollaborators.module.css"
+import ModalCollaborator from "../../components/ModalCollaborator"; // Novo modal unificado
+import styles from "../../styles/ListCollaborators.module.css";
 
 // Tipo para um colaborador
 interface Collaborator {
@@ -10,21 +10,50 @@ interface Collaborator {
   name: string;
   cpf: string;
   role: string;
+  dependents: Dependent[];
 }
 
 export default function ListCollaborators() {
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]); // Lista de colaboradores
-  const [searchTerm, setSearchTerm] = useState<string>(""); // Estado do campo de pesquisa
-  const [isModalOpen, setIsModalOpen] = useState(false); // Controle de visibilidade do modal
+  const [searchTerm, setSearchTerm] = useState<string>(""); // Termo de pesquisa
+  const [isModalOpen, setIsModalOpen] = useState(false); // Controle do modal
+  const [modalTitle, setModalTitle] = useState<string>(""); // Título do modal
+  const [formData, setFormData] = useState<Collaborator>({
+    id: 0,
+    name: "",
+    cpf: "",
+    role: "",
+  }); // Dados do colaborador no modal
+  const [editMode, setEditMode] = useState(false); // Modo de edição
 
-  const handleAddCollaborator = (data: {
-    name: string;
-    cpf: string;
-    role: string;
-  }) => {
-    const newId = collaborators.length + 1; // Gera um novo ID
-    setCollaborators([...collaborators, { id: newId, ...data }]); // Adiciona o novo colaborador à lista
-    setIsModalOpen(false); // Fecha o modal após adicionar
+  // Adiciona um colaborador
+  const handleAddCollaborator = (data: { name: string; cpf: string; role: string }) => {
+    const newId = collaborators.length + 1; // Gera ID único
+    setCollaborators([...collaborators, { id: newId, ...data }]);
+    setIsModalOpen(false); // Fecha o modal
+  };
+
+  // Edita um colaborador
+  const handleEditCollaborator = (data: { name: string; cpf: string; role: string }) => {
+    setCollaborators((prev) =>
+      prev.map((collaborator) =>
+        collaborator.id === formData.id ? { ...collaborator, ...data } : collaborator
+      )
+    );
+    setIsModalOpen(false); // Fecha o modal
+  };
+
+  // Salva os dependentes de um colaborador
+  const handleSaveDependents = (updatedDependents: Dependent[]) => {
+    if (!selectedCollaborator) return;
+    setCollaborators((prev) =>
+      prev.map((collaborator) =>
+        collaborator.id === selectedCollaborator.id
+          ? { ...collaborator, dependents: updatedDependents }
+          : collaborator
+      )
+    );
+    setIsDependentsModalOpen(false); // Fecha o modal
   };
 
   // Simulação de dados para a lista de colaboradores
@@ -32,47 +61,29 @@ export default function ListCollaborators() {
     setCollaborators([
       { id: 1, name: "Francisco Lima", cpf: "11122233345", role: "Coordenador" },
       { id: 2, name: "Maria Silva", cpf: "22233344456", role: "Analista" },
-      { id: 3, name: "João Sousa", cpf: "33344455567", role: "Supervisor" },
-      { id: 4, name: "Ana Costa", cpf: "44455566678", role: "Técnico" },
-      { id: 5, name: "Carlos Almeida", cpf: "55566677789", role: "Gerente" },
-      {
-        id: 6,
-        name: "Beatriz Oliveira",
-        cpf: "66677788899",
-        role: "Engenheira",
-      },
-      { id: 7, name: "Lucas Santos", cpf: "77788899900", role: "Programador" },
-      {
-        id: 8,
-        name: "Gabriel Costa",
-        cpf: "88899900011",
-        role: "Desenvolvedor",
-      },
-      { id: 9, name: "Carla Silva", cpf: "99900011122", role: "Analista" },
-      { id: 10, name: "Patrícia Gomes", cpf: "00011122233", role: "Técnica" },
-      {
-        id: 11,
-        name: "Roberto Almeida",
-        cpf: "11122233344",
-        role: "Supervisor",
-      },
     ]);
   }, []);
 
-  // Abre o modal para adicionar
+  // Abre o modal para adicionar colaborador
   const handleAddClick = () => {
     setModalTitle("Adicionar Colaborador");
-    setFormData({ id: 0, name: "", cpf: "", role: "" });
+    setFormData({ id: 0, name: "", cpf: "", role: "", dependents: [] });
     setEditMode(false); // Desativa modo de edição
     setIsModalOpen(true);
   };
 
-  // Abre o modal para editar
+  // Abre o modal para editar colaborador
   const handleEditClick = (collaborator: Collaborator) => {
     setModalTitle("Editar Colaborador");
     setFormData(collaborator); // Preenche com os dados do colaborador
     setEditMode(true); // Ativa modo de edição
     setIsModalOpen(true);
+  };
+
+  // Abre o modal para gerenciar dependentes
+  const handleManageDependents = (collaborator: Collaborator) => {
+    setSelectedCollaborator(collaborator); // Define o colaborador atual
+    setIsDependentsModalOpen(true); // Abre o modal
   };
 
   const filteredCollaborators = collaborators.filter((collaborator) =>
@@ -143,15 +154,12 @@ export default function ListCollaborators() {
                   <td>{collaborator.cpf}</td>
                   <td>{collaborator.role}</td>
                   <td className={styles.dependentsActions}>
+                    {/* Botão de Visualizar */}
                     <button
-                      onClick={() => handleView(collaborator.id)}
+                      onClick={() => console.log(`Visualizando: ${collaborator.id}`)}
                       className={styles.iconButton}
                     >
-                      <img
-                        src="/icon-view.png"
-                        alt="Ver"
-                        className={styles.icon}
-                      />
+                      <img src="/icon-view.png" alt="Ver" className={styles.icon} />
                     </button>
                     <button
                       onClick={() => setIsModalOpen(true)}
@@ -185,12 +193,22 @@ export default function ListCollaborators() {
         </table>
       </div>
 
-      {/* Modal para Adicionar Colaborador */}
+      {/* Modal Reutilizável */}
       <ModalCollaborator
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)} // Fecha o modal
         onSave={handleAddCollaborator} // Adiciona o colaborador
       />
+
+      {/* Modal de Dependentes */}
+      {selectedCollaborator && (
+        <ModalDependents
+          isOpen={isDependentsModalOpen}
+          onClose={() => setIsDependentsModalOpen(false)}
+          onSave={handleSaveDependents}
+          initialDependents={selectedCollaborator.dependents}
+        />
+      )}
     </div>
   );
 }
