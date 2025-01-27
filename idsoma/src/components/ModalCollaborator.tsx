@@ -1,20 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
-import styles from "../styles/components/ModalAdd.module.css";
+import React, { useState, useEffect } from "react";
+import styles from "../styles/components/Modal.module.css";
 
-interface ModalAddCollaboratorProps {
+interface ModalCollaboratorProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: { name: string; cpf: string; role: string }) => void;
+  title: string;
+  initialData?: { name: string; cpf: string; role: string };
 }
 
-const ModalAddCollaborator: React.FC<ModalAddCollaboratorProps> = ({
+const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
   isOpen,
   onClose,
   onSave,
+  title,
+  initialData = { name: "", cpf: "", role: "" },
 }) => {
-  const [formData, setFormData] = useState({ name: "", cpf: "", role: "" });
+  const [formData, setFormData] = useState(initialData);
+
+  // Reset do formulário ao abrir o modal
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(title === "Adicionar Colaborador" ? { name: "", cpf: "", role: "" } : initialData);
+    }
+  }, [isOpen, title, initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,9 +33,8 @@ const ModalAddCollaborator: React.FC<ModalAddCollaboratorProps> = ({
   };
 
   const handleSubmit = () => {
-    onSave(formData); // Envia os dados para o componente pai
-    setFormData({ name: "", cpf: "", role: "" }); // Reseta o formulário
-    onClose(); // Fecha o modal
+    onSave(formData);
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -32,8 +42,7 @@ const ModalAddCollaborator: React.FC<ModalAddCollaboratorProps> = ({
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <h2 className={styles.modalTitle}>Adicionar Colaborador</h2>
-        <div className={styles.modalLine}></div> {/* Linha abaixo do título */}
+        <h2 className={styles.modalTitle}>{title}</h2>
         <form className={styles.form}>
           <label>Nome:</label>
           <input
@@ -42,7 +51,6 @@ const ModalAddCollaborator: React.FC<ModalAddCollaboratorProps> = ({
             value={formData.name}
             onChange={handleChange}
             className={styles.input}
-            placeholder="Digite o nome"
           />
           <label>CPF:</label>
           <input
@@ -51,7 +59,6 @@ const ModalAddCollaborator: React.FC<ModalAddCollaboratorProps> = ({
             value={formData.cpf}
             onChange={handleChange}
             className={styles.input}
-            placeholder="Digite o CPF"
           />
           <label>Cargo:</label>
           <input
@@ -60,7 +67,6 @@ const ModalAddCollaborator: React.FC<ModalAddCollaboratorProps> = ({
             value={formData.role}
             onChange={handleChange}
             className={styles.input}
-            placeholder="Digite o cargo"
           />
         </form>
         <div className={styles.modalActions}>
@@ -76,4 +82,4 @@ const ModalAddCollaborator: React.FC<ModalAddCollaboratorProps> = ({
   );
 };
 
-export default ModalAddCollaborator;
+export default ModalCollaborator;
