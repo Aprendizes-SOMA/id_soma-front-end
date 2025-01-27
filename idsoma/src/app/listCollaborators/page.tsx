@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import ModalCollaborator from "../../components/ModalCollaborator"; // Modal para adicionar/editar colaborador
-import ModalDependents from "../../components/ModalDependents"; // Modal para gerenciar dependentes
-import DeleteModal from "../../components/ModalDe"; // Modal específico para exclusão
+import ModalCollaborator from "../../components/ModalCollaborator";
+import ModalDependents from "../../components/ModalDependents";
+import DeleteModal from "../../components/ModalDe";
 import styles from "../../styles/ListCollaborators.module.css";
 
 interface Dependent {
@@ -25,7 +25,7 @@ export default function ListCollaborators() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDependentsModalOpen, setIsDependentsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Controle do modal de exclusão
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [formData, setFormData] = useState<Collaborator>({
     id: 0,
@@ -34,17 +34,15 @@ export default function ListCollaborators() {
     role: "",
     dependents: [],
   });
-  const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null); // Colaborador selecionado para dependentes ou exclusão
+  const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
   const [editMode, setEditMode] = useState(false);
 
-  // Adiciona um colaborador
   const handleAddCollaborator = (data: { name: string; cpf: string; role: string }) => {
     const newId = collaborators.length + 1;
     setCollaborators([...collaborators, { id: newId, ...data, dependents: [] }]);
     setIsModalOpen(false);
   };
 
-  // Edita um colaborador
   const handleEditCollaborator = (data: { name: string; cpf: string; role: string }) => {
     setCollaborators((prev) =>
       prev.map((collaborator) =>
@@ -54,7 +52,6 @@ export default function ListCollaborators() {
     setIsModalOpen(false);
   };
 
-  // Salva os dependentes de um colaborador
   const handleSaveDependents = (updatedDependents: Dependent[]) => {
     if (!selectedCollaborator) return;
     setCollaborators((prev) =>
@@ -67,15 +64,13 @@ export default function ListCollaborators() {
     setIsDependentsModalOpen(false);
   };
 
-  // Confirma a exclusão do colaborador
   const handleConfirmDelete = () => {
     if (!selectedCollaborator) return;
     setCollaborators((prev) => prev.filter((c) => c.id !== selectedCollaborator.id));
-    setSelectedCollaborator(null); // Limpa o colaborador selecionado
-    setIsDeleteModalOpen(false); // Fecha o modal de exclusão
+    setSelectedCollaborator(null);
+    setIsDeleteModalOpen(false);
   };
 
-  // Simulação de dados
   useEffect(() => {
     setCollaborators([
       {
@@ -95,7 +90,6 @@ export default function ListCollaborators() {
     ]);
   }, []);
 
-  // Abre o modal para adicionar colaborador
   const handleAddClick = () => {
     setModalTitle("Adicionar Colaborador");
     setFormData({ id: 0, name: "", cpf: "", role: "", dependents: [] });
@@ -103,7 +97,6 @@ export default function ListCollaborators() {
     setIsModalOpen(true);
   };
 
-  // Abre o modal para editar colaborador
   const handleEditClick = (collaborator: Collaborator) => {
     setModalTitle("Editar Colaborador");
     setFormData(collaborator);
@@ -111,26 +104,24 @@ export default function ListCollaborators() {
     setIsModalOpen(true);
   };
 
-  // Abre o modal para gerenciar dependentes
   const handleManageDependents = (collaborator: Collaborator) => {
     setSelectedCollaborator(collaborator);
+    setIsDeleteModalOpen(false); // Garante que o modal de exclusão está fechado
     setIsDependentsModalOpen(true);
   };
 
-  // Abre o modal de exclusão
   const handleDeleteClick = (collaborator: Collaborator) => {
-    setSelectedCollaborator(collaborator); // Define o colaborador para exclusão
+    setSelectedCollaborator(collaborator);
+    setIsDependentsModalOpen(false); // Garante que o modal de dependentes está fechado
     setIsDeleteModalOpen(true);
   };
 
-  // Filtra colaboradores com base no termo de pesquisa
   const filteredCollaborators = collaborators.filter((collaborator) =>
     collaborator.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className={styles.container}>
-      {/* Cabeçalho */}
       <div className={styles.header}>
         <h1 className={styles.title}>Lista de Colaboradores</h1>
         <div className={styles.searchBar}>
@@ -150,7 +141,6 @@ export default function ListCollaborators() {
         </button>
       </div>
 
-      {/* Tabela de Colaboradores */}
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
@@ -162,51 +152,37 @@ export default function ListCollaborators() {
             </tr>
           </thead>
           <tbody>
-            {filteredCollaborators.length > 0 ? (
-              filteredCollaborators.map((collaborator) => (
-                <tr key={collaborator.id}>
-                  <td>{collaborator.name}</td>
-                  <td>{collaborator.cpf}</td>
-                  <td>{collaborator.role}</td>
-                  <td className={styles.dependentsActions}>
-                    {/* Botão de Gerenciar Dependentes */}
-                    <button
-                      onClick={() => handleManageDependents(collaborator)}
-                      className={styles.iconButton}
-                    >
-                      <img src="/icon-view.png" alt="Dependentes" className={styles.icon} />
-                    </button>
-
-                    {/* Botão de Editar */}
-                    <button
-                      onClick={() => handleEditClick(collaborator)}
-                      className={styles.iconButton}
-                    >
-                      <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
-                    </button>
-
-                    {/* Botão de Excluir */}
-                    <button
-                      onClick={() => handleDeleteClick(collaborator)}
-                      className={styles.iconButton}
-                    >
-                      <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={4} style={{ textAlign: "center" }}>
-                  Nenhum colaborador encontrado.
+            {filteredCollaborators.map((collaborator) => (
+              <tr key={collaborator.id}>
+                <td>{collaborator.name}</td>
+                <td>{collaborator.cpf}</td>
+                <td>{collaborator.role}</td>
+                <td className={styles.dependentsActions}>
+                  <button
+                    onClick={() => handleManageDependents(collaborator)}
+                    className={styles.iconButton}
+                  >
+                    <img src="/icon-view.png" alt="Dependentes" className={styles.icon} />
+                  </button>
+                  <button
+                    onClick={() => handleEditClick(collaborator)}
+                    className={styles.iconButton}
+                  >
+                    <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteClick(collaborator)}
+                    className={styles.iconButton}
+                  >
+                    <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
+                  </button>
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>
 
-      {/* Modal de Colaborador */}
       <ModalCollaborator
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -215,8 +191,7 @@ export default function ListCollaborators() {
         initialData={formData}
       />
 
-      {/* Modal de Dependentes */}
-      {selectedCollaborator && (
+      {isDependentsModalOpen && selectedCollaborator && (
         <ModalDependents
           isOpen={isDependentsModalOpen}
           onClose={() => setIsDependentsModalOpen(false)}
@@ -225,8 +200,7 @@ export default function ListCollaborators() {
         />
       )}
 
-      {/* Modal de Exclusão */}
-      {selectedCollaborator && (
+      {isDeleteModalOpen && selectedCollaborator && (
         <DeleteModal
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
