@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import styles from "../styles/components/Modal.module.css";
+import styles from "../styles/components/ModalDependents.module.css";
 
 interface Dependent {
   id: number;
@@ -12,8 +12,8 @@ interface Dependent {
 interface ModalDependentsProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (dependents: Dependent[]) => void; // Salva a lista de dependentes
-  initialDependents: Dependent[]; // Lista inicial de dependentes
+  onSave: (dependents: Dependent[]) => void;
+  initialDependents: Dependent[];
 }
 
 const ModalDependents: React.FC<ModalDependentsProps> = ({
@@ -23,10 +23,11 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   initialDependents,
 }) => {
   const [dependents, setDependents] = useState<Dependent[]>(initialDependents);
+  const [showForm, setShowForm] = useState(false); // Mostra ou esconde o formulário
   const [formData, setFormData] = useState({ name: "", relationship: "" });
 
   useEffect(() => {
-    setDependents(initialDependents); // Atualiza os dependentes quando o modal abre
+    setDependents(initialDependents);
   }, [initialDependents]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,21 +36,27 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   };
 
   const handleAddDependent = () => {
+    setShowForm(true); // Exibe o formulário ao clicar no botão
+  };
+
+  const handleSaveDependent = () => {
+    if (!formData.name || !formData.relationship) return; // Evita salvar se os campos estiverem vazios
     const newDependent: Dependent = {
-      id: dependents.length + 1, // Gera um ID único
+      id: dependents.length + 1,
       name: formData.name,
       relationship: formData.relationship,
     };
-    setDependents([...dependents, newDependent]); // Adiciona o dependente à lista
-    setFormData({ name: "", relationship: "" }); // Reseta o formulário
+    setDependents([...dependents, newDependent]);
+    setFormData({ name: "", relationship: "" });
+    setShowForm(false); // Esconde o formulário após salvar
   };
 
   const handleDeleteDependent = (id: number) => {
-    setDependents(dependents.filter((dependent) => dependent.id !== id)); // Remove o dependente
+    setDependents(dependents.filter((dependent) => dependent.id !== id));
   };
 
   const handleSave = () => {
-    onSave(dependents); // Salva os dependentes e fecha o modal
+    onSave(dependents);
     onClose();
   };
 
@@ -58,57 +65,94 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <h2 className={styles.modalTitle}>Lista de Dependentes</h2>
+        <div className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>Lista de Dependentes</h2>
+          <button
+            className={styles.addDependentButton}
+            onClick={handleAddDependent}
+          >
+            ADICIONAR DEPENDENTE
+          </button>
+        </div>
         <div className={styles.modalLine}></div>
+
+        {/* Formulário Inline */}
+        {showForm && (
+          <div className={styles.inlineForm}>
+            <label>Nome:</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Nome do dependente"
+              className={styles.input}
+            />
+            <label>Parentesco:</label>
+            <input
+              type="text"
+              name="relationship"
+              value={formData.relationship}
+              onChange={handleChange}
+              placeholder="Parentesco"
+              className={styles.input}
+            />
+            <button className={styles.saveButton} onClick={handleSaveDependent}>
+              SALVAR
+            </button>
+          </div>
+        )}
+
+        {/* Lista de Dependentes */}
         <ul className={styles.dependentsList}>
           {dependents.map((dependent) => (
             <li key={dependent.id} className={styles.dependentItem}>
-              <span>
-                <strong>Nome:</strong> {dependent.name}
-              </span>
-              <span>
-                <strong>Parentesco:</strong> {dependent.relationship}
-              </span>
-              <button
-                onClick={() => handleDeleteDependent(dependent.id)}
-                className={styles.deleteButton}
-              >
-                🗑️
-              </button>
+              <div className={styles.dependentInfo}>
+                <span>
+                  <span className={styles.dependentLabel}>Nome:</span>
+                  <span className={styles.dependentValue}>
+                    {" "}
+                    {dependent.name}
+                  </span>
+                </span>
+                <span>
+                  <span className={styles.dependentLabel}>Parentesco:</span>
+                  <span className={styles.dependentValue}>
+                    {" "}
+                    {dependent.relationship}
+                  </span>
+                </span>
+              </div>
+              <div className={styles.actionButtons}>
+                <button
+                  onClick={() => console.log("Editar", dependent.id)}
+                  className={styles.iconButton}
+                >
+                  <img
+                    src="/icon-edit.png"
+                    alt="Editar"
+                    className={styles.icon}
+                  />
+                </button>
+                <button
+                  onClick={() => handleDeleteDependent(dependent.id)}
+                  className={styles.iconButton}
+                >
+                  <img
+                    src="/icon-delete.png"
+                    alt="Excluir"
+                    className={styles.icon}
+                  />
+                </button>
+              </div>
             </li>
           ))}
         </ul>
-        <form className={styles.form}>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Nome do dependente"
-            className={styles.input}
-          />
-          <input
-            type="text"
-            name="relationship"
-            value={formData.relationship}
-            onChange={handleChange}
-            placeholder="Parentesco"
-            className={styles.input}
-          />
-          <button
-            type="button"
-            onClick={handleAddDependent}
-            className={styles.addDependentButton}
-          >
-            Adicionar Dependente
-          </button>
-        </form>
+
+        {/* Botão de Voltar */}
         <div className={styles.modalActions}>
           <button className={styles.cancelButton} onClick={onClose}>
-            Voltar
-          </button>
-          <button className={styles.saveButton} onClick={handleSave}>
-            Salvar Dependentes
+            VOLTAR
           </button>
         </div>
       </div>
