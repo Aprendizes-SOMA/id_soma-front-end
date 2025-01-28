@@ -46,8 +46,8 @@
 .searchIcon {
   position: absolute;
   left: 10px; /* Alinha o ícone dentro do input */
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   pointer-events: none; /* Impede clique no ícone */
 }
 
