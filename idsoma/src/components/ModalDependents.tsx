@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import styles from "../styles/components/ModalDependents.module.css";
+import ModalDe from "@/components/ModalDe";
 
 interface Dependent {
   id: number;
@@ -23,8 +24,12 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   initialDependents,
 }) => {
   const [dependents, setDependents] = useState<Dependent[]>(initialDependents);
-  const [showForm, setShowForm] = useState(false); // Mostra ou esconde o formulário
+  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: "", relationship: "" });
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Controle da modal de exclusão
+  const [selectedDependent, setSelectedDependent] = useState<Dependent | null>(
+    null
+  ); // Dependente selecionado para exclusão
 
   useEffect(() => {
     setDependents(initialDependents);
@@ -36,11 +41,11 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   };
 
   const handleAddDependent = () => {
-    setShowForm(true); // Exibe o formulário ao clicar no botão
+    setShowForm(true);
   };
 
   const handleSaveDependent = () => {
-    if (!formData.name || !formData.relationship) return; // Evita salvar se os campos estiverem vazios
+    if (!formData.name || !formData.relationship) return;
     const newDependent: Dependent = {
       id: dependents.length + 1,
       name: formData.name,
@@ -48,11 +53,29 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     };
     setDependents([...dependents, newDependent]);
     setFormData({ name: "", relationship: "" });
-    setShowForm(false); // Esconde o formulário após salvar
+    setShowForm(false);
   };
 
-  const handleDeleteDependent = (id: number) => {
-    setDependents(dependents.filter((dependent) => dependent.id !== id));
+  // Abrir modal de exclusão
+  const handleOpenDeleteModal = (dependent: Dependent) => {
+    setSelectedDependent(dependent);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Fechar modal de exclusão
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setSelectedDependent(null);
+  };
+
+  // Confirmar exclusão
+  const handleConfirmDelete = () => {
+    if (selectedDependent) {
+      setDependents(
+        dependents.filter((dependent) => dependent.id !== selectedDependent.id)
+      );
+      handleCloseDeleteModal();
+    }
   };
 
   const handleSave = () => {
@@ -135,7 +158,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
                   />
                 </button>
                 <button
-                  onClick={() => handleDeleteDependent(dependent.id)}
+                  onClick={() => handleOpenDeleteModal(dependent)} // Abre a modal de exclusão
                   className={styles.iconButton}
                 >
                   <img
@@ -156,6 +179,17 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Modal de Exclusão */}
+      {isDeleteModalOpen && (
+        <ModalDe
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onDelete={handleConfirmDelete}
+          title="Confirmar Exclusão"
+          message={`Tem certeza que deseja excluir o dependente "${selectedDependent?.name}"? Esta ação não pode ser desfeita.`}
+        />
+      )}
     </div>
   );
 };
