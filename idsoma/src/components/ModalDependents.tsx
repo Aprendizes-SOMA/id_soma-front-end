@@ -28,8 +28,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   const [formData, setFormData] = useState({ name: "", relationship: "" });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedDependent, setSelectedDependent] = useState<Dependent | null>(null);
-
-  // 🔹 NOVO: Estado para rastrear dependente sendo editado
   const [editingDependent, setEditingDependent] = useState<Dependent | null>(null);
 
   useEffect(() => {
@@ -43,46 +41,39 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleAddDependent = () => {
-    setShowForm(true);
-    setEditingDependent(null); // Garante que não está editando um existente
-  };
-
-  const handleSaveDependent = () => {
+  const handleAddOrEditDependent = () => {
     if (!formData.name || !formData.relationship) return;
-    const newDependent: Dependent = {
-      id: dependents.length + 1,
-      name: formData.name,
-      relationship: formData.relationship,
-    };
-    setDependents([...dependents, newDependent]);
+
+    if (editingDependent) {
+      setDependents((prev) =>
+        prev.map((dep) =>
+          dep.id === editingDependent.id ? { ...dep, ...formData } : dep
+        )
+      );
+      setEditingDependent(null);
+    } else {
+      const newDependent: Dependent = {
+        id: dependents.length > 0 ? dependents[dependents.length - 1].id + 1 : 1,
+        name: formData.name,
+        relationship: formData.relationship,
+      };
+      setDependents([...dependents, newDependent]);
+    }
+
     setFormData({ name: "", relationship: "" });
-    setShowForm(false);
+    setShowForm(false); // Oculta o formulário após salvar
   };
 
-  // 🔹 NOVO: Função para ativar o modo de edição
   const handleEditClick = (dependent: Dependent) => {
     setEditingDependent(dependent);
     setFormData({ name: dependent.name, relationship: dependent.relationship });
-  };
-
-  // 🔹 NOVO: Função para salvar a edição
-  const handleSaveEdit = () => {
-    if (!editingDependent) return;
-    setDependents((prev) =>
-      prev.map((dep) =>
-        dep.id === editingDependent.id ? { ...dep, ...formData } : dep
-      )
-    );
-    setEditingDependent(null);
-    setFormData({ name: "", relationship: "" });
+    setShowForm(true);
   };
 
   const handleDeleteDependent = (id: number) => {
     setDependents((prev) => prev.filter((dependent) => dependent.id !== id));
   };
 
-  // 🔹 NOVO: Modal de Exclusão
   const handleOpenDeleteModal = (dependent: Dependent) => {
     setSelectedDependent(dependent);
     setIsDeleteModalOpen(true);
@@ -114,14 +105,14 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Lista de Dependentes</h2>
-          <button className={styles.addDependentButton} onClick={handleAddDependent}>
+          <button className={styles.addDependentButton} onClick={() => setShowForm(true)}>
             ADICIONAR DEPENDENTE
           </button>
         </div>
         <div className={styles.modalLine}></div>
 
         {/* Formulário Inline */}
-        {(showForm || editingDependent) && (
+        {showForm && (
           <div className={styles.inlineForm}>
             <label>Nome:</label>
             <input
@@ -129,7 +120,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Nome do dependente:"
+              placeholder="Nome do dependente"
               className={styles.input}
             />
             <label>Parentesco:</label>
@@ -138,15 +129,9 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
               name="relationship"
               value={formData.relationship}
               onChange={handleChange}
-              placeholder="Parentesco:"
+              placeholder="Parentesco"
               className={styles.input}
             />
-            <button
-              className={styles.saveButton}
-              onClick={editingDependent ? handleSaveEdit : handleSaveDependent}
-            >
-              {editingDependent ? "SALVAR ALTERAÇÕES" : "SALVAR"}
-            </button>
           </div>
         )}
 
@@ -176,14 +161,17 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
           ))}
         </ul>
 
-        {/* Botão de Voltar */}
+        {/* Botões de Ação */}
         <div className={styles.modalActions}>
           <button className={styles.cancelButton} onClick={onClose}>
             VOLTAR
           </button>
-          <button className={styles.saveButton} onClick={handleSave}>
-            SALVAR
-          </button>
+          {/* 🔹 Botão "SALVAR" só aparece quando showForm está ativo */}
+          {showForm && (
+            <button className={styles.saveButton} onClick={handleAddOrEditDependent}>
+              SALVAR
+            </button>
+          )}
         </div>
       </div>
 
