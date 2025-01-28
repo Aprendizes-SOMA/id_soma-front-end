@@ -108,7 +108,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Nome do dependente"
+              placeholder="Nome do dependente:"
               className={styles.input}
             />
             <label>Parentesco:</label>
@@ -117,7 +117,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
               name="relationship"
               value={formData.relationship}
               onChange={handleChange}
-              placeholder="Parentesco"
+              placeholder="Parentesco:"
               className={styles.input}
             />
             <button className={styles.saveButton} onClick={handleSaveDependent}>

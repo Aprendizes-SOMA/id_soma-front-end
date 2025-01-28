@@ -145,13 +145,14 @@
     height: 16px;
   }
   
-  
   .modalActions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    gap: 10px; /* Espaçamento entre os botões */
     margin-top: 20px;
   }
   
+  /* Botão "Voltar" */
   .cancelButton {
     background: #f5a623;
     color: white;
@@ -159,9 +160,25 @@
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
   }
   
   .cancelButton:hover {
+    background: #e6951f;
+  }
+  
+  /* Botão "Salvar" */
+  .saveButton {
+    background: #f5a623;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .saveButton:hover {
     background: #e6951f;
   }
   
