@@ -23,10 +23,13 @@ export default function Home() {
           name="cpf"
           placeholder="Digite seu CPF"
           className={styles.input}
+          
         />
       </form>
       
       <Button href="/collaborator" type="submit" content="Verificar" />
+      
+      
     </div>
   );
 }
