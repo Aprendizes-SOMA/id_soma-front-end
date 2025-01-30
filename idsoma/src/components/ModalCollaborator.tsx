@@ -23,7 +23,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
   // Reset do formulário ao abrir o modal
   useEffect(() => {
     if (isOpen) {
-      setFormData(title === "Adicionar Colaborador" ? { name: "Informe o nome do colaborador:", cpf: "Informe o CPF do colaborador:", role: "Informe o cargo do colaborador:" } : initialData);
+      setFormData(title === "Adicionar Colaborador" ? { name: "", cpf: "", role: "" } : initialData);
     }
   }, [isOpen, title, initialData]);
 
@@ -51,6 +51,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             value={formData.name}
             onChange={handleChange}
             className={styles.input}
+            placeholder="Informe o nome do colaborador:"
           />
           <label>CPF:</label>
           <input
@@ -59,6 +60,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             value={formData.cpf}
             onChange={handleChange}
             className={styles.input}
+            placeholder="Informe o CPF do colaborador:"
           />
           <label>Cargo:</label>
           <input
@@ -67,6 +69,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             value={formData.role}
             onChange={handleChange}
             className={styles.input}
+            placeholder="Informe o cargo do colaborador:"
           />
         </form>
         <div className={styles.modalActions}>

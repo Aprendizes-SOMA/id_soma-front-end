@@ -14,8 +14,8 @@
   margin-bottom: 20px;
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
-  gap: 10px; /* Espaçamento entre os elementos */
-  flex-wrap: wrap; /* Permite que os elementos quebrem para a próxima linha em telas menores */
+  gap: 10px; 
+  flex-wrap: wrap; 
 }
 
 /* Título */
@@ -23,7 +23,7 @@
   font-size: 24px;
   font-weight: bold;
   color: #333;
-  margin: 0; /* Remove espaçamento extra */
+  margin: 0; 
 }
 
 /* Barra de Pesquisa */
@@ -39,22 +39,22 @@
   position: relative;
   display: flex;
   align-items: center;
-  width: 200px; /* Largura fixa */
+  width: 200px; 
 }
 
 /* Ícone de Pesquisa */
 .searchIcon {
   position: absolute;
-  left: 10px; /* Alinha o ícone dentro do input */
+  left: 10px; 
   width: 16px;
   height: 16px;
-  pointer-events: none; /* Impede clique no ícone */
+  pointer-events: none;
 }
 
 /* Campo de Pesquisa */
 .searchInput {
   width: 100%;
-  padding: 10px 10px 10px 40px; /* Espaço à esquerda para o ícone */
+  padding: 10px 10px 10px 40px; 
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -85,7 +85,7 @@
 
 /* Tabela */
 .tableContainer {
-  max-height: 550px; /* Altura máxima com rolagem vertical */
+  max-height: 550px; 
   overflow-y: auto;
 }
 
@@ -116,7 +116,7 @@
 .dependentsActions {
   display: flex;
   justify-content: space-between;
-  gap: 15px; /* Espaço entre os ícones */
+  gap: 15px; 
   cursor: pointer;
 }
 
@@ -133,10 +133,10 @@
 }
 
 .iconButton:hover {
-  transform: scale(1.1); /* Leve aumento no hover */
+  transform: scale(1.1);
 }
 
 .icon {
-  width: 24px; /* Tamanho consistente dos ícones */
+  width: 24px; 
   height: 17px;
 }
