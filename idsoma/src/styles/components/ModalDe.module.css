@@ -18,6 +18,7 @@
   width: 400px;
   max-width: 90%;
   overflow: hidden;
+  border: 2px solid orange;
 }
 
 .modal-card-head {

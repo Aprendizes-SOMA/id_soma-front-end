@@ -23,7 +23,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
   // Reset do formulário ao abrir o modal
   useEffect(() => {
     if (isOpen) {
-      setFormData(title === "Adicionar Colaborador" ? { name: "Informe seu nome:", cpf: "Informe seu CPF:", role: "Informe seu cargo:" } : initialData);
+      setFormData(title === "Adicionar Colaborador" ? { name: "Informe o nome do colaborador:", cpf: "Informe o CPF do colaborador:", role: "Informe o cargo do colaborador:" } : initialData);
     }
   }, [isOpen, title, initialData]);
 
