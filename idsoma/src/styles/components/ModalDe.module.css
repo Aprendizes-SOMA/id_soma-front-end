@@ -72,3 +72,36 @@
 .button.cancel:hover {
   background-color: #d5d5d5;
 }
+
+@media (max-width: 768px) {
+  .modal-card {
+    width: 80%;
+    max-width: 320px; 
+    border-radius: 10px; 
+  }
+
+  .modal-card-head {
+    font-size: 1rem; 
+    padding: 12px;
+  }
+
+  .modal-card-body {
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+
+  .modal-card-foot {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .button {
+    width: 40%;
+    padding: 6px 15px;
+    font-size: 0.85rem; 
+  }
+
+  .button.is-danger {
+    font-weight: bold;
+  }
+}

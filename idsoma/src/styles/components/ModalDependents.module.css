@@ -116,7 +116,7 @@
   }
   
   .dependentValue {
-    font-weight: normal; /* O valor do dependente fica com fonte normal */
+    font-weight: normal;
   }
   
   
@@ -148,8 +148,8 @@
   
   .modalActions {
     display: flex;
-    justify-content: flex-end; /* Alinha os botões à direita */
-    gap: 10px; /* Espaçamento entre os botões */
+    justify-content: flex-end;
+    gap: 10px;
     margin-top: 20px;
   }
   
@@ -182,4 +182,68 @@
   .saveButton:hover {
     background: #e6951f;
   }
+ 
+  @media (max-width: 768px) {
+    .modalContent {
+      width: 80%;
+      max-width: 100%;
+      padding: 15px;
+      border-radius: 15px;
+    }
   
+    .modalTitle {
+      font-size: 15px;
+      text-align: center;
+    }
+  
+    .addDependentButton {
+      font-size: 10px;
+      padding: 5px 10px;
+    }
+  
+    .modalLine {
+      width: 100%;
+      margin: 8px 0;
+    }
+  
+    /* 🔹 Centraliza o formulário e ajusta labels */
+    .inlineForm {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start; 
+      width: 100%;
+    }
+  
+    /* 🔹 Ajusta as labels */
+    .dependentLabel {
+      align-self: flex-start;
+      margin-bottom: 3px; 
+    }
+  
+    /* 🔹 Ajusta os inputs */
+    .input {
+      width: 100%;
+      font-size: 13px;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+  
+    /* 🔹 Ajusta a lista de dependentes */
+    .dependentsList {
+      padding: 0;
+    }
+  
+    /* 🔹 Centraliza os botões */
+    .modalActions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+    }
+  
+    .cancelButton, .saveButton {
+      width: 45%;
+      text-align: center;
+      font-size: 12px;
+    }
+  }

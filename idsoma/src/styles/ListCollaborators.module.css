@@ -1,5 +1,4 @@
 /* Contêiner principal */
-/* Contêiner principal */
 .container {
   padding: 20px;
   max-width: 1200px;
@@ -107,7 +106,7 @@
 .table th {
   font-size: 16px;
   color: #333;
-  position: sticky; /* Mantém o cabeçalho fixo ao rolar */
+  position: sticky;
   background-color: #ffffff;
   top: 0;
   z-index: 1;
@@ -153,22 +152,22 @@
 
   .header {
     display: flex;
-    flex-direction: column; /* 🔹 Deixa os itens em coluna */
+    flex-direction: column;
     align-items: flex-start;
     width: 100%;
-    gap: 10px; /* 🔹 Dá um espaçamento entre os elementos */
+    gap: 10px; 
   }
 
   .title {
     font-size: 18px;
-    margin-bottom: 5px; /* 🔹 Pequeno espaçamento abaixo do título */
+    margin-bottom: 5px; 
   }
 
   /* 🔹 Agrupa a pesquisa + botão */
   .headerContent {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* 🔹 Alinha à direita */
+    align-items: flex-end; 
     width: 100%;
   }
 
@@ -189,8 +188,8 @@
     font-size: 12px;
     font-weight: bold;
     padding: 8px 15px;
-    margin-top: 5px; /* 🔹 Espaço entre pesquisa e botão */
-    align-self: flex-end; /* 🔹 Alinha corretamente na direita */
+    margin-top: 5px;
+    align-self: flex-end;
   }
 
   .tableContainer {
