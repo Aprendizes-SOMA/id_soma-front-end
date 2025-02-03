@@ -1,4 +1,5 @@
 /* Contêiner principal */
+/* Contêiner principal */
 .container {
   padding: 20px;
   max-width: 1200px;
@@ -137,6 +138,79 @@
 }
 
 .icon {
-  width: 23px; 
-  height: 20px;
+  width: 24px; 
+  height: 17px;
+}
+
+/* ========================= RESPONSIVIDADE (MOBILE) ========================= */
+
+
+/* Contêiner do Input com Ícone */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column; /* 🔹 Deixa os itens em coluna */
+    align-items: flex-start;
+    width: 100%;
+    gap: 10px; /* 🔹 Dá um espaçamento entre os elementos */
+  }
+
+  .title {
+    font-size: 18px;
+    margin-bottom: 5px; /* 🔹 Pequeno espaçamento abaixo do título */
+  }
+
+  /* 🔹 Agrupa a pesquisa + botão */
+  .headerContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* 🔹 Alinha à direita */
+    width: 100%;
+  }
+
+  /* 🔹 Ajusta a pesquisa */
+  .searchInputContainer {
+    width: 100%;
+    max-width: 150px;
+  }
+
+  .searchInput {
+    font-size: 13px;
+    padding: 8px 8px 8px 35px;
+  }
+
+  /* 🔹 Mantém o botão abaixo da pesquisa e alinhado corretamente */
+  .addButton {
+    max-width: 150px;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 8px 15px;
+    margin-top: 5px; /* 🔹 Espaço entre pesquisa e botão */
+    align-self: flex-end; /* 🔹 Alinha corretamente na direita */
+  }
+
+  .tableContainer {
+    overflow-x: auto;
+  }
+
+  .table th{
+    font-size: 12px;
+  }
+  .table td {
+    font-size: 10px;
+    padding: 10px;
+  }
+
+  .dependentsActions {
+    gap: 3px;
+  }
+
+  .icon {
+    width: 15px;
+    height: 14px;
+  }
 }

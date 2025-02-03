@@ -137,7 +137,7 @@ export default function ListCollaborators() {
           </div>
         </div>
         <button className={styles.addButton} onClick={handleAddClick}>
-          ADICIONAR NOVO COLABORADOR
+          Adicionar Colaborador
         </button>
       </div>
 
