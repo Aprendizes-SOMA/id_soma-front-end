@@ -36,7 +36,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     }
   }, [isOpen, initialDependents]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -124,14 +124,16 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
               className={styles.input}
             />
             <label>Parentesco:</label>
-            <input
-              type="text"
+            <select
               name="relationship"
               value={formData.relationship}
               onChange={handleChange}
-              placeholder="Parentesco:"
               className={styles.input}
-            />
+            >
+              <option value="">Selecione</option>
+              <option value="Filho(a)">Filho(a)</option>
+              <option value="Cônjuge">Cônjuge</option>
+            </select>
           </div>
         )}
 
@@ -166,7 +168,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
           <button className={styles.cancelButton} onClick={onClose}>
             VOLTAR
           </button>
-          {/* 🔹 Botão "SALVAR" só aparece quando showForm está ativo */}
           {showForm && (
             <button className={styles.saveButton} onClick={handleAddOrEditDependent}>
               SALVAR
@@ -174,17 +175,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
           )}
         </div>
       </div>
-
-      {/* Modal de Exclusão */}
-      {isDeleteModalOpen && (
-        <ModalDe
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onDelete={handleConfirmDelete}
-          title="Confirmar Exclusão"
-          message={`Tem certeza que deseja excluir o dependente "${selectedDependent?.name}"? Esta ação não pode ser desfeita.`}
-        />
-      )}
     </div>
   );
 };
