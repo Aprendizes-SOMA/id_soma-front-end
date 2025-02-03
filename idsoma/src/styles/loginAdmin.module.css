@@ -93,9 +93,6 @@
     flex-direction: column;
 }
 
-.filed img {
-  
-}
 
 @media (max-width: 768px) {
   .title {
