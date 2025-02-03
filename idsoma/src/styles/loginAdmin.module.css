@@ -93,6 +93,10 @@
     flex-direction: column;
 }
 
+.filed img {
+  
+}
+
 @media (max-width: 768px) {
   .title {
       font-size: 20px;
