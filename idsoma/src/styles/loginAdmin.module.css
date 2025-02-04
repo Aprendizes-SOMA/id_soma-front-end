@@ -1,55 +1,107 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #fff;
-    font-family: Arial, sans-serif;
-  }
-  
-  
-  .logo {
-    width: 100%;
-    height: 200px; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: -70px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  font-family: Arial, sans-serif;
+}
 
-  
-  .logo img {
-    width: 100%;
-    height: 43%;
-    object-fit: contain;
-  }
-  
-  
+.logo {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: -70px;
+}
+
+.logo img {
+  width: 100%;
+  height: 43%;
+  object-fit: contain;
+}
+
+.title {
+  font-size: 23px;
+  font-weight: bolder;
+  text-align: center;
+  color: #000000;
+  margin-bottom: 0px;
+}
+
+.subtitle {
+  font-size: 13.5px;
+  color: #000;
+  margin-bottom: 130px;
+  font-weight: lighter;
+}
+
+.field {
+  width: 200%;
+  max-width: 400px; /* Defina um valor adequado */
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #000;
+  border-radius: 4px;
+  font-size: 15px;
+  height: 38px;
+  width: 100%;
+  max-width: 500px; /* Ajuste conforme necessário */
+}
+
+.button {
+  padding: 10px;
+  background-color: orange;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 17px;
+  cursor: pointer;
+  width: 130px;
+  margin-top: 30px;
+}
+
+.button:hover {
+  background-color: darkorange;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: lighter;
+  color: #000;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.field {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
   .title {
-    font-size: 23px;
-    font-weight: bolder;
-    text-align: center;
-    color: #000000;
-    margin-bottom: 0px;    
-  }
-  
-  .subtitle {
-    font-size: 13.5px;
-    color: #000;
-    margin-bottom: 130px;
-    font-weight: lighter;
+    font-size: 20px;
   }
 
-  .field {
-    max-width: 100vw;
-    width: 200%; 
+  .subtitle {
+    font-size: 14px;
+    margin-bottom: 30px;
   }
-  
-  .form {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
+
+  .logo img {
+    width: 70%;
   }
-  
+
   .input {
     margin-bottom: 15px;
     padding: 10px;
@@ -57,87 +109,36 @@
     border-radius: 4px;
     font-size: 15px;
     height: 38px;
-    
-  }
-  
-  .button {
-    padding: 10px;
-    background-color: orange;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 17px;
-    cursor: pointer;
-    width: 130px;
-    margin-top: 40px;
-
-  }
-
-  
-  .button:hover {
-    background-color: darkorange;
-  }
-  
-  .label {
-    font-size: 14px;
-    font-weight: lighter; 
-    color: #000; 
-    margin-bottom: 10px; 
-    display: block; 
-
-  }
-  
-  .field {
-    margin-bottom: 20px; 
-    display: flex;
-    flex-direction: column;
-}
-
-
-@media (max-width: 768px) {
-  .title {
-      font-size: 20px;
-  }
-
-  .subtitle {
-      font-size: 14px;
-      margin-bottom: 30px;
-  }
-
-  .logo img {
-      width: 70%;
-  }
-
-  .input {
-      font-size: 14px;
+    width: 100%;
+    max-width: 300px; /* Ajuste conforme necessário */
   }
 
   .button {
-      font-size: 15px;
-      padding: 12px;
+    font-size: 15px;
+    padding: 12px;
   }
 }
 
 @media (max-width: 425px) {
   .title {
-      font-size: 18px;
+    font-size: 18px;
   }
 
   .subtitle {
-      font-size: 13px;
-      margin-bottom: 150px;
+    font-size: 13px;
+    margin-bottom: 150px;
   }
 
   .logo img {
-      width: 60%;
+    width: 60%;
   }
 
   .input {
-      font-size: 11px;
+    font-size: 11px;
   }
 
   .button {
-      font-size: 14px;
-      padding: 9px;
+    font-size: 14px;
+    padding: 9px;
   }
 }

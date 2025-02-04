@@ -68,10 +68,11 @@ const LoginAdmin = () => {
               style={{
                 position: "absolute",
                 right: "10px",
-                top: "55%",
+                top: "50%",
                 transform: "translateY(-50%)",
                 cursor: "pointer",
                 width: "20px",
+
               }}
               onClick={() => setShowPassword(!showPassword)}
             />
