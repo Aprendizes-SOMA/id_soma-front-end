@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // Para navegação
 import ModalCollaborator from "../../components/ModalCollaborator";
 import ModalDependents from "../../components/ModalDependents";
 import DeleteModal from "../../components/ModalDe";
@@ -21,6 +22,7 @@ interface Collaborator {
 }
 
 export default function ListCollaborators() {
+  const router = useRouter();
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,6 +38,12 @@ export default function ListCollaborators() {
   });
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
   const [editMode, setEditMode] = useState(false);
+
+  // Função de logout
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove o token do localStorage
+    router.push("/loginAdmin"); // Redireciona para a tela de login
+  };
 
   const handleAddCollaborator = (data: { name: string; cpf: string; role: string }) => {
     const newId = collaborators.length + 1;
@@ -123,6 +131,9 @@ export default function ListCollaborators() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
+        <button onClick={handleLogout} className={styles.iconButton}>
+          <img src="/logout.png" alt="Logout" className={styles.logout} />
+        </button>
         <h1 className={styles.title}>Lista de Colaboradores</h1>
         <div className={styles.searchBar}>
           <div className={styles.searchInputContainer}>
