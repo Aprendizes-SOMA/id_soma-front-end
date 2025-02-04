@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import styles from "../../styles/loginAdmin.module.css";
 import { useRouter } from "next/navigation";
-import { loginAdmin } from "../api/admin/auth";
+import { loginAdmin } from "@/app/api/admin/auth";
 
 const LoginAdmin = () => {
   const router = useRouter();
@@ -15,16 +15,12 @@ const LoginAdmin = () => {
     event.preventDefault();
 
     try {
-      // Chama o endpoint de login no backend
       const response = await loginAdmin({ username, password });
 
-      // Salva o token JWT no localStorage
       localStorage.setItem("token", response.token);
 
-      // Redireciona para a página de listagem de colaboradores
       router.push("/listCollaborators");
     } catch (error) {
-      // Exibe mensagem de erro caso as credenciais sejam inválidas
       setErrorMessage("Usuário ou senha inválidos!");
     }
   };
