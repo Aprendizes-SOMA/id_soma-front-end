@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import styles from "../../styles/loginAdmin.module.css";
 import { useRouter } from "next/navigation";
-import { loginAdmin } from "@/app/api/admin/auth";
+import { loginAdmin } from "@/app/api/admin/index";
 
 const LoginAdmin = () => {
   const router = useRouter();
