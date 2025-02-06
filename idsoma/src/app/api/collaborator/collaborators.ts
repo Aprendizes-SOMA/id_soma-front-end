@@ -22,7 +22,7 @@ export const listCollaborators = async () => {
   }
 };
 
-export const updateCollaborator = async (id: number, data: { name?: string; CPF?: string; role?: string }) => {
+export const updateCollaborator = async (id: number, data: { name?: string; cpf?: string; role?: string }) => {
   try {
     const response = await axiosInstance.put(`/collaborator/${id}`, data);
     return response.data;

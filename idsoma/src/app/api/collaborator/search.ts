@@ -12,10 +12,10 @@ export const listCollaboratorsByName = async (name: string) => {
   }
 };
 
-export const listCollaboratorsByCPF = async (CPF: string) => {
+export const listCollaboratorsByCPF = async (cpf: string) => {
   try {
     const response = await axiosInstance.get('/collaborator/search-cpf', {
-      params: { CPF },
+      params: { cpf },
     });
     return response.data;
   } catch (error) {

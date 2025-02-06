@@ -66,7 +66,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
 
     setLoading(true);
     try {
-      await onSave(formData);
+      await onSave(formData); 
       alert("Operação realizada com sucesso!");
       onClose();
     } catch (error) {
@@ -83,7 +83,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <h2 className={styles.modalTitle}>{title}</h2>
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
           <label>Nome:</label>
           <input
             type="text"
@@ -92,7 +92,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             onChange={handleChange}
             className={styles.input}
             placeholder="Informe o nome do colaborador"
-            disabled={loading}  // Desativa o campo enquanto está carregando
+            disabled={loading}
           />
           <label>CPF:</label>
           <input
@@ -119,7 +119,11 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
           <button className={styles.cancelButton} onClick={onClose} disabled={loading}>
             Cancelar
           </button>
-          <button className={styles.saveButton} onClick={handleSubmit} disabled={loading}>
+          <button
+            className={styles.saveButton}
+            onClick={handleSubmit}
+            disabled={loading}
+          >
             {loading ? "Salvando..." : "Salvar"}
           </button>
         </div>

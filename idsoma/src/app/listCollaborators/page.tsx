@@ -6,7 +6,7 @@ import ModalCollaborator from "../../components/ModalCollaborator";
 import ModalDependents from "../../components/ModalDependents";
 import DeleteModal from "../../components/ModalDe";
 import styles from "../../styles/ListCollaborators.module.css";
-import { addCollaborator, listCollaborators, updateCollaborator } from "../api/collaborator/collaborators";
+import { addCollaborator, listCollaborators, updateCollaborator, deleteCollaborator } from "../api/collaborator/collaborators";
 import { logoutAdmin } from "../api/admin/auth";
 import axios from "axios";
 
@@ -41,7 +41,7 @@ export default function ListCollaborators() {
   });
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
   const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState(false);  // Estado de carregamento
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCollaborators = async () => {
@@ -69,21 +69,20 @@ export default function ListCollaborators() {
     try {
       setLoading(true);
       console.log("Enviando dados do colaborador:", data);
-  
+
       const newCollaborator = await addCollaborator({
         name: data.name,
         cpf: data.cpf,
         role: data.role,
         adminId: 3,
       });
-  
+
       console.log("Colaborador adicionado com sucesso:", newCollaborator);
-  
       setCollaborators((prev) => [...prev, { ...newCollaborator, dependents: [] }]);
       alert("Colaborador adicionado com sucesso!");
+      setIsModalOpen(false);
     } catch (error: any) {
       console.error("Erro ao adicionar colaborador:", error);
-  
       if (error.response && error.response.data) {
         alert(`Erro: ${error.response.data.message || "Erro desconhecido"}`);
       } else {
@@ -91,18 +90,20 @@ export default function ListCollaborators() {
       }
     } finally {
       setLoading(false);
-      setIsModalOpen(false);
     }
   };
-  
+
   const handleEditCollaborator = async (data: { name: string; cpf: string; role: string }) => {
     if (!selectedCollaborator) return;
 
-    setIsModalOpen(true);
     setLoading(true);
 
     try {
-      const updatedCollaborator = await updateCollaborator(selectedCollaborator.id, data);
+      const updatedCollaborator = await updateCollaborator(selectedCollaborator.id, {
+        name: data.name,
+        cpf: data.cpf,
+        role: data.role,
+      });
 
       setCollaborators((prev) =>
         prev.map((collaborator) =>
@@ -111,27 +112,37 @@ export default function ListCollaborators() {
       );
 
       alert("Colaborador atualizado com sucesso!");
+      setIsModalOpen(false);
     } catch (error: any) {
       console.error("Erro ao editar colaborador:", error);
       alert(`Erro ao editar colaborador: ${error.response?.data?.message || "Erro desconhecido."}`);
     } finally {
       setLoading(false);
-      setIsModalOpen(false);
     }
   };
 
   const handleConfirmDelete = async () => {
     if (!selectedCollaborator) return;
+  
     try {
-      await axios.delete(`https://id-soma.onrender.com/collaborator/${selectedCollaborator.id}`);
+      await deleteCollaborator(selectedCollaborator.id);
+  
       setCollaborators((prev) => prev.filter((c) => c.id !== selectedCollaborator.id));
+  
+      alert("Colaborador excluído com sucesso!");
       setSelectedCollaborator(null);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao excluir colaborador:", error);
-      alert("Erro ao excluir colaborador.");
+  
+      if (error.response && error.response.data) {
+        alert(`Erro ao excluir colaborador: ${error.response.data.error || "Erro desconhecido."}`);
+      } else {
+        alert("Erro ao excluir colaborador. Por favor, tente novamente.");
+      }
+    } finally {
+      setIsDeleteModalOpen(false);
     }
-    setIsDeleteModalOpen(false);
-  };
+  };  
 
   const handleSaveDependents = (updatedDependents: Dependent[]) => {
     if (!selectedCollaborator) return;
