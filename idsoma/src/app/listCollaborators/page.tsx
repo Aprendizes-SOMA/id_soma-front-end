@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Para navegação
+import { useRouter } from "next/navigation";
 import ModalCollaborator from "../../components/ModalCollaborator";
 import ModalDependents from "../../components/ModalDependents";
 import DeleteModal from "../../components/ModalDe";
 import styles from "../../styles/ListCollaborators.module.css";
+import { addCollaborator, listCollaborators, updateCollaborator } from "../api/collaborator/collaborators";
+import { logoutAdmin } from "../api/admin/auth";
+import axios from "axios";
 
 interface Dependent {
   id: number;
@@ -39,25 +42,83 @@ export default function ListCollaborators() {
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
   const [editMode, setEditMode] = useState(false);
 
-  // Função de logout
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove o token do localStorage
-    router.push("/loginAdmin"); // Redireciona para a tela de login
+  useEffect(() => {
+    const fetchCollaborators = async () => {
+      try {
+        const data = await listCollaborators();
+        setCollaborators(data);
+      } catch (err) {
+        console.error("Erro ao buscar colaboradores:", err);
+      }
+    };
+
+    fetchCollaborators();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutAdmin();
+      router.push("/loginAdmin");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
   };
 
-  const handleAddCollaborator = (data: { name: string; cpf: string; role: string }) => {
-    const newId = collaborators.length + 1;
-    setCollaborators([...collaborators, { id: newId, ...data, dependents: [] }]);
-    setIsModalOpen(false);
-  };
+  const handleAddCollaborator = async (data: { name: string; cpf: string; role: string }) => {
+    try {
+      const newCollaborator = await addCollaborator({
+        name: data.name,
+        cpf: data.cpf,
+        cargo: data.role,
+        adminId: 3,
+      });
+  
+      setCollaborators((prev) => [...prev, { ...newCollaborator, dependents: [] }]);
+      alert("Colaborador adicionado com sucesso!");
+    } catch (error: any) {
+      console.error("Erro ao adicionar colaborador:", error);
+      if (error.response && error.response.data) {
+        alert(`Erro: ${error.response.data.message || "Erro desconhecido"}`);
+      } else {
+        alert("Erro ao adicionar colaborador. Por favor, tente novamente.");
+      }
+    } finally {
+      setIsModalOpen(false);
+    }
+  };  
 
-  const handleEditCollaborator = (data: { name: string; cpf: string; role: string }) => {
-    setCollaborators((prev) =>
-      prev.map((collaborator) =>
-        collaborator.id === formData.id ? { ...collaborator, ...data } : collaborator
-      )
-    );
+  const handleEditCollaborator = async (data: { name: string; cpf: string; role: string }) => {
+    if (!selectedCollaborator) return;
+  
+    try {
+      const updatedCollaborator = await updateCollaborator(selectedCollaborator.id, data);
+  
+      setCollaborators((prev) =>
+        prev.map((collaborator) =>
+          collaborator.id === selectedCollaborator.id ? updatedCollaborator : collaborator
+        )
+      );
+  
+      alert("Colaborador atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao editar colaborador:", error);
+      alert("Erro ao editar colaborador. Verifique os dados e tente novamente.");
+    }
+  
     setIsModalOpen(false);
+  };  
+  
+  const handleConfirmDelete = async () => {
+    if (!selectedCollaborator) return;
+    try {
+      await axios.delete(`https://id-soma.onrender.com/collaborator/${selectedCollaborator.id}`);
+      setCollaborators((prev) => prev.filter((c) => c.id !== selectedCollaborator.id));
+      setSelectedCollaborator(null);
+    } catch (error) {
+      console.error("Erro ao excluir colaborador:", error);
+      alert("Erro ao excluir colaborador.");
+    }
+    setIsDeleteModalOpen(false);
   };
 
   const handleSaveDependents = (updatedDependents: Dependent[]) => {
@@ -71,32 +132,6 @@ export default function ListCollaborators() {
     );
     setIsDependentsModalOpen(false);
   };
-
-  const handleConfirmDelete = () => {
-    if (!selectedCollaborator) return;
-    setCollaborators((prev) => prev.filter((c) => c.id !== selectedCollaborator.id));
-    setSelectedCollaborator(null);
-    setIsDeleteModalOpen(false);
-  };
-
-  useEffect(() => {
-    setCollaborators([
-      {
-        id: 1,
-        name: "Francisco Lima",
-        cpf: "11122233345",
-        role: "Coordenador",
-        dependents: [],
-      },
-      {
-        id: 2,
-        name: "Maria Silva",
-        cpf: "22233344456",
-        role: "Analista",
-        dependents: [],
-      },
-    ]);
-  }, []);
 
   const handleAddClick = () => {
     setModalTitle("Adicionar Colaborador");
@@ -114,13 +149,13 @@ export default function ListCollaborators() {
 
   const handleManageDependents = (collaborator: Collaborator) => {
     setSelectedCollaborator(collaborator);
-    setIsDeleteModalOpen(false); // Garante que o modal de exclusão está fechado
+    setIsDeleteModalOpen(false);
     setIsDependentsModalOpen(true);
   };
 
   const handleDeleteClick = (collaborator: Collaborator) => {
     setSelectedCollaborator(collaborator);
-    setIsDependentsModalOpen(false); // Garante que o modal de dependentes está fechado
+    setIsDependentsModalOpen(false);
     setIsDeleteModalOpen(true);
   };
 
@@ -207,7 +242,7 @@ export default function ListCollaborators() {
           isOpen={isDependentsModalOpen}
           onClose={() => setIsDependentsModalOpen(false)}
           onSave={handleSaveDependents}
-          initialDependents={selectedCollaborator.dependents}
+          initialDependents={selectedCollaborator.dependents ?? []}
         />
       )}
 

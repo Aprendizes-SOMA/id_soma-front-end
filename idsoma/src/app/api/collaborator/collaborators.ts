@@ -1,9 +1,10 @@
 import axiosInstance from '../axiosInstance';
 
-// Criar um novo colaborador
-export const addCollaborator = async (data: { name: string; CPF: string; adminId: number; cargo: string }) => {
+export const addCollaborator = async (data: { name: string; cpf: string; adminId: number; cargo: string }) => {
+  console.log("Enviando dados para a API:", data);
   try {
     const response = await axiosInstance.post('/collaborator', data);
+    console.log("Resposta recebida da API:", response.data);
     return response.data;
   } catch (error) {
     console.error('Erro ao adicionar colaborador:', error);
@@ -11,7 +12,6 @@ export const addCollaborator = async (data: { name: string; CPF: string; adminId
   }
 };
 
-// Listar todos os colaboradores
 export const listCollaborators = async () => {
   try {
     const response = await axiosInstance.get('/collaborator');
@@ -22,7 +22,6 @@ export const listCollaborators = async () => {
   }
 };
 
-// Atualizar um colaborador existente
 export const updateCollaborator = async (id: number, data: { name?: string; CPF?: string; cargo?: string }) => {
   try {
     const response = await axiosInstance.put(`/collaborator/${id}`, data);
@@ -33,7 +32,6 @@ export const updateCollaborator = async (id: number, data: { name?: string; CPF?
   }
 };
 
-// Excluir um colaborador
 export const deleteCollaborator = async (id: number) => {
   try {
     const response = await axiosInstance.delete(`/collaborator/${id}`);
@@ -44,7 +42,6 @@ export const deleteCollaborator = async (id: number) => {
   }
 };
 
-// Obter um colaborador pelo ID
 export const getCollaboratorById = async (id: number) => {
   try {
     const response = await axiosInstance.get(`/collaborator/${id}`);

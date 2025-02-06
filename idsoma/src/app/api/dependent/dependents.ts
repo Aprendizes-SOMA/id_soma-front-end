@@ -1,6 +1,5 @@
 import axiosInstance from '../axiosInstance';
 
-// Criar um novo dependente
 export const addDependent = async (data: { name: string; parentesco: string; collaboratorId: number; adminId: number }) => {
   try {
     const response = await axiosInstance.post('/dependent', data);
@@ -11,7 +10,6 @@ export const addDependent = async (data: { name: string; parentesco: string; col
   }
 };
 
-// Listar todos os dependentes
 export const listDependents = async () => {
   try {
     const response = await axiosInstance.get('/dependent');
@@ -22,7 +20,6 @@ export const listDependents = async () => {
   }
 };
 
-// Atualizar um dependente existente
 export const updateDependent = async (id: number, data: { name?: string; parentesco?: string }) => {
   try {
     const response = await axiosInstance.put(`/dependent/${id}`, data);
@@ -33,7 +30,6 @@ export const updateDependent = async (id: number, data: { name?: string; parente
   }
 };
 
-// Excluir um dependente
 export const deleteDependent = async (id: number) => {
   try {
     const response = await axiosInstance.delete(`/dependent/${id}`);

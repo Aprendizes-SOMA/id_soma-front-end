@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import styles from "../styles/components/Modal.module.css";
+import axios from "axios";
 
 interface ModalCollaboratorProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: { name: string; cpf: string; role: string }) => void;
+  onSave: (data: { name: string; cpf: string; role: string }) => Promise<void>;
   title: string;
   initialData?: { name: string; cpf: string; role: string };
 }
@@ -19,11 +20,15 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
   initialData = { name: "", cpf: "", role: "" },
 }) => {
   const [formData, setFormData] = useState(initialData);
+  const [loading, setLoading] = useState(false);
 
-  // Reset do formulário ao abrir o modal
   useEffect(() => {
     if (isOpen) {
-      setFormData(title === "Adicionar Colaborador" ? { name: "", cpf: "", role: "" } : initialData);
+      setFormData(
+        title === "Adicionar Colaborador"
+          ? { name: "", cpf: "", role: "" }
+          : initialData
+      );
     }
   }, [isOpen, title, initialData]);
 
@@ -32,9 +37,45 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = () => {
-    onSave(formData);
-    onClose();
+  const validateForm = () => {
+    if (!formData.name.trim() || !formData.cpf.trim() || !formData.role.trim()) {
+      alert("Por favor, preencha todos os campos.");
+      return false;
+    }
+
+    if (formData.name.length < 3) {
+      alert("O nome deve ter pelo menos 3 caracteres.");
+      return false;
+    }
+
+    if (formData.role.length < 2) {
+      alert("O cargo deve ter pelo menos 2 caracteres.");
+      return false;
+    }
+
+    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+    if (!cpfRegex.test(formData.cpf)) {
+      alert("CPF inválido. O formato deve ser 000.000.000-00.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+
+    setLoading(true);
+    try {
+      await onSave(formData);
+      alert("Colaborador salvo com sucesso!");
+      onClose();
+    } catch (error) {
+      console.error("Erro ao salvar colaborador:", error);
+      alert("Erro ao salvar colaborador. Por favor, tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -52,6 +93,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             onChange={handleChange}
             className={styles.input}
             placeholder="Informe o nome do colaborador:"
+            disabled={loading}
           />
           <label>CPF:</label>
           <input
@@ -61,6 +103,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             onChange={handleChange}
             className={styles.input}
             placeholder="Informe o CPF do colaborador:"
+            disabled={loading}
           />
           <label>Cargo:</label>
           <input
@@ -70,14 +113,15 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             onChange={handleChange}
             className={styles.input}
             placeholder="Informe o cargo do colaborador:"
+            disabled={loading}
           />
         </form>
         <div className={styles.modalActions}>
-          <button className={styles.cancelButton} onClick={onClose}>
+          <button className={styles.cancelButton} onClick={onClose} disabled={loading}>
             Cancelar
           </button>
-          <button className={styles.saveButton} onClick={handleSubmit}>
-            Salvar
+          <button className={styles.saveButton} onClick={handleSubmit} disabled={loading}>
+            {loading ? "Salvando..." : "Salvar"}
           </button>
         </div>
       </div>

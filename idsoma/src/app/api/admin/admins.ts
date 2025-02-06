@@ -1,6 +1,5 @@
 import axiosInstance from '../axiosInstance';
 
-// Criar um novo admin
 export const addAdmin = async (data: { username: string; password: string }) => {
   try {
     const response = await axiosInstance.post('/admin', data);
@@ -11,7 +10,6 @@ export const addAdmin = async (data: { username: string; password: string }) => 
   }
 };
 
-// Atualizar um admin existente
 export const updateAdmin = async (id: number, data: { username?: string; password?: string }) => {
   try {
     const response = await axiosInstance.put(`/admin/${id}`, data);
@@ -22,7 +20,6 @@ export const updateAdmin = async (id: number, data: { username?: string; passwor
   }
 };
 
-// Listar todos os admins
 export const listAdmins = async () => {
   try {
     const response = await axiosInstance.get('/admin');
@@ -33,7 +30,6 @@ export const listAdmins = async () => {
   }
 };
 
-// Excluir um admin
 export const deleteAdmin = async (id: number) => {
   try {
     const response = await axiosInstance.delete(`/admin/${id}`);

@@ -15,12 +15,10 @@ const LoginAdmin = () => {
     event.preventDefault();
 
     try {
-      const response = await loginAdmin({ username, password });
-
-      localStorage.setItem("token", response.token);
-
+      await loginAdmin({ username, password });
       router.push("/listCollaborators");
     } catch (error) {
+      console.error("Erro no login:", error);
       setErrorMessage("Usuário ou senha inválidos!");
     }
   };
@@ -49,34 +47,31 @@ const LoginAdmin = () => {
         </div>
 
         <div className={styles.field} style={{ position: "relative" }}>
-          <div className={styles.field}>
-            <label htmlFor="password" className={styles.label}>
-              Senha
-            </label>
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Digite sua senha"
-              className={styles.input}
-              required
-            />
-            <img
-              src="/versenha.png"
-              alt="Mostrar senha"
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                width: "20px",
-
-              }}
-              onClick={() => setShowPassword(!showPassword)}
-            />
-          </div>
+          <label htmlFor="password" className={styles.label}>
+            Senha
+          </label>
+          <input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Digite sua senha"
+            className={styles.input}
+            required
+          />
+          <img
+            src="/versenha.png"
+            alt="Mostrar senha"
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              width: "20px",
+            }}
+            onClick={() => setShowPassword(!showPassword)}
+          />
         </div>
 
         {errorMessage && <p className={styles.error}>{errorMessage}</p>}
