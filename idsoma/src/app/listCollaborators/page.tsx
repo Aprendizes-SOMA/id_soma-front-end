@@ -41,6 +41,7 @@ export default function ListCollaborators() {
   });
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(false);  // Estado de carregamento
 
   useEffect(() => {
     const fetchCollaborators = async () => {
@@ -66,48 +67,59 @@ export default function ListCollaborators() {
 
   const handleAddCollaborator = async (data: { name: string; cpf: string; role: string }) => {
     try {
+      setLoading(true);
+      console.log("Enviando dados do colaborador:", data);
+  
       const newCollaborator = await addCollaborator({
         name: data.name,
         cpf: data.cpf,
-        cargo: data.role,
+        role: data.role,
         adminId: 3,
       });
+  
+      console.log("Colaborador adicionado com sucesso:", newCollaborator);
   
       setCollaborators((prev) => [...prev, { ...newCollaborator, dependents: [] }]);
       alert("Colaborador adicionado com sucesso!");
     } catch (error: any) {
       console.error("Erro ao adicionar colaborador:", error);
+  
       if (error.response && error.response.data) {
         alert(`Erro: ${error.response.data.message || "Erro desconhecido"}`);
       } else {
         alert("Erro ao adicionar colaborador. Por favor, tente novamente.");
       }
     } finally {
+      setLoading(false);
       setIsModalOpen(false);
     }
-  };  
-
+  };
+  
   const handleEditCollaborator = async (data: { name: string; cpf: string; role: string }) => {
     if (!selectedCollaborator) return;
-  
+
+    setIsModalOpen(true);
+    setLoading(true);
+
     try {
       const updatedCollaborator = await updateCollaborator(selectedCollaborator.id, data);
-  
+
       setCollaborators((prev) =>
         prev.map((collaborator) =>
           collaborator.id === selectedCollaborator.id ? updatedCollaborator : collaborator
         )
       );
-  
+
       alert("Colaborador atualizado com sucesso!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao editar colaborador:", error);
-      alert("Erro ao editar colaborador. Verifique os dados e tente novamente.");
+      alert(`Erro ao editar colaborador: ${error.response?.data?.message || "Erro desconhecido."}`);
+    } finally {
+      setLoading(false);
+      setIsModalOpen(false);
     }
-  
-    setIsModalOpen(false);
-  };  
-  
+  };
+
   const handleConfirmDelete = async () => {
     if (!selectedCollaborator) return;
     try {

@@ -1,6 +1,6 @@
 import axiosInstance from '../axiosInstance';
 
-export const addCollaborator = async (data: { name: string; cpf: string; adminId: number; cargo: string }) => {
+export const addCollaborator = async (data: { name: string; cpf: string; adminId: number; role: string }) => {
   console.log("Enviando dados para a API:", data);
   try {
     const response = await axiosInstance.post('/collaborator', data);
@@ -22,7 +22,7 @@ export const listCollaborators = async () => {
   }
 };
 
-export const updateCollaborator = async (id: number, data: { name?: string; CPF?: string; cargo?: string }) => {
+export const updateCollaborator = async (id: number, data: { name?: string; CPF?: string; role?: string }) => {
   try {
     const response = await axiosInstance.put(`/collaborator/${id}`, data);
     return response.data;

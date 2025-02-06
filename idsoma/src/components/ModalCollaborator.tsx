@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import styles from "../styles/components/Modal.module.css";
-import axios from "axios";
 
 interface ModalCollaboratorProps {
   isOpen: boolean;
@@ -68,7 +67,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
     setLoading(true);
     try {
       await onSave(formData);
-      alert("Colaborador salvo com sucesso!");
+      alert("Operação realizada com sucesso!");
       onClose();
     } catch (error) {
       console.error("Erro ao salvar colaborador:", error);
@@ -92,8 +91,8 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             value={formData.name}
             onChange={handleChange}
             className={styles.input}
-            placeholder="Informe o nome do colaborador:"
-            disabled={loading}
+            placeholder="Informe o nome do colaborador"
+            disabled={loading}  // Desativa o campo enquanto está carregando
           />
           <label>CPF:</label>
           <input
@@ -102,7 +101,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             value={formData.cpf}
             onChange={handleChange}
             className={styles.input}
-            placeholder="Informe o CPF do colaborador:"
+            placeholder="Informe o CPF do colaborador"
             disabled={loading}
           />
           <label>Cargo:</label>
@@ -112,7 +111,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             value={formData.role}
             onChange={handleChange}
             className={styles.input}
-            placeholder="Informe o cargo do colaborador:"
+            placeholder="Informe o cargo do colaborador"
             disabled={loading}
           />
         </form>
