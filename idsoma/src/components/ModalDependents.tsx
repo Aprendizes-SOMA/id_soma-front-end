@@ -1,8 +1,7 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import styles from "../styles/components/ModalDependents.module.css";
-import ModalDe from "@/components/ModalDe";
+import DeleteModal from "@/components/ModalDe";
 
 interface Dependent {
   id: number;
@@ -27,8 +26,12 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: "", relationship: "" });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedDependent, setSelectedDependent] = useState<Dependent | null>(null);
-  const [editingDependent, setEditingDependent] = useState<Dependent | null>(null);
+  const [selectedDependent, setSelectedDependent] = useState<Dependent | null>(
+    null
+  );
+  const [editingDependent, setEditingDependent] = useState<Dependent | null>(
+    null
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -36,7 +39,9 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     }
   }, [isOpen, initialDependents]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -53,7 +58,8 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
       setEditingDependent(null);
     } else {
       const newDependent: Dependent = {
-        id: dependents.length > 0 ? dependents[dependents.length - 1].id + 1 : 1,
+        id:
+          dependents.length > 0 ? dependents[dependents.length - 1].id + 1 : 1,
         name: formData.name,
         relationship: formData.relationship,
       };
@@ -61,17 +67,13 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     }
 
     setFormData({ name: "", relationship: "" });
-    setShowForm(false); // Oculta o formulário após salvar
+    setShowForm(false);
   };
 
   const handleEditClick = (dependent: Dependent) => {
     setEditingDependent(dependent);
     setFormData({ name: dependent.name, relationship: dependent.relationship });
     setShowForm(true);
-  };
-
-  const handleDeleteDependent = (id: number) => {
-    setDependents((prev) => prev.filter((dependent) => dependent.id !== id));
   };
 
   const handleOpenDeleteModal = (dependent: Dependent) => {
@@ -105,7 +107,10 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Lista de Dependentes</h2>
-          <button className={styles.addDependentButton} onClick={() => setShowForm(true)}>
+          <button
+            className={styles.addDependentButton}
+            onClick={() => setShowForm(true)}
+          >
             ADICIONAR DEPENDENTE
           </button>
         </div>
@@ -144,19 +149,39 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
               <div className={styles.dependentInfo}>
                 <span>
                   <span className={styles.dependentLabel}>Nome:</span>
-                  <span className={styles.dependentValue}> {dependent.name}</span>
+                  <span className={styles.dependentValue}>
+                    {" "}
+                    {dependent.name}
+                  </span>
                 </span>
                 <span>
                   <span className={styles.dependentLabel}>Parentesco:</span>
-                  <span className={styles.dependentValue}> {dependent.relationship}</span>
+                  <span className={styles.dependentValue}>
+                    {" "}
+                    {dependent.relationship}
+                  </span>
                 </span>
               </div>
               <div className={styles.actionButtons}>
-                <button onClick={() => handleEditClick(dependent)} className={styles.iconButton}>
-                  <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
+                <button
+                  onClick={() => handleEditClick(dependent)}
+                  className={styles.iconButton}
+                >
+                  <img
+                    src="/icon-edit.png"
+                    alt="Editar"
+                    className={styles.icon}
+                  />
                 </button>
-                <button onClick={() => handleOpenDeleteModal(dependent)} className={styles.iconButton}>
-                  <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
+                <button
+                  onClick={() => handleOpenDeleteModal(dependent)}
+                  className={styles.iconButton}
+                >
+                  <img
+                    src="/icon-delete.png"
+                    alt="Excluir"
+                    className={styles.icon}
+                  />
                 </button>
               </div>
             </li>
@@ -169,11 +194,25 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
             VOLTAR
           </button>
           {showForm && (
-            <button className={styles.saveButton} onClick={handleAddOrEditDependent}>
+            <button
+              className={styles.saveButton}
+              onClick={handleAddOrEditDependent}
+            >
               SALVAR
             </button>
           )}
         </div>
+
+        {/* DeleteModal */}
+        {isDeleteModalOpen && selectedDependent && (
+          <DeleteModal
+            isOpen={isDeleteModalOpen}
+            onClose={handleCloseDeleteModal}
+            onDelete={handleConfirmDelete}
+            title="Confirmar Exclusão"
+            message={`Tem certeza que deseja excluir o dependente "${selectedDependent.name}"? Essa ação é permanente.`}
+          />
+        )}
       </div>
     </div>
   );
