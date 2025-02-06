@@ -136,7 +136,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
               className={styles.input}
             >
               <option value="">Selecione</option>
-              <option value="Filho(a)">Filho(a)</option>
+              <option value="Filho(a)">Filho(a) ou enteado(a)</option>
               <option value="Cônjuge">Cônjuge</option>
             </select>
           </div>
