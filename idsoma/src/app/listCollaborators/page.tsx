@@ -96,22 +96,25 @@ export default function ListCollaborators() {
 
   const handleEditCollaborator = async (data: { name: string; cpf: string; role: string }) => {
     if (!selectedCollaborator) return;
-
+  
     setLoading(true);
-
+    console.log("Enviando atualização para o backend:", data);
+  
     try {
       const updatedCollaborator = await updateCollaborator(selectedCollaborator.id, {
         name: data.name,
-        cpf: data.cpf,
-        role: data.role,
+        cpf: data.cpf,  
+        role: data.role
       });
-
+  
+      console.log("Resposta do backend:", updatedCollaborator);
+  
       setCollaborators((prev) =>
         prev.map((collaborator) =>
           collaborator.id === selectedCollaborator.id ? updatedCollaborator : collaborator
         )
       );
-
+  
       alert("Colaborador atualizado com sucesso!");
       setIsModalOpen(false);
     } catch (error: any) {
@@ -121,6 +124,7 @@ export default function ListCollaborators() {
       setLoading(false);
     }
   };
+  
 
   const handleConfirmDelete = async () => {
     if (!selectedCollaborator) return;
@@ -193,10 +197,20 @@ export default function ListCollaborators() {
 
   const handleEditClick = (collaborator: Collaborator) => {
     setModalTitle("Editar Colaborador");
-    setFormData(collaborator);
+  
+    setFormData({
+      id: collaborator.id,
+      name: collaborator.name || "", 
+      cpf: collaborator.cpf || "",  
+      role: collaborator.role || "", 
+      dependents: collaborator.dependents || [],
+    });
+  
+    setSelectedCollaborator(collaborator);
     setEditMode(true);
     setIsModalOpen(true);
   };
+  
 
   const handleManageDependents = async (collaborator: Collaborator) => {
     try {
