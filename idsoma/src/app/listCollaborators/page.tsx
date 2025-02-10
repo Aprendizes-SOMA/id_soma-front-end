@@ -8,12 +8,13 @@ import DeleteModal from "../../components/ModalDe";
 import styles from "../../styles/ListCollaborators.module.css";
 import { addCollaborator, listCollaborators, updateCollaborator, deleteCollaborator } from "../api/collaborator/collaborators";
 import { logoutAdmin } from "../api/admin/auth";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 interface Dependent {
-  id: number;
+  collaboratorId: number;
+  id?: number;
   name: string;
-  relationship: string;
+  parentesco: string;
 }
 
 interface Collaborator {
@@ -144,17 +145,44 @@ export default function ListCollaborators() {
     }
   };  
 
-  const handleSaveDependents = (updatedDependents: Dependent[]) => {
+  const handleSaveDependents = async (updatedDependents: Dependent[]) => {
     if (!selectedCollaborator) return;
-    setCollaborators((prev) =>
-      prev.map((collaborator) =>
-        collaborator.id === selectedCollaborator.id
-          ? { ...collaborator, dependents: updatedDependents }
-          : collaborator
-      )
-    );
-    setIsDependentsModalOpen(false);
-  };
+  
+    try {
+      const promises = updatedDependents.map((dependent) => {
+        if (dependent.id) {
+          return axiosInstance.put(`/dependents/${dependent.id}`, {
+            name: dependent.name,
+            parentesco: dependent.parentesco,
+          });
+        } else {
+          return axiosInstance.post(`/dependents`, {
+            name: dependent.name,
+            parentesco: dependent.parentesco,
+            collaboratorId: selectedCollaborator.id,
+            adminId: 3,
+          });
+        }
+      });
+  
+      const results = await Promise.all(promises);
+  
+      setCollaborators((prev) =>
+        prev.map((collaborator) =>
+          collaborator.id === selectedCollaborator.id
+            ? { ...collaborator, dependents: results.map((res) => res.data) }
+            : collaborator
+        )
+      );
+  
+      alert("Dependentes atualizados com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar dependentes:", error);
+      alert("Erro ao salvar dependentes. Por favor, tente novamente.");
+    } finally {
+      setIsDependentsModalOpen(false);
+    }
+  };  
 
   const handleAddClick = () => {
     setModalTitle("Adicionar Colaborador");
@@ -170,11 +198,27 @@ export default function ListCollaborators() {
     setIsModalOpen(true);
   };
 
-  const handleManageDependents = (collaborator: Collaborator) => {
-    setSelectedCollaborator(collaborator);
-    setIsDeleteModalOpen(false);
-    setIsDependentsModalOpen(true);
-  };
+  const handleManageDependents = async (collaborator: Collaborator) => {
+    try {
+      setSelectedCollaborator(collaborator);
+      setIsDependentsModalOpen(true);
+  
+      const response = await axiosInstance.get(`/dependents`, {
+        params: { collaboratorId: collaborator.id }
+      });
+  
+      setSelectedCollaborator((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          dependents: response.data,
+        };
+      });
+    } catch (error) {
+      console.error("Erro ao buscar dependentes:", error);
+      alert("Erro ao carregar dependentes. Por favor, tente novamente.");
+    }
+  };    
 
   const handleDeleteClick = (collaborator: Collaborator) => {
     setSelectedCollaborator(collaborator);
@@ -265,8 +309,16 @@ export default function ListCollaborators() {
           isOpen={isDependentsModalOpen}
           onClose={() => setIsDependentsModalOpen(false)}
           onSave={handleSaveDependents}
-          initialDependents={selectedCollaborator.dependents ?? []}
-        />
+          initialDependents={
+            selectedCollaborator && selectedCollaborator.dependents
+              ? selectedCollaborator.dependents.map(dep => ({
+                  ...dep,
+                  collaboratorId: selectedCollaborator.id,
+                }))
+              : []
+          }
+          collaboratorId={selectedCollaborator?.id ?? 0}
+        />           
       )}
 
       {isDeleteModalOpen && selectedCollaborator && (
