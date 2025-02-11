@@ -24,13 +24,22 @@ export const listCollaborators = async () => {
 
 export const updateCollaborator = async (id: number, data: { name?: string; cpf?: string; role?: string }) => {
   try {
-    const response = await axiosInstance.put(`/collaborator/${id}`, data);
+    console.log("Enviando para API:", { name: data.name, cpf: data.cpf, role: data.role });
+
+    const response = await axiosInstance.put(`/collaborator/${id}`, {
+      name: data.name,
+      cpf: data.cpf,
+      role: data.role
+    });
+
+    console.log("Resposta da API:", response.data);
     return response.data;
   } catch (error) {
     console.error('Erro ao atualizar colaborador:', error);
     throw error;
   }
 };
+
 
 export const deleteCollaborator = async (id: number) => {
   try {

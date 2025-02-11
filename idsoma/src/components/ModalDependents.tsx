@@ -2,11 +2,13 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/components/ModalDependents.module.css";
 import DeleteModal from "@/components/ModalDe";
+import { addDependent, updateDependent, deleteDependent } from "../app/api/dependent/dependents";
 
 interface Dependent {
-  id: number;
+  collaboratorId: number;
+  id?: number;
   name: string;
-  relationship: string;
+  parentesco: string;
 }
 
 interface ModalDependentsProps {
@@ -14,6 +16,7 @@ interface ModalDependentsProps {
   onClose: () => void;
   onSave: (dependents: Dependent[]) => void;
   initialDependents: Dependent[];
+  collaboratorId: number;
 }
 
 const ModalDependents: React.FC<ModalDependentsProps> = ({
@@ -21,58 +24,66 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   onClose,
   onSave,
   initialDependents,
+  collaboratorId,
 }) => {
   const [dependents, setDependents] = useState<Dependent[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ name: "", relationship: "" });
+  const [formData, setFormData] = useState({ name: "", parentesco: "" });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedDependent, setSelectedDependent] = useState<Dependent | null>(
-    null
-  );
-  const [editingDependent, setEditingDependent] = useState<Dependent | null>(
-    null
-  );
+  const [selectedDependent, setSelectedDependent] = useState<Dependent | null>(null);
+  const [editingDependent, setEditingDependent] = useState<Dependent | null>(null);
+  const adminId = 3;
 
   useEffect(() => {
     if (isOpen) {
-      setDependents([...initialDependents]);
+      setDependents(initialDependents);
     }
   }, [isOpen, initialDependents]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleAddOrEditDependent = () => {
-    if (!formData.name || !formData.relationship) return;
-
-    if (editingDependent) {
-      setDependents((prev) =>
-        prev.map((dep) =>
-          dep.id === editingDependent.id ? { ...dep, ...formData } : dep
-        )
-      );
-      setEditingDependent(null);
-    } else {
-      const newDependent: Dependent = {
-        id:
-          dependents.length > 0 ? dependents[dependents.length - 1].id + 1 : 1,
-        name: formData.name,
-        relationship: formData.relationship,
-      };
-      setDependents([...dependents, newDependent]);
+  const handleAddOrEditDependent = async () => {
+    if (!formData.name || !formData.parentesco) {
+      alert("Preencha todos os campos antes de salvar.");
+      return;
     }
 
-    setFormData({ name: "", relationship: "" });
-    setShowForm(false);
+    try {
+      if (editingDependent) {
+        const updatedDependent = await updateDependent(editingDependent.id!, {
+          name: formData.name,
+          parentesco: formData.parentesco,
+        });
+
+        setDependents((prev) =>
+          prev.map((dep) => (dep.id === editingDependent.id ? { ...updatedDependent } : dep))
+        );
+      } else {
+        const newDependent = await addDependent({
+          name: formData.name,
+          parentesco: formData.parentesco,
+          collaboratorId: collaboratorId,
+          adminId: adminId,
+        });
+
+        setDependents((prev) => [...prev, newDependent]);
+      }
+
+      setFormData({ name: "", parentesco: "" });
+      setShowForm(false);
+      setEditingDependent(null);
+    } catch (error) {
+      console.error("Erro ao salvar dependente:", error);
+      alert("Erro ao salvar dependente. Por favor, tente novamente.");
+    }
   };
 
   const handleEditClick = (dependent: Dependent) => {
     setEditingDependent(dependent);
-    setFormData({ name: dependent.name, relationship: dependent.relationship });
+    setFormData({ name: dependent.name, parentesco: dependent.parentesco });
     setShowForm(true);
   };
 
@@ -86,12 +97,16 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     setSelectedDependent(null);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (selectedDependent) {
-      setDependents((prev) =>
-        prev.filter((dependent) => dependent.id !== selectedDependent.id)
-      );
-      handleCloseDeleteModal();
+      try {
+        await deleteDependent(selectedDependent.id!);
+        setDependents((prev) => prev.filter((dependent) => dependent.id !== selectedDependent.id));
+        handleCloseDeleteModal();
+      } catch (error) {
+        console.error("Erro ao excluir dependente:", error);
+        alert("Erro ao excluir dependente.");
+      }
     }
   };
 
@@ -107,16 +122,12 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Lista de Dependentes</h2>
-          <button
-            className={styles.addDependentButton}
-            onClick={() => setShowForm(true)}
-          >
+          <button className={styles.addDependentButton} onClick={() => setShowForm(true)}>
             ADICIONAR DEPENDENTE
           </button>
         </div>
         <div className={styles.modalLine}></div>
 
-        {/* Formulário Inline */}
         {showForm && (
           <div className={styles.inlineForm}>
             <label>Nome:</label>
@@ -130,8 +141,8 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
             />
             <label>Parentesco:</label>
             <select
-              name="relationship"
-              value={formData.relationship}
+              name="parentesco"
+              value={formData.parentesco}
               onChange={handleChange}
               className={styles.input}
             >
@@ -139,71 +150,44 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
               <option value="Filho(a)">Filho(a) ou enteado(a)</option>
               <option value="Cônjuge">Cônjuge</option>
             </select>
+            <button className={styles.saveButton} onClick={handleAddOrEditDependent}>
+              {editingDependent ? "Atualizar" : "Adicionar"}
+            </button>
           </div>
         )}
 
-        {/* Lista de Dependentes */}
         <ul className={styles.dependentsList}>
           {dependents.map((dependent) => (
             <li key={dependent.id} className={styles.dependentItem}>
               <div className={styles.dependentInfo}>
                 <span>
-                  <span className={styles.dependentLabel}>Nome:</span>
-                  <span className={styles.dependentValue}>
-                    {" "}
-                    {dependent.name}
-                  </span>
+                  <span className={styles.dependentLabel}>Nome:</span> {dependent.name}
                 </span>
                 <span>
-                  <span className={styles.dependentLabel}>Parentesco:</span>
-                  <span className={styles.dependentValue}>
-                    {" "}
-                    {dependent.relationship}
-                  </span>
+                  <span className={styles.dependentLabel}>Parentesco:</span> {dependent.parentesco}
                 </span>
               </div>
               <div className={styles.actionButtons}>
-                <button
-                  onClick={() => handleEditClick(dependent)}
-                  className={styles.iconButton}
-                >
-                  <img
-                    src="/icon-edit.png"
-                    alt="Editar"
-                    className={styles.icon}
-                  />
+                <button onClick={() => handleEditClick(dependent)} className={styles.iconButton}>
+                  <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
                 </button>
-                <button
-                  onClick={() => handleOpenDeleteModal(dependent)}
-                  className={styles.iconButton}
-                >
-                  <img
-                    src="/icon-delete.png"
-                    alt="Excluir"
-                    className={styles.icon}
-                  />
+                <button onClick={() => handleOpenDeleteModal(dependent)} className={styles.iconButton}>
+                  <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
                 </button>
               </div>
             </li>
           ))}
         </ul>
 
-        {/* Botões de Ação */}
         <div className={styles.modalActions}>
           <button className={styles.cancelButton} onClick={onClose}>
             VOLTAR
           </button>
-          {showForm && (
-            <button
-              className={styles.saveButton}
-              onClick={handleAddOrEditDependent}
-            >
-              SALVAR
-            </button>
-          )}
+          <button className={styles.saveButton} onClick={handleSave}>
+            SALVAR ALTERAÇÕES
+          </button>
         </div>
 
-        {/* DeleteModal */}
         {isDeleteModalOpen && selectedDependent && (
           <DeleteModal
             isOpen={isDeleteModalOpen}

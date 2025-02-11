@@ -37,7 +37,11 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
   };
 
   const validateForm = () => {
-    if (!formData.name.trim() || !formData.cpf.trim() || !formData.role.trim()) {
+    if (
+      !formData.name.trim() ||
+      !formData.cpf.trim() ||
+      !formData.role.trim()
+    ) {
       alert("Por favor, preencha todos os campos.");
       return false;
     }
@@ -66,7 +70,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
 
     setLoading(true);
     try {
-      await onSave(formData); 
+      await onSave(formData);
       alert("Operação realizada com sucesso!");
       onClose();
     } catch (error) {
@@ -102,8 +106,9 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             onChange={handleChange}
             className={styles.input}
             placeholder="Informe o CPF do colaborador"
-            disabled={loading}
+            disabled={loading} // ⚠️ Certifique-se de que `disabled` não é true
           />
+
           <label>Cargo:</label>
           <input
             type="text"
@@ -116,7 +121,11 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
           />
         </form>
         <div className={styles.modalActions}>
-          <button className={styles.cancelButton} onClick={onClose} disabled={loading}>
+          <button
+            className={styles.cancelButton}
+            onClick={onClose}
+            disabled={loading}
+          >
             Cancelar
           </button>
           <button
