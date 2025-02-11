@@ -1,65 +1,119 @@
 "use client";
-
+import { useEffect, useState } from "react";
 import styles from "../../styles/collaborator.module.css";
-import Button from "../../components/Button";
+import { listCollaboratorsByCPF } from "../api/collaborator/index";
 
 export default function Collaborator() {
+  const [collaboratorData, setCollaboratorData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCollaboratorData = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cpf = urlParams.get("cpf");
+
+      if (!cpf) {
+        setError("CPF não encontrado na URL.");
+        return;
+      }
+
+      try {
+        const data = await listCollaboratorsByCPF(cpf);
+        if (!data) {
+          setError("Colaborador não encontrado.");
+          return;
+        }
+        setCollaboratorData(data);
+      } catch (err) {
+        console.error("Erro ao buscar colaborador:", err);
+        setError("Erro ao buscar dados do colaborador. Tente novamente mais tarde.");
+      }
+    };
+
+    fetchCollaboratorData();
+  }, []);
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.logo}>
+          <img src="/logo.png" alt="SOMA Verificação" />
+        </div>
+        <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
+        <p className={styles.error}>{error}</p>
+        <button
+          type="button"
+          className={styles.button}
+          onClick={() => window.history.back()}
+        >
+          Voltar
+        </button>
+      </div>
+    );
+  }
+
+  if (!collaboratorData) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.logo}>
+          <img src="/logo.png" alt="SOMA Verificação" />
+        </div>
+        <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
+        <p>Carregando dados do colaborador...</p>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
         <img src="/logo.png" alt="SOMA Verificação" />
       </div>
       <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
-
       <h2 className={styles.successMessage}>
         Verificação Concluída!{" "}
         <img src="/successmark.png" alt="Verificação Concluída" />
       </h2>
-
       <div className={styles.collaboratorTitle}>
         <h2 className={styles.sectionTitle}>Dados do Colaborador</h2>
       </div>
       <div className={styles.collaboratorData}>
         <p>
-          <strong>Nome:</strong> João Silva
+          <strong>Nome:</strong> {collaboratorData.name}
         </p>
         <p>
-          <strong>Cargo:</strong> Analista de Sistemas
+          <strong>CPF:</strong> {collaboratorData.cpf}
+        </p>
+        <p>
+          <strong>Cargo:</strong> {collaboratorData.role}
         </p>
       </div>
-
       <div className={styles.dependentsTitle}>
         <h2 className={styles.sectionTitle}>Dados dos Dependentes</h2>
       </div>
       <div className={styles.dependentsSection}>
-        <div className={styles.dependentRow}>
-          <p>
-            <strong>Nome: </strong>
-            Dependente 1
-          </p>
-          <p>
-            <strong>Parentesco:</strong> Filho(a)
-          </p>
-        </div>
-        <div className={styles.dependentRow}>
-          <p>
-            <strong>Nome: </strong>
-            Dependente 2
-          </p>
-          <p>
-            <strong>Parentesco: </strong>Filho(a)
-          </p>
-        </div>
-        <div className={styles.dependentRow}>
-          <p>
-            <strong>Nome: </strong>
-            Dependente 3
-          </p>
-          <p>Parentesco: Cônjuge</p>
-        </div>
+        {collaboratorData.Dependents?.length > 0 ? (
+          collaboratorData.Dependents.map((dependent: any, index: number) => (
+            <div key={index} className={styles.dependentRow}>
+              <p>
+                <strong>Nome:</strong> {dependent.name}
+              </p>
+              <p>
+                <strong>Parentesco:</strong> {dependent.parentesco}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p>Nenhum dependente cadastrado.</p>
+        )}
       </div>
-
-      <Button href="/" content="Voltar" />
+      <button
+        type="button"
+        className={styles.button}
+        onClick={() => window.history.back()}
+      >
+        Voltar
+      </button>
     </div>
   );
 }

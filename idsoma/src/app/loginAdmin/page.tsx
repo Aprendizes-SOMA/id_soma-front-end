@@ -65,7 +65,7 @@ const LoginAdmin = () => {
             style={{
               position: "absolute",
               right: "10px",
-              top: "50%",
+              top: "57%",
               transform: "translateY(-50%)",
               cursor: "pointer",
               width: "20px",

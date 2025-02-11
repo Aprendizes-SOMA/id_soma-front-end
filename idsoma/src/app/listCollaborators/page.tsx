@@ -8,7 +8,6 @@ import DeleteModal from "../../components/ModalDe";
 import styles from "../../styles/ListCollaborators.module.css";
 import { addCollaborator, listCollaborators, updateCollaborator, deleteCollaborator } from "../api/collaborator/collaborators";
 import { logoutAdmin } from "../api/admin/auth";
-import axios from "axios";
 
 interface Dependent {
   id: number;
