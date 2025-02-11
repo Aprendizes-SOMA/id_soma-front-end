@@ -20,6 +20,13 @@
   width: auto;
 }
 
+.error {
+  color: red; 
+  font-size: 14px;
+  margin-top: 20px; 
+  text-align: center; 
+  font-weight: bold; 
+}
 
 .container {
   display: flex;
