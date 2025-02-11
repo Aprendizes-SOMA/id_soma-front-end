@@ -13,7 +13,6 @@ const LoginAdmin = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
     try {
       await loginAdmin({ username, password });
       router.push("/listCollaborators");
@@ -45,7 +44,6 @@ const LoginAdmin = () => {
             required
           />
         </div>
-
         <div className={styles.field} style={{ position: "relative" }}>
           <label htmlFor="password" className={styles.label}>
             Senha
@@ -59,9 +57,10 @@ const LoginAdmin = () => {
             className={styles.input}
             required
           />
+          {/* Ícone dinâmico */}
           <img
-            src="/versenha.png"
-            alt="Mostrar senha"
+            src={showPassword ? "/fechar-olho.png" : "/versenha.png"}
+            alt={showPassword ? "Ocultar senha" : "Mostrar senha"}
             style={{
               position: "absolute",
               right: "10px",
@@ -73,7 +72,6 @@ const LoginAdmin = () => {
             onClick={() => setShowPassword(!showPassword)}
           />
         </div>
-
         {errorMessage && <p className={styles.error}>{errorMessage}</p>}
         <div className={styles.buttonContainer}>
           <button type="submit" className={styles.button}>
