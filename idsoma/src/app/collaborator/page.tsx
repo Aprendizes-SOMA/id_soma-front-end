@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import styles from "../../styles/collaborator.module.css";
 import { listCollaboratorsByCPF } from "../api/collaborator/index";
 
@@ -9,7 +8,6 @@ interface Dependent {
   name: string;
   parentesco: string;
 }
-
 interface CollaboratorData {
   name: string;
   cpf: string;
@@ -21,7 +19,6 @@ export default function Collaborator() {
   const [collaboratorData, setCollaboratorData] = useState<CollaboratorData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchCollaboratorData = async () => {
@@ -36,25 +33,24 @@ export default function Collaborator() {
 
       try {
         const data: CollaboratorData | null = await listCollaboratorsByCPF(cpf);
+
         if (!data) {
           setError("Colaborador não encontrado.");
         } else {
-          setCollaboratorData(data);
-          setTimeout(() => {
-            router.push(`/collaboratorDetails?cpf=${cpf}`);
-          }, 1500);
+          setCollaboratorData(data); // Define os dados do colaborador no estado
         }
       } catch (err) {
         console.error("Erro ao buscar colaborador:", err);
         setError("Erro ao buscar dados do colaborador. Tente novamente mais tarde.");
       } finally {
-        setLoading(false);
+        setLoading(false); // Finaliza o estado de carregamento
       }
     };
 
     fetchCollaboratorData();
   }, []);
 
+  // Estado de carregamento
   if (loading) {
     return (
       <div className={styles.container}>
@@ -62,11 +58,12 @@ export default function Collaborator() {
           <img src="/logo.png" alt="SOMA Verificação" />
         </div>
         <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
-        <div className={styles.loader}></div>
+        <div className={styles.loader}></div> {/* Loader enquanto carrega */}
       </div>
     );
   }
 
+  // Exibição de erro
   if (error) {
     return (
       <div className={styles.container}>
@@ -86,6 +83,7 @@ export default function Collaborator() {
     );
   }
 
+  // Exibição dos dados do colaborador
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
