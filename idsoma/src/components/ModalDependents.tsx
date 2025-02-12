@@ -27,7 +27,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   collaboratorId,
 }) => {
   const [dependents, setDependents] = useState<Dependent[]>([]);
-  const [loading, setLoading] = useState(true); // Estado de carregamento
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: "", parentesco: "" });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -40,9 +40,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
       if (!collaboratorId) return;
       setLoading(true);
       try {
-        console.log("Buscando dependentes para:", collaboratorId);
         const data = await listDependents(collaboratorId);
-        console.log("Dependentes carregados:", data);
         setDependents(data);
       } catch (error) {
         console.error("Erro ao carregar dependentes:", error);
@@ -51,12 +49,12 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
         setLoading(false);
       }
     };
-  
+
     if (isOpen) {
       fetchDependents();
     }
   }, [isOpen, collaboratorId]);
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -70,25 +68,18 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
 
     try {
       if (editingDependent) {
-        const updatedDependent = await updateDependent(editingDependent.id!, {
-          name: formData.name,
-          parentesco: formData.parentesco,
-        });
-
+        const updatedDependent = await updateDependent(editingDependent.id!, formData);
         setDependents((prev) =>
           prev.map((dep) => (dep.id === editingDependent.id ? { ...updatedDependent } : dep))
         );
       } else {
         const newDependent = await addDependent({
-          name: formData.name,
-          parentesco: formData.parentesco,
+          ...formData,
           collaboratorId: collaboratorId,
           adminId: adminId,
         });
-
         setDependents((prev) => [...prev, newDependent]);
       }
-
       setFormData({ name: "", parentesco: "" });
       setShowForm(false);
       setEditingDependent(null);
@@ -127,11 +118,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     }
   };
 
-  const handleSave = () => {
-    onSave(dependents);
-    onClose();
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -139,12 +125,13 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Lista de Dependentes</h2>
-          <button className={styles.addDependentButton} onClick={() => setShowForm(true)}>
-            ADICIONAR DEPENDENTE
-          </button>
+          {!showForm && (
+            <button className={styles.addDependentButton} onClick={() => setShowForm(true)}>
+              ADICIONAR DEPENDENTE
+            </button>
+          )}
         </div>
         <div className={styles.modalLine}></div>
-
         {loading ? (
           <div className={styles.loadingContainer}>
             <div className={styles.spinner}></div>
@@ -175,11 +162,10 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
                   <option value="Cônjuge">Cônjuge</option>
                 </select>
                 <button className={styles.saveButton} onClick={handleAddOrEditDependent}>
-                  {editingDependent ? "Atualizar" : "Adicionar"}
+                  {editingDependent ? "ATUALIZAR" : "ADICIONAR"}
                 </button>
               </div>
             )}
-
             <ul className={styles.dependentsList}>
               {dependents.map((dependent) => (
                 <li key={dependent.id} className={styles.dependentItem}>
@@ -204,16 +190,11 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
             </ul>
           </>
         )}
-
         <div className={styles.modalActions}>
           <button className={styles.cancelButton} onClick={onClose}>
             VOLTAR
           </button>
-          <button className={styles.saveButton} onClick={handleSave}>
-            SALVAR ALTERAÇÕES
-          </button>
         </div>
-
         {isDeleteModalOpen && selectedDependent && (
           <DeleteModal
             isOpen={isDeleteModalOpen}
