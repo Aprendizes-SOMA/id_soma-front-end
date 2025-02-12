@@ -71,7 +71,6 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
     setLoading(true);
     try {
       await onSave(formData);
-      alert("Operação realizada com sucesso!");
       onClose();
     } catch (error) {
       console.error("Erro ao salvar colaborador:", error);

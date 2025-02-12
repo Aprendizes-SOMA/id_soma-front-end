@@ -80,7 +80,6 @@ export default function ListCollaborators() {
 
       console.log("Colaborador adicionado com sucesso:", newCollaborator);
       setCollaborators((prev) => [...prev, { ...newCollaborator, dependents: [] }]);
-      alert("Colaborador adicionado com sucesso!");
       setIsModalOpen(false);
     } catch (error: any) {
       console.error("Erro ao adicionar colaborador:", error);
@@ -115,7 +114,6 @@ export default function ListCollaborators() {
         )
       );
   
-      alert("Colaborador atualizado com sucesso!");
       setIsModalOpen(false);
     } catch (error: any) {
       console.error("Erro ao editar colaborador:", error);
@@ -134,7 +132,6 @@ export default function ListCollaborators() {
   
       setCollaborators((prev) => prev.filter((c) => c.id !== selectedCollaborator.id));
   
-      alert("Colaborador excluído com sucesso!");
       setSelectedCollaborator(null);
     } catch (error: any) {
       console.error("Erro ao excluir colaborador:", error);
@@ -179,7 +176,6 @@ export default function ListCollaborators() {
         )
       );
   
-      alert("Dependentes atualizados com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar dependentes:", error);
       alert("Erro ao salvar dependentes. Por favor, tente novamente.");
