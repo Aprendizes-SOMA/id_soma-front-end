@@ -4,6 +4,23 @@ import Image from "next/image";
 import styles from "../styles/page.module.css";
 import { listCollaboratorsByCPF } from "../app/api/collaborator/index"; // Importa a função de busca por CPF
 
+// Função para formatar o CPF automaticamente
+const formatCPF = (value: string): string => {
+  // Remove tudo que não for número
+  const cleanedValue = value.replace(/\D/g, "");
+
+  // Aplica a máscara de CPF
+  if (cleanedValue.length <= 3) {
+    return cleanedValue;
+  } else if (cleanedValue.length <= 6) {
+    return `${cleanedValue.slice(0, 3)}.${cleanedValue.slice(3)}`;
+  } else if (cleanedValue.length <= 9) {
+    return `${cleanedValue.slice(0, 3)}.${cleanedValue.slice(3, 6)}.${cleanedValue.slice(6)}`;
+  } else {
+    return `${cleanedValue.slice(0, 3)}.${cleanedValue.slice(3, 6)}.${cleanedValue.slice(6, 9)}-${cleanedValue.slice(9, 11)}`;
+  }
+};
+
 export default function Home() {
   const [cpf, setCpf] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -11,25 +28,20 @@ export default function Home() {
 
   const handleSearchByCpf = async (event: React.FormEvent) => {
     event.preventDefault();
-
     if (cpf.trim() === "") {
       setError("Por favor, digite um CPF válido.");
       return;
     }
-
     setLoading(true); // Inicia o estado de carregamento
     setError(null); // Limpa qualquer erro anterior
-
     try {
       // Chama a API para verificar se o CPF existe
       const data = await listCollaboratorsByCPF(cpf);
-
       if (!data) {
         setError("Colaborador não encontrado.");
         setLoading(false); // Finaliza o estado de carregamento
         return;
       }
-
       // Redireciona para a página de colaborador com o CPF como parâmetro
       window.location.href = `/collaborator?cpf=${cpf}`;
     } catch (err) {
@@ -60,7 +72,8 @@ export default function Home() {
           placeholder="Digite seu CPF"
           className={styles.input}
           value={cpf}
-          onChange={(e) => setCpf(e.target.value)}
+          onChange={(e) => setCpf(formatCPF(e.target.value))} // Formata o CPF automaticamente
+          maxLength={14} // Limita o comprimento máximo do CPF formatado
         />
         <button
           type="submit"
@@ -74,3 +87,5 @@ export default function Home() {
     </div>
   );
 }
+
+export { formatCPF };

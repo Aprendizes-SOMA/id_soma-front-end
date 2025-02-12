@@ -1,8 +1,7 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import styles from "../styles/components/Modal.module.css";
-
+import { formatCPF } from "../app/page";
 interface ModalCollaboratorProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,7 +32,13 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    // Aplica a formatação automática ao CPF
+    if (name === "cpf") {
+      setFormData({ ...formData, [name]: formatCPF(value) });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const validateForm = () => {
@@ -45,29 +50,24 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
       alert("Por favor, preencha todos os campos.");
       return false;
     }
-
     if (formData.name.length < 3) {
       alert("O nome deve ter pelo menos 3 caracteres.");
       return false;
     }
-
     if (formData.role.length < 2) {
       alert("O cargo deve ter pelo menos 2 caracteres.");
       return false;
     }
-
     const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
     if (!cpfRegex.test(formData.cpf)) {
       alert("CPF inválido. O formato deve ser 000.000.000-00.");
       return false;
     }
-
     return true;
   };
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
-
     setLoading(true);
     try {
       await onSave(formData);
@@ -105,9 +105,9 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             onChange={handleChange}
             className={styles.input}
             placeholder="Informe o CPF do colaborador"
-            disabled={loading} // ⚠️ Certifique-se de que `disabled` não é true
+            maxLength={14} // Limita o comprimento máximo do CPF formatado
+            disabled={loading}
           />
-
           <label>Cargo:</label>
           <input
             type="text"
