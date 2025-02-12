@@ -1,11 +1,27 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "../../styles/collaborator.module.css";
 import { listCollaboratorsByCPF } from "../api/collaborator/index";
 
+// Definição dos tipos dos dados do colaborador e seus dependentes
+interface Dependent {
+  name: string;
+  parentesco: string;
+}
+
+interface CollaboratorData {
+  name: string;
+  cpf: string;
+  role: string;
+  Dependents?: Dependent[];
+}
+
 export default function Collaborator() {
-  const [collaboratorData, setCollaboratorData] = useState<any>(null);
+  const [collaboratorData, setCollaboratorData] = useState<CollaboratorData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCollaboratorData = async () => {
@@ -14,24 +30,42 @@ export default function Collaborator() {
 
       if (!cpf) {
         setError("CPF não encontrado na URL.");
+        setLoading(false);
         return;
       }
 
       try {
-        const data = await listCollaboratorsByCPF(cpf);
+        const data: CollaboratorData | null = await listCollaboratorsByCPF(cpf);
         if (!data) {
           setError("Colaborador não encontrado.");
-          return;
+        } else {
+          setCollaboratorData(data);
+          setTimeout(() => {
+            router.push(`/collaboratorDetails?cpf=${cpf}`);
+          }, 1500);
         }
-        setCollaboratorData(data);
       } catch (err) {
         console.error("Erro ao buscar colaborador:", err);
         setError("Erro ao buscar dados do colaborador. Tente novamente mais tarde.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchCollaboratorData();
   }, []);
+
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.logo}>
+          <img src="/logo.png" alt="SOMA Verificação" />
+        </div>
+        <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
+        <div className={styles.loader}></div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -52,18 +86,6 @@ export default function Collaborator() {
     );
   }
 
-  if (!collaboratorData) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.logo}>
-          <img src="/logo.png" alt="SOMA Verificação" />
-        </div>
-        <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
-        <p>Carregando dados do colaborador...</p>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
@@ -79,21 +101,21 @@ export default function Collaborator() {
       </div>
       <div className={styles.collaboratorData}>
         <p>
-          <strong>Nome:</strong> {collaboratorData.name}
+          <strong>Nome:</strong> {collaboratorData?.name}
         </p>
         <p>
-          <strong>CPF:</strong> {collaboratorData.cpf}
+          <strong>CPF:</strong> {collaboratorData?.cpf}
         </p>
         <p>
-          <strong>Cargo:</strong> {collaboratorData.role}
+          <strong>Cargo:</strong> {collaboratorData?.role}
         </p>
       </div>
       <div className={styles.dependentsTitle}>
         <h2 className={styles.sectionTitle}>Dados dos Dependentes</h2>
       </div>
       <div className={styles.dependentsSection}>
-        {collaboratorData.Dependents?.length > 0 ? (
-          collaboratorData.Dependents.map((dependent: any, index: number) => (
+        {collaboratorData?.Dependents && collaboratorData.Dependents.length > 0 ? (
+          collaboratorData.Dependents.map((dependent, index) => (
             <div key={index} className={styles.dependentRow}>
               <p>
                 <strong>Nome:</strong> {dependent.name}
