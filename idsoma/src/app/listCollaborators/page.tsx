@@ -6,7 +6,12 @@ import ModalCollaborator from "../../components/ModalCollaborator";
 import ModalDependents from "../../components/ModalDependents";
 import DeleteModal from "../../components/ModalDe";
 import styles from "../../styles/ListCollaborators.module.css";
-import { addCollaborator, listCollaborators, updateCollaborator, deleteCollaborator } from "../api/collaborator/collaborators";
+import {
+  addCollaborator,
+  listCollaborators,
+  updateCollaborator,
+  deleteCollaborator,
+} from "../api/collaborator/collaborators";
 import { logoutAdmin } from "../api/admin/auth";
 import axiosInstance from "../api/axiosInstance";
 
@@ -40,7 +45,8 @@ export default function ListCollaborators() {
     role: "",
     dependents: [],
   });
-  const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
+  const [selectedCollaborator, setSelectedCollaborator] =
+    useState<Collaborator | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -66,7 +72,11 @@ export default function ListCollaborators() {
     }
   };
 
-  const handleAddCollaborator = async (data: { name: string; cpf: string; role: string }) => {
+  const handleAddCollaborator = async (data: {
+    name: string;
+    cpf: string;
+    role: string;
+  }) => {
     try {
       setLoading(true);
       console.log("Enviando dados do colaborador:", data);
@@ -79,7 +89,10 @@ export default function ListCollaborators() {
       });
 
       console.log("Colaborador adicionado com sucesso:", newCollaborator);
-      setCollaborators((prev) => [...prev, { ...newCollaborator, dependents: [] }]);
+      setCollaborators((prev) => [
+        ...prev,
+        { ...newCollaborator, dependents: [] },
+      ]);
       setIsModalOpen(false);
     } catch (error: any) {
       console.error("Erro ao adicionar colaborador:", error);
@@ -93,62 +106,80 @@ export default function ListCollaborators() {
     }
   };
 
-  const handleEditCollaborator = async (data: { name: string; cpf: string; role: string }) => {
+  const handleEditCollaborator = async (data: {
+    name: string;
+    cpf: string;
+    role: string;
+  }) => {
     if (!selectedCollaborator) return;
-  
+
     setLoading(true);
     console.log("Enviando atualização para o backend:", data);
-  
+
     try {
-      const updatedCollaborator = await updateCollaborator(selectedCollaborator.id, {
-        name: data.name,
-        cpf: data.cpf,  
-        role: data.role
-      });
-  
+      const updatedCollaborator = await updateCollaborator(
+        selectedCollaborator.id,
+        {
+          name: data.name,
+          cpf: data.cpf,
+          role: data.role,
+        }
+      );
+
       console.log("Resposta do backend:", updatedCollaborator);
-  
+
       setCollaborators((prev) =>
         prev.map((collaborator) =>
-          collaborator.id === selectedCollaborator.id ? updatedCollaborator : collaborator
+          collaborator.id === selectedCollaborator.id
+            ? updatedCollaborator
+            : collaborator
         )
       );
-  
+
       setIsModalOpen(false);
     } catch (error: any) {
       console.error("Erro ao editar colaborador:", error);
-      alert(`Erro ao editar colaborador: ${error.response?.data?.message || "Erro desconhecido."}`);
+      alert(
+        `Erro ao editar colaborador: ${
+          error.response?.data?.message || "Erro desconhecido."
+        }`
+      );
     } finally {
       setLoading(false);
     }
   };
-  
 
   const handleConfirmDelete = async () => {
     if (!selectedCollaborator) return;
-  
+
     try {
       await deleteCollaborator(selectedCollaborator.id);
-  
-      setCollaborators((prev) => prev.filter((c) => c.id !== selectedCollaborator.id));
-  
+
+      setCollaborators((prev) =>
+        prev.filter((c) => c.id !== selectedCollaborator.id)
+      );
+
       setSelectedCollaborator(null);
     } catch (error: any) {
       console.error("Erro ao excluir colaborador:", error);
-  
+
       if (error.response && error.response.data) {
-        alert(`Erro ao excluir colaborador: ${error.response.data.error || "Erro desconhecido."}`);
+        alert(
+          `Erro ao excluir colaborador: ${
+            error.response.data.error || "Erro desconhecido."
+          }`
+        );
       } else {
         alert("Erro ao excluir colaborador. Por favor, tente novamente.");
       }
     } finally {
       setIsDeleteModalOpen(false);
     }
-  };  
+  };
 
   const handleSaveDependents = async (updatedDependents: Dependent[]) => {
     if (!selectedCollaborator) return;
-  
+
     try {
       const promises = updatedDependents.map((dependent) => {
         if (dependent.id) {
@@ -165,9 +196,9 @@ export default function ListCollaborators() {
           });
         }
       });
-  
+
       const results = await Promise.all(promises);
-  
+
       setCollaborators((prev) =>
         prev.map((collaborator) =>
           collaborator.id === selectedCollaborator.id
@@ -175,14 +206,13 @@ export default function ListCollaborators() {
             : collaborator
         )
       );
-  
     } catch (error) {
       console.error("Erro ao salvar dependentes:", error);
       alert("Erro ao salvar dependentes. Por favor, tente novamente.");
     } finally {
       setIsDependentsModalOpen(false);
     }
-  };  
+  };
 
   const handleAddClick = () => {
     setModalTitle("Adicionar Colaborador");
@@ -193,30 +223,29 @@ export default function ListCollaborators() {
 
   const handleEditClick = (collaborator: Collaborator) => {
     setModalTitle("Editar Colaborador");
-  
+
     setFormData({
       id: collaborator.id,
-      name: collaborator.name || "", 
-      cpf: collaborator.cpf || "",  
-      role: collaborator.role || "", 
+      name: collaborator.name || "",
+      cpf: collaborator.cpf || "",
+      role: collaborator.role || "",
       dependents: collaborator.dependents || [],
     });
-  
+
     setSelectedCollaborator(collaborator);
     setEditMode(true);
     setIsModalOpen(true);
   };
-  
 
   const handleManageDependents = async (collaborator: Collaborator) => {
     try {
       setSelectedCollaborator(collaborator);
       setIsDependentsModalOpen(true);
-  
+
       const response = await axiosInstance.get(`/dependents`, {
-        params: { collaboratorId: collaborator.id }
+        params: { collaboratorId: collaborator.id },
       });
-  
+
       setSelectedCollaborator((prev) => {
         if (!prev) return null;
         return {
@@ -228,7 +257,7 @@ export default function ListCollaborators() {
       console.error("Erro ao buscar dependentes:", error);
       alert("Erro ao carregar dependentes. Por favor, tente novamente.");
     }
-  };    
+  };
 
   const handleDeleteClick = (collaborator: Collaborator) => {
     setSelectedCollaborator(collaborator);
@@ -249,7 +278,11 @@ export default function ListCollaborators() {
         <h1 className={styles.title}>Lista de Colaboradores</h1>
         <div className={styles.searchBar}>
           <div className={styles.searchInputContainer}>
-            <img src="/lupa.png" alt="Pesquisar" className={styles.searchIcon} />
+            <img
+              src="/lupa.png"
+              alt="Pesquisar"
+              className={styles.searchIcon}
+            />
             <input
               type="text"
               placeholder="Pesquisar"
@@ -275,33 +308,48 @@ export default function ListCollaborators() {
             </tr>
           </thead>
           <tbody>
-            {filteredCollaborators.map((collaborator) => (
-              <tr key={collaborator.id}>
-                <td>{collaborator.name}</td>
-                <td>{collaborator.cpf}</td>
-                <td>{collaborator.role}</td>
-                <td className={styles.dependentsActions}>
-                  <button
-                    onClick={() => handleManageDependents(collaborator)}
-                    className={styles.iconButton}
-                  >
-                    <img src="/icon-view.png" alt="Dependentes" className={styles.icon} />
-                  </button>
-                  <button
-                    onClick={() => handleEditClick(collaborator)}
-                    className={styles.iconButton}
-                  >
-                    <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteClick(collaborator)}
-                    className={styles.iconButton}
-                  >
-                    <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {filteredCollaborators
+              .slice() // Cria uma cópia do array para evitar mutação direta
+              .sort((a, b) => a.name.localeCompare(b.name)) // Ordena por nome em ordem alfabética
+              .map((collaborator) => (
+                <tr key={collaborator.id}>
+                  <td>{collaborator.name}</td>
+                  <td>{collaborator.cpf}</td>
+                  <td>{collaborator.role}</td>
+                  <td className={styles.dependentsActions}>
+                    <button
+                      onClick={() => handleManageDependents(collaborator)}
+                      className={styles.iconButton}
+                    >
+                      <img
+                        src="/icon-view.png"
+                        alt="Dependentes"
+                        className={styles.icon}
+                      />
+                    </button>
+                    <button
+                      onClick={() => handleEditClick(collaborator)}
+                      className={styles.iconButton}
+                    >
+                      <img
+                        src="/icon-edit.png"
+                        alt="Editar"
+                        className={styles.icon}
+                      />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(collaborator)}
+                      className={styles.iconButton}
+                    >
+                      <img
+                        src="/icon-delete.png"
+                        alt="Excluir"
+                        className={styles.icon}
+                      />
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -321,14 +369,14 @@ export default function ListCollaborators() {
           onSave={handleSaveDependents}
           initialDependents={
             selectedCollaborator && selectedCollaborator.dependents
-              ? selectedCollaborator.dependents.map(dep => ({
+              ? selectedCollaborator.dependents.map((dep) => ({
                   ...dep,
                   collaboratorId: selectedCollaborator.id,
                 }))
               : []
           }
           collaboratorId={selectedCollaborator?.id ?? 0}
-        />           
+        />
       )}
 
       {isDeleteModalOpen && selectedCollaborator && (
