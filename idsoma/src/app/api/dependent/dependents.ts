@@ -10,12 +10,14 @@ export const addDependent = async (data: { name: string; parentesco: string; col
   }
 };
 
-export const listDependents = async () => {
+export const listDependents = async (collaboratorId: number) => {
   try {
-    const response = await axiosInstance.get('/dependents');
+    const response = await axiosInstance.get(`/dependents`, {
+      params: { collaboratorId },
+    });
     return response.data;
   } catch (error) {
-    console.error('Erro ao listar dependentes:', error);
+    console.error("Erro ao listar dependentes:", error);
     throw error;
   }
 };

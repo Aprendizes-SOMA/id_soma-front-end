@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/components/ModalDependents.module.css";
 import DeleteModal from "@/components/ModalDe";
-import { addDependent, updateDependent, deleteDependent } from "../app/api/dependent/dependents";
+import { addDependent, updateDependent, deleteDependent, listDependents } from "../app/api/dependent/dependents";
 
 interface Dependent {
   collaboratorId: number;
@@ -27,6 +27,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   collaboratorId,
 }) => {
   const [dependents, setDependents] = useState<Dependent[]>([]);
+  const [loading, setLoading] = useState(true); // Estado de carregamento
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: "", parentesco: "" });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -35,11 +36,27 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   const adminId = 3;
 
   useEffect(() => {
+    const fetchDependents = async () => {
+      if (!collaboratorId) return;
+      setLoading(true);
+      try {
+        console.log("Buscando dependentes para:", collaboratorId);
+        const data = await listDependents(collaboratorId);
+        console.log("Dependentes carregados:", data);
+        setDependents(data);
+      } catch (error) {
+        console.error("Erro ao carregar dependentes:", error);
+        alert("Erro ao carregar dependentes. Verifique a API e tente novamente.");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
     if (isOpen) {
-      setDependents(initialDependents);
+      fetchDependents();
     }
-  }, [isOpen, initialDependents]);
-
+  }, [isOpen, collaboratorId]);
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -128,56 +145,65 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
         </div>
         <div className={styles.modalLine}></div>
 
-        {showForm && (
-          <div className={styles.inlineForm}>
-            <label>Nome:</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Nome do dependente:"
-              className={styles.input}
-            />
-            <label>Parentesco:</label>
-            <select
-              name="parentesco"
-              value={formData.parentesco}
-              onChange={handleChange}
-              className={styles.input}
-            >
-              <option value="">Selecione</option>
-              <option value="Filho(a)">Filho(a) ou enteado(a)</option>
-              <option value="Cônjuge">Cônjuge</option>
-            </select>
-            <button className={styles.saveButton} onClick={handleAddOrEditDependent}>
-              {editingDependent ? "Atualizar" : "Adicionar"}
-            </button>
+        {loading ? (
+          <div className={styles.loadingContainer}>
+            <div className={styles.spinner}></div>
+            <p>Carregando dependentes...</p>
           </div>
-        )}
+        ) : (
+          <>
+            {showForm && (
+              <div className={styles.inlineForm}>
+                <label>Nome:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Nome do dependente:"
+                  className={styles.input}
+                />
+                <label>Parentesco:</label>
+                <select
+                  name="parentesco"
+                  value={formData.parentesco}
+                  onChange={handleChange}
+                  className={styles.input}
+                >
+                  <option value="">Selecione</option>
+                  <option value="Filho(a)">Filho(a) ou enteado(a)</option>
+                  <option value="Cônjuge">Cônjuge</option>
+                </select>
+                <button className={styles.saveButton} onClick={handleAddOrEditDependent}>
+                  {editingDependent ? "Atualizar" : "Adicionar"}
+                </button>
+              </div>
+            )}
 
-        <ul className={styles.dependentsList}>
-          {dependents.map((dependent) => (
-            <li key={dependent.id} className={styles.dependentItem}>
-              <div className={styles.dependentInfo}>
-                <span>
-                  <span className={styles.dependentLabel}>Nome:</span> {dependent.name}
-                </span>
-                <span>
-                  <span className={styles.dependentLabel}>Parentesco:</span> {dependent.parentesco}
-                </span>
-              </div>
-              <div className={styles.actionButtons}>
-                <button onClick={() => handleEditClick(dependent)} className={styles.iconButton}>
-                  <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
-                </button>
-                <button onClick={() => handleOpenDeleteModal(dependent)} className={styles.iconButton}>
-                  <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+            <ul className={styles.dependentsList}>
+              {dependents.map((dependent) => (
+                <li key={dependent.id} className={styles.dependentItem}>
+                  <div className={styles.dependentInfo}>
+                    <span>
+                      <span className={styles.dependentLabel}>Nome:</span> {dependent.name}
+                    </span>
+                    <span>
+                      <span className={styles.dependentLabel}>Parentesco:</span> {dependent.parentesco}
+                    </span>
+                  </div>
+                  <div className={styles.actionButtons}>
+                    <button onClick={() => handleEditClick(dependent)} className={styles.iconButton}>
+                      <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
+                    </button>
+                    <button onClick={() => handleOpenDeleteModal(dependent)} className={styles.iconButton}>
+                      <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
 
         <div className={styles.modalActions}>
           <button className={styles.cancelButton} onClick={onClose}>
