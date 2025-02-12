@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import styles from "../../styles/collaborator.module.css";
 import { listCollaboratorsByCPF } from "../api/collaborator/index";
 
-// Definição dos tipos dos dados do colaborador e seus dependentes
 interface Dependent {
   name: string;
   parentesco: string;
@@ -37,20 +36,19 @@ export default function Collaborator() {
         if (!data) {
           setError("Colaborador não encontrado.");
         } else {
-          setCollaboratorData(data); // Define os dados do colaborador no estado
+          setCollaboratorData(data);
         }
       } catch (err) {
         console.error("Erro ao buscar colaborador:", err);
         setError("Erro ao buscar dados do colaborador. Tente novamente mais tarde.");
       } finally {
-        setLoading(false); // Finaliza o estado de carregamento
+        setLoading(false);
       }
     };
 
     fetchCollaboratorData();
   }, []);
 
-  // Estado de carregamento
   if (loading) {
     return (
       <div className={styles.container}>
@@ -58,12 +56,11 @@ export default function Collaborator() {
           <img src="/logo.png" alt="SOMA Verificação" />
         </div>
         <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
-        <div className={styles.loader}></div> {/* Loader enquanto carrega */}
+        <div className={styles.loader}></div>
       </div>
     );
   }
 
-  // Exibição de erro
   if (error) {
     return (
       <div className={styles.container}>
@@ -83,7 +80,6 @@ export default function Collaborator() {
     );
   }
 
-  // Exibição dos dados do colaborador
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
