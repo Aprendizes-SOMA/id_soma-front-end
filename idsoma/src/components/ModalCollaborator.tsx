@@ -125,14 +125,14 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             onClick={onClose}
             disabled={loading}
           >
-            Cancelar
+            CANCELAR
           </button>
           <button
             className={styles.saveButton}
             onClick={handleSubmit}
             disabled={loading}
           >
-            {loading ? "Salvando..." : "Salvar"}
+            {loading ? "SALVANDO..." : "SALVAR"}
           </button>
         </div>
       </div>
