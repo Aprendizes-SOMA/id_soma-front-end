@@ -1,4 +1,3 @@
-// components/types/Modal.types.ts
 import { ReactNode } from "react";
 
 export interface ModalProps {

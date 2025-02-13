@@ -42,7 +42,11 @@ export default function ListCollaborators() {
         <h1 className={styles.title}>Lista de Colaboradores</h1>
         <div className={styles.searchBar}>
           <div className={styles.searchInputContainer}>
-            <img src="/lupa.png" alt="Pesquisar" className={styles.searchIcon} />
+            <img
+              src="/lupa.png"
+              alt="Pesquisar"
+              className={styles.searchIcon}
+            />
             <input
               type="text"
               placeholder="Pesquisar"
@@ -119,14 +123,14 @@ export default function ListCollaborators() {
           onSave={handleSaveDependents}
           initialDependents={
             selectedCollaborator && selectedCollaborator.dependents
-              ? selectedCollaborator.dependents.map(dep => ({
+              ? selectedCollaborator.dependents.map((dep) => ({
                   ...dep,
                   collaboratorId: selectedCollaborator.id,
                 }))
               : []
           }
           collaboratorId={selectedCollaborator?.id ?? 0}
-        />           
+        />
       )}
 
       {isDeleteModalOpen && selectedCollaborator && (
