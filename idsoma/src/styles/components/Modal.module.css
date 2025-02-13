@@ -21,7 +21,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   position: relative;
   border: 2px solid orange;
-  text-align: center; /* 🔹 Centraliza os elementos */
+  text-align: center;
 }
 
 .modalTitle {
@@ -37,30 +37,28 @@
   margin: 10px auto 20px;
 }
 
-/* 🔹 Alinhamento das labels e inputs */
 .form {
   display: flex;
   flex-direction: column;
   gap: 15px;
   margin-top: 20px;
   width: 100%;
-  align-items: center; /* 🔹 Centraliza os elementos */
+  align-items: center;
 }
 
-/* 🔹 Agrupa labels e inputs */
 .inputContainer {
   display: flex;
   align-items: center;
-  justify-content: center; /* 🔹 Centraliza os elementos */
+  justify-content: center;
   width: 80%;
-  gap: 10px; /* 🔹 Espaço entre label e input */
+  gap: 10px;
 }
 
 .form label {
   font-size: 16px;
   font-weight: bold;
   text-align: flex-start;
-  width: 30%; /* 🔹 Garante que todas as labels fiquem alinhadas */
+  width: 30%;
 }
 
 .input {
@@ -78,7 +76,6 @@
   color: #aaa;
 }
 
-/* 🔹 Centraliza os botões */
 .modalActions {
   display: flex;
   justify-content: center;
@@ -111,7 +108,6 @@
 }
 
 
-/* 🔹 RESPONSIVIDADE PARA TELAS MENORES */
 @media (max-width: 768px) {
   .modalContent {
     width: 80%;
@@ -128,7 +124,6 @@
     align-items: center;
   }
 
-  /* 🔹 Ajusta labels e inputs para ficarem um abaixo do outro */
   .inputContainer {
     flex-direction: column;
     align-items: flex-start;

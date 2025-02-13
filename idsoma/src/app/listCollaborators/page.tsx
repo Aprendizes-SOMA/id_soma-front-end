@@ -33,16 +33,16 @@ export default function ListCollaborators() {
     handleDeleteClick,
   } = useCollaborators();
 
-  // Função para lidar com a mudança no campo de pesquisa
+  const sortCollaborators = (collaboratorsList: typeof collaborators) => {
+    return [...collaboratorsList].sort((a, b) => a.name.localeCompare(b.name));
+  };
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
-    // Verifica se o valor contém apenas números
     if (/^\d+$/.test(value.replace(/\D/g, ""))) {
-      // Aplica a formatação de CPF
       setSearchTerm(formatCPF(value));
     } else {
-      // Deixa o valor inalterado (pesquisa por nome)
       setSearchTerm(value);
     }
   };
@@ -56,18 +56,14 @@ export default function ListCollaborators() {
         <h1 className={styles.title}>Lista de Colaboradores</h1>
         <div className={styles.searchBar}>
           <div className={styles.searchInputContainer}>
-            <img
-              src="/lupa.png"
-              alt="Pesquisar"
-              className={styles.searchIcon}
-            />
+            <img src="/lupa.png" alt="Pesquisar" className={styles.searchIcon} />
             <input
               type="text"
               placeholder="Pesquisar"
               className={styles.searchInput}
               value={searchTerm}
-              onChange={handleSearchChange} 
-              maxLength={14} 
+              onChange={handleSearchChange}
+              maxLength={14}
             />
           </div>
         </div>
@@ -86,38 +82,38 @@ export default function ListCollaborators() {
             </tr>
           </thead>
           <tbody>
-            {collaborators
-              .filter((collaborator) =>
+            {sortCollaborators(
+              collaborators.filter((collaborator) =>
                 collaborator.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 collaborator.cpf.includes(searchTerm)
               )
-              .map((collaborator) => (
-                <tr key={collaborator.id}>
-                  <td>{collaborator.name}</td>
-                  <td>{collaborator.cpf}</td>
-                  <td>{collaborator.role}</td>
-                  <td className={styles.dependentsActions}>
-                    <button
-                      onClick={() => handleManageDependents(collaborator)}
-                      className={styles.iconButton}
-                    >
-                      <img src="/icon-view.png" alt="Dependentes" className={styles.icon} />
-                    </button>
-                    <button
-                      onClick={() => handleEditClick(collaborator)}
-                      className={styles.iconButton}
-                    >
-                      <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(collaborator)}
-                      className={styles.iconButton}
-                    >
-                      <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+            ).map((collaborator) => (
+              <tr key={collaborator.id}>
+                <td>{collaborator.name}</td>
+                <td>{collaborator.cpf}</td>
+                <td>{collaborator.role}</td>
+                <td className={styles.dependentsActions}>
+                  <button
+                    onClick={() => handleManageDependents(collaborator)}
+                    className={styles.iconButton}
+                  >
+                    <img src="/icon-view.png" alt="Dependentes" className={styles.icon} />
+                  </button>
+                  <button
+                    onClick={() => handleEditClick(collaborator)}
+                    className={styles.iconButton}
+                  >
+                    <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteClick(collaborator)}
+                    className={styles.iconButton}
+                  >
+                    <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

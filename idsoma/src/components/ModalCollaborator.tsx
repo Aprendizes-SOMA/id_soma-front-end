@@ -105,7 +105,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             onChange={handleChange}
             className={styles.input}
             placeholder="Informe o CPF do colaborador"
-            maxLength={14} // Limita o comprimento máximo do CPF formatado
+            maxLength={14}
             disabled={loading}
           />
           <label>Cargo:</label>

@@ -5,8 +5,6 @@ export const loginAdmin = async (credentials: { username: string; password: stri
     const response = await axiosInstance.post('/admin/login', credentials);
     const token = response.data.token;
 
-    console.log("Token recebido:", token);
-
     if (token) {
       localStorage.setItem('adminToken', token);
     }

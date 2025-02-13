@@ -2,14 +2,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import styles from "../styles/page.module.css";
-import { listCollaboratorsByCPF } from "../app/api/collaborator/index"; // Importa a função de busca por CPF
+import { listCollaboratorsByCPF } from "../app/api/collaborator/index";
 
-// Função para formatar o CPF automaticamente
 const formatCPF = (value: string): string => {
-  // Remove tudo que não for número
   const cleanedValue = value.replace(/\D/g, "");
 
-  // Aplica a máscara de CPF
   if (cleanedValue.length <= 3) {
     return cleanedValue;
   } else if (cleanedValue.length <= 6) {
@@ -24,7 +21,7 @@ const formatCPF = (value: string): string => {
 export default function Home() {
   const [cpf, setCpf] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Estado para indicar carregamento
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSearchByCpf = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -32,22 +29,20 @@ export default function Home() {
       setError("Por favor, digite um CPF válido.");
       return;
     }
-    setLoading(true); // Inicia o estado de carregamento
-    setError(null); // Limpa qualquer erro anterior
+    setLoading(true);
+    setError(null);
     try {
-      // Chama a API para verificar se o CPF existe
       const data = await listCollaboratorsByCPF(cpf);
       if (!data) {
         setError("Colaborador não encontrado.");
-        setLoading(false); // Finaliza o estado de carregamento
+        setLoading(false);
         return;
       }
-      // Redireciona para a página de colaborador com o CPF como parâmetro
       window.location.href = `/collaborator?cpf=${cpf}`;
     } catch (err) {
       console.error("Erro ao buscar colaborador:", err);
       setError("Erro ao buscar dados do colaborador. Tente novamente mais tarde.");
-      setLoading(false); // Finaliza o estado de carregamento
+      setLoading(false);
     }
   };
 
@@ -72,13 +67,13 @@ export default function Home() {
           placeholder="Digite seu CPF"
           className={styles.input}
           value={cpf}
-          onChange={(e) => setCpf(formatCPF(e.target.value))} // Formata o CPF automaticamente
-          maxLength={14} // Limita o comprimento máximo do CPF formatado
+          onChange={(e) => setCpf(formatCPF(e.target.value))}
+          maxLength={14}
         />
         <button
           type="submit"
           className={styles.button}
-          disabled={loading} // Desabilita o botão enquanto estiver carregando
+          disabled={loading}
         >
           {loading ? "Verificando..." : "Verificar"}
         </button>

@@ -38,7 +38,7 @@
 
 .field {
   width: 200%;
-  max-width: 400px; /* Defina um valor adequado */
+  max-width: 400px;
 }
 
 .form {
@@ -55,7 +55,7 @@
   font-size: 15px;
   height: 38px;
   width: 100%;
-  max-width: 500px; /* Ajuste conforme necessário */
+  max-width: 500px;
 }
 
 .button {
@@ -110,7 +110,7 @@
     font-size: 15px;
     height: 38px;
     width: 100%;
-    max-width: 300px; /* Ajuste conforme necessário */
+    max-width: 300px;
   }
 
   .button {

@@ -1,10 +1,8 @@
 import axiosInstance from '../axiosInstance';
 
 export const addCollaborator = async (data: { name: string; cpf: string; adminId: number; role: string }) => {
-  console.log("Enviando dados para a API:", data);
   try {
     const response = await axiosInstance.post('/collaborator', data);
-    console.log("Resposta recebida da API:", response.data);
     return response.data;
   } catch (error) {
     console.error('Erro ao adicionar colaborador:', error);
@@ -24,7 +22,6 @@ export const listCollaborators = async () => {
 
 export const updateCollaborator = async (id: number, data: { name?: string; cpf?: string; role?: string }) => {
   try {
-    console.log("Enviando para API:", { name: data.name, cpf: data.cpf, role: data.role });
 
     const response = await axiosInstance.put(`/collaborator/${id}`, {
       name: data.name,
@@ -32,7 +29,6 @@ export const updateCollaborator = async (id: number, data: { name?: string; cpf?
       role: data.role
     });
 
-    console.log("Resposta da API:", response.data);
     return response.data;
   } catch (error) {
     console.error('Erro ao atualizar colaborador:', error);

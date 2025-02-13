@@ -71,7 +71,6 @@
   border-radius: 5px;
 }
 
-/* Botão "Salvar" alinhado corretamente */
 .saveButton {
   align-self: flex-end; 
   background: #f5a623;
@@ -102,7 +101,6 @@
   border-bottom: 1px solid #ddd;
 }
 
-/* Estilizando Nome e Parentesco */
 .dependentInfo {
   display: flex;
   flex-direction: column;
@@ -127,7 +125,6 @@
   font-weight: bold;
 }
 
-/* Botões de ação alinhados à direita */
 .actionButtons {
   display: flex;
   gap: 10px;
@@ -152,7 +149,6 @@
   margin-top: 20px;
 }
 
-/* Botão "Voltar" */
 .cancelButton {
   background: #f5a623;
   color: white;
@@ -167,7 +163,6 @@
   background: #e6951f;
 }
 
-/* Botão "Salvar" */
 .saveButton {
   background: #f5a623;
   color: white;
@@ -234,7 +229,6 @@
     margin: 8px 0;
   }
 
-  /* 🔹 Centraliza o formulário e ajusta labels */
   .inlineForm {
     display: flex;
     flex-direction: column;
@@ -242,13 +236,11 @@
     width: 100%;
   }
 
-  /* 🔹 Ajusta as labels */
   .dependentLabel {
     align-self: flex-start;
     margin-bottom: 3px; 
   }
 
-  /* 🔹 Ajusta os inputs */
   .input {
     width: 100%;
     font-size: 13px;
@@ -256,12 +248,10 @@
     margin-bottom: 10px;
   }
 
-  /* 🔹 Ajusta a lista de dependentes */
   .dependentsList {
     padding: 0;
   }
 
-  /* 🔹 Centraliza os botões */
   .modalActions {
     display: flex;
     justify-content: center;
