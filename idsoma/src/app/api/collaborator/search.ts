@@ -1,8 +1,8 @@
-import axiosInstance from '../axiosInstance';
+import axiosInstance from "../axiosInstance";
 
 export const listCollaboratorsByName = async (name: string) => {
   try {
-    const response = await axiosInstance.get('/collaborator/search-name', {
+    const response = await axiosInstance.get('/collaborators/search-name', {
       params: { name },
     });
     return response.data;
@@ -14,7 +14,7 @@ export const listCollaboratorsByName = async (name: string) => {
 
 export const listCollaboratorsByCPF = async (cpf: string) => {
   try {
-    const response = await axiosInstance.get('/collaborator/search-cpf', {
+    const response = await axiosInstance.get('/collaborators/search-cpf', {
       params: { cpf },
     });
     return response.data;
