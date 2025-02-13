@@ -1,11 +1,11 @@
 "use client";
-
 import React from "react";
 import styles from "../../styles/ListCollaborators.module.css";
 import ModalCollaborator from "../../components/ModalCollaborator";
 import ModalDependents from "../../components/ModalDependents";
 import DeleteModal from "../../components/ModalDe";
-import { useCollaborators } from "../../hooks/useCollaborators"
+import { useCollaborators } from "../../hooks/useCollaborators";
+import { formatCPF } from "../page";
 
 export default function ListCollaborators() {
   const {
@@ -30,8 +30,22 @@ export default function ListCollaborators() {
     handleAddClick,
     handleEditClick,
     handleManageDependents,
-    handleDeleteClick
+    handleDeleteClick,
   } = useCollaborators();
+
+  // Função para lidar com a mudança no campo de pesquisa
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // Verifica se o valor contém apenas números
+    if (/^\d+$/.test(value.replace(/\D/g, ""))) {
+      // Aplica a formatação de CPF
+      setSearchTerm(formatCPF(value));
+    } else {
+      // Deixa o valor inalterado (pesquisa por nome)
+      setSearchTerm(value);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -52,7 +66,8 @@ export default function ListCollaborators() {
               placeholder="Pesquisar"
               className={styles.searchInput}
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange} 
+              maxLength={14} 
             />
           </div>
         </div>
@@ -60,7 +75,6 @@ export default function ListCollaborators() {
           Adicionar Colaborador
         </button>
       </div>
-
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
@@ -78,36 +92,35 @@ export default function ListCollaborators() {
                 collaborator.cpf.includes(searchTerm)
               )
               .map((collaborator) => (
-              <tr key={collaborator.id}>
-                <td>{collaborator.name}</td>
-                <td>{collaborator.cpf}</td>
-                <td>{collaborator.role}</td>
-                <td className={styles.dependentsActions}>
-                  <button
-                    onClick={() => handleManageDependents(collaborator)}
-                    className={styles.iconButton}
-                  >
-                    <img src="/icon-view.png" alt="Dependentes" className={styles.icon} />
-                  </button>
-                  <button
-                    onClick={() => handleEditClick(collaborator)}
-                    className={styles.iconButton}
-                  >
-                    <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteClick(collaborator)}
-                    className={styles.iconButton}
-                  >
-                    <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                <tr key={collaborator.id}>
+                  <td>{collaborator.name}</td>
+                  <td>{collaborator.cpf}</td>
+                  <td>{collaborator.role}</td>
+                  <td className={styles.dependentsActions}>
+                    <button
+                      onClick={() => handleManageDependents(collaborator)}
+                      className={styles.iconButton}
+                    >
+                      <img src="/icon-view.png" alt="Dependentes" className={styles.icon} />
+                    </button>
+                    <button
+                      onClick={() => handleEditClick(collaborator)}
+                      className={styles.iconButton}
+                    >
+                      <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(collaborator)}
+                      className={styles.iconButton}
+                    >
+                      <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
-
       <ModalCollaborator
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -115,7 +128,6 @@ export default function ListCollaborators() {
         title={modalTitle}
         initialData={formData}
       />
-
       {isDependentsModalOpen && selectedCollaborator && (
         <ModalDependents
           isOpen={isDependentsModalOpen}
@@ -132,12 +144,11 @@ export default function ListCollaborators() {
           collaboratorId={selectedCollaborator?.id ?? 0}
         />
       )}
-
       {isDeleteModalOpen && selectedCollaborator && (
         <DeleteModal
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
-          onDelete={() => handleConfirmDelete(selectedCollaborator!)} 
+          onDelete={() => handleConfirmDelete(selectedCollaborator!)}
           title="Confirmar Exclusão"
           message={`Tem certeza que deseja excluir o colaborador "${selectedCollaborator?.name}"? Essa ação é permanente.`}
         />
