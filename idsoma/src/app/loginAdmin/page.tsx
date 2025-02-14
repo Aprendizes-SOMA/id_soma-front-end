@@ -2,7 +2,11 @@
 import React, { useState } from "react";
 import styles from "../../styles/loginAdmin.module.css";
 import { useRouter } from "next/navigation";
+
 import { loginAdmin } from "@/app/api/admin/index";
+
+import TextInput from "@/components/TextInput";
+import CustomButton from "@/components/CustomButton";
 
 const LoginAdmin = () => {
   const router = useRouter();
@@ -29,54 +33,32 @@ const LoginAdmin = () => {
       </div>
       <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
       <h2 className={styles.subtitle}>LOGIN ADMINISTRADOR</h2>
+      
       <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.field}>
-          <label htmlFor="username" className={styles.label}>
-            Usuário
-          </label>
-          <input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            id="username"
-            type="text"
-            placeholder="Digite seu usuário"
-            className={styles.input}
-            required
-          />
-        </div>
-        <div className={styles.field} style={{ position: "relative" }}>
-          <label htmlFor="password" className={styles.label}>
-            Senha
-          </label>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            id="password"
-            type={showPassword ? "text" : "password"}
-            placeholder="Digite sua senha"
-            className={styles.input}
-            required
-          />
-          {/* Ícone dinâmico */}
-          <img
-            src={showPassword ? "/fechar-olho.png" : "/versenha.png"}
-            alt={showPassword ? "Ocultar senha" : "Mostrar senha"}
-            style={{
-              position: "absolute",
-              right: "10px",
-              top: "57%",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-              width: "20px",
-            }}
-            onClick={() => setShowPassword(!showPassword)}
-          />
-        </div>
+        <TextInput
+          label="Usuário"
+          id="username"
+          type="text"
+          value={username}
+          placeholder="Digite seu usuário"
+          onChange={(e) => setUsername(e.target.value)}
+        />
+
+        <TextInput
+          label="Senha"
+          id="password"
+          type={showPassword ? "text" : "password"}
+          value={password}
+          placeholder="Digite sua senha"
+          onChange={(e) => setPassword(e.target.value)}
+          showPassword={showPassword}
+          toggleShowPassword={() => setShowPassword(!showPassword)}
+        />
+
         {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+        
         <div className={styles.buttonContainer}>
-          <button type="submit" className={styles.button}>
-            ENTRAR
-          </button>
+          <CustomButton type="submit" text="Entrar" color="primary" />
         </div>
       </form>
     </div>
