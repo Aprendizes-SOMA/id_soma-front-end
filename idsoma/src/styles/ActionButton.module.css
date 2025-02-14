@@ -1,0 +1,33 @@
+.iconButton {
+  background-color: #f0f0f0ac;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+}
+
+.iconButton:hover {
+  background-color: #e0e0e099;
+  border-color: #bbb;
+  transform: scale(1.1);
+}
+
+.iconButton:active {
+  transform: scale(0.95);
+}
+
+.iconButton:focus {
+  outline: none;
+  border-color: #f5a623;
+}

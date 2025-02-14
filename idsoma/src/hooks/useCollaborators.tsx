@@ -4,21 +4,6 @@ import { listCollaborators, addCollaborator, updateCollaborator, deleteCollabora
 import { logoutAdmin } from "../app/api/admin/auth";
 import axiosInstance from "../app/api/axiosInstance";
 
-interface Dependent {
-  collaboratorId: number;
-  id?: number;
-  name: string;
-  parentesco: string;
-}
-
-interface Collaborator {
-  id: number;
-  name: string;
-  cpf: string;
-  role: string;
-  dependents: Dependent[];
-}
-
 export function useCollaborators() {
   const router = useRouter();
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
@@ -37,6 +22,7 @@ export function useCollaborators() {
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchCollaborators = async () => {
@@ -59,7 +45,7 @@ export function useCollaborators() {
     }
   };
 
-  const handleSaveDependents = async (updatedDependents: Dependent[]) => {
+  const handleSaveDependents = async (updatedDependents: DependentProps[]) => {
     if (!selectedCollaborator) return;
   
     try {
@@ -203,6 +189,47 @@ export function useCollaborators() {
       console.error("Erro ao buscar dependentes:", error);
       alert("Erro ao carregar dependentes. Por favor, tente novamente.");
     }
+  };
+
+  const handleToggleSelect = (id: number) => {
+    setSelectedIds((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((selectedId) => selectedId !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedIds.length === 0) {
+      alert("Selecione pelo menos um colaborador para excluir.");
+      return;
+    }
+    if (confirm("Tem certeza que deseja excluir os colaboradores selecionados?")) {
+      selectedIds.forEach((id) => handleConfirmDelete({ id } as any));
+      setSelectedIds([]);
+    }
+  };
+
+  const formatCPF = (value: string) => {
+    let cpf = value.replace(/\D/g, ""); 
+  
+    cpf = cpf.slice(0, 11);
+  
+    if (cpf.length > 9) {
+      cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, "$1.$2.$3-$4");
+    } else if (cpf.length > 6) {
+      cpf = cpf.replace(/(\d{3})(\d{3})(\d{0,3})/, "$1.$2.$3");
+    } else if (cpf.length > 3) {
+      cpf = cpf.replace(/(\d{3})(\d{0,3})/, "$1.$2");
+    }
+  
+    return cpf;
+  };
+  
+  
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedCPF = formatCPF(e.target.value);
+    setSearchTerm(formattedCPF);
   };  
 
   return {
@@ -228,6 +255,11 @@ export function useCollaborators() {
     handleEditClick,
     handleSaveDependents,
     handleManageDependents,
-    handleDeleteClick
+    handleDeleteClick,
+    handleToggleSelect,
+    handleDeleteSelected,
+    handleSearchChange,
+    setSelectedIds,
+    selectedIds
   };
 }

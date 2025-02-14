@@ -13,7 +13,46 @@
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
   gap: 10px; 
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: bold;
+  color: orange;
+  border: 2px solid orange;
+  background-color: transparent;
+  fill: orange;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.logoutIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.logoutButton:hover {
+  background-color: orange;
+  color: white;
+  fill: white;
 }
 
 .title {
@@ -23,40 +62,39 @@
   margin: 0; 
 }
 
-.searchBar {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  gap: 5px;
-}
-
 .searchInputContainer {
   position: relative;
   display: flex;
   align-items: center;
-  width: 300px; 
+  width: 250px;
 }
 
 .searchIcon {
   position: absolute;
-  left: 10px; 
+  left: 10px;
   width: 16px;
   height: 16px;
   pointer-events: none;
+  opacity: 0.6;
 }
 
 .searchInput {
   width: 100%;
-  padding: 10px 10px 10px 40px; 
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  padding: 8px 14px 8px 36px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  transition: all 0.3s ease-in-out;
   box-sizing: border-box;
 }
 
 .searchInput:focus {
   outline: none;
   border-color: #f5a623;
+  box-shadow: 0 0 5px rgba(245, 166, 35, 0.3);
 }
 
 .addButton {
@@ -73,6 +111,12 @@
 
 .addButton:hover {
   background-color: #e6951f;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .tableContainer {
@@ -92,23 +136,6 @@
   text-align: left;
   border-bottom: 1px solid #ddd;
   white-space: nowrap;
-}
-
-.dependentsActions {
-  display: flex;
-  gap: 5px;
-}
-
-.iconButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.icon {
-  width: 20px;
-  height: 20px;
 }
 
 .table th:first-child,
@@ -132,6 +159,44 @@
   background-color: #c0392b;
 }
 
+.checkboxInput {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #bbb;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  vertical-align: middle;
+}
+
+.checkboxInput:checked {
+  background-color: #f5a623;
+  border-color: #d88b1f;
+}
+
+.checkboxInput:checked::after {
+  content: "✔";
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  position: absolute;
+}
+
+.checkboxInput:hover {
+  border-color: #f5a623;
+}
+
+.checkboxInput:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(245, 166, 35, 0.5);
+}
+
 @media screen and (max-width: 768px) {
   .tableContainer {
     overflow-x: auto;
@@ -139,79 +204,32 @@
   }
 }
 
-
-.logout{
-  width: 25px; 
-  height: 25px
-}
-
 @media (max-width: 768px) {
-  .container {
-    padding: 20px;
-  }
-
   .header {
-    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    gap: 40px; 
-    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
   }
 
-  .title {
-    font-size: 18px;
-    margin-bottom: 5px; 
+  .headerLeft {
+    justify-content: center;
+    width: 100%;
   }
 
-  .headerContent {
-    display: flex;
+  .headerRight {
     flex-direction: column;
-    align-items: flex-end; 
     width: 100%;
-    
+    align-items: center;
   }
 
   .searchInputContainer {
     width: 100%;
-    max-width: 153px;
-    height: 50px;
-  }
-
-  .searchInput {
-    font-size: 13px;
-    padding: 8px 8px 8px 35px;
+    max-width: 300px;
   }
 
   .addButton {
-    max-width: 150px;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 8px 15px;
-    margin-top: 5px;
-    align-self: flex-end;
+    width: 100%;
+    max-width: 300px;
   }
-
-  /* .tableContainer {
-    overflow-x: auto;
-  }
-
-  .table th{
-    font-size: 12px;
-  }
-  .table td {
-    font-size: 10px;
-    padding: 10px;
-  }
-
-  .dependentsActions {
-    gap: 3px;
-  }
-  .icon {
-    width: 15px;
-    height: 10px;
-
-} */
-
-
 }
