@@ -28,39 +28,41 @@ const LoginAdmin = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.logo}>
-        <img src="/logo.png" alt="SOMA Verificação" />
-      </div>
-      <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
-      <h2 className={styles.subtitle}>LOGIN ADMINISTRADOR</h2>
-      
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <TextInput
-          label="Usuário"
-          id="username"
-          type="text"
-          value={username}
-          placeholder="Digite seu usuário"
-          onChange={(e) => setUsername(e.target.value)}
-        />
-
-        <TextInput
-          label="Senha"
-          id="password"
-          type={showPassword ? "text" : "password"}
-          value={password}
-          placeholder="Digite sua senha"
-          onChange={(e) => setPassword(e.target.value)}
-          showPassword={showPassword}
-          toggleShowPassword={() => setShowPassword(!showPassword)}
-        />
-
-        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
-        
-        <div className={styles.buttonContainer}>
-          <CustomButton type="submit" text="Entrar" color="primary" />
+      <div className={styles.loginBox}>
+        <div className={styles.logo}>
+          <img src="/logo.png" alt="SOMA Verificação" />
         </div>
-      </form>
+        <h1 className={styles.title}>SOMA verificação</h1>
+        <h2 className={styles.subtitle}>Login do Administrador</h2>
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <TextInput
+            label="Usuário"
+            id="username"
+            type="text"
+            value={username}
+            placeholder="Digite seu usuário"
+            onChange={(e) => setUsername(e.target.value)}
+          />
+
+          <TextInput
+            label="Senha"
+            id="password"
+            type={showPassword ? "text" : "password"}
+            value={password}
+            placeholder="Digite sua senha"
+            onChange={(e) => setPassword(e.target.value)}
+            showPassword={showPassword}
+            toggleShowPassword={() => setShowPassword(!showPassword)}
+          />
+
+          {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+
+          <div className={styles.buttonContainer}>
+            <CustomButton type="submit" text="Entrar" color="primary" />
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
