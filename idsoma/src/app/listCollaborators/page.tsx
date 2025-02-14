@@ -1,11 +1,12 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import styles from "../../styles/ListCollaborators.module.css";
 import ModalCollaborator from "../../components/ModalCollaborator";
 import ModalDependents from "../../components/ModalDependents";
 import DeleteModal from "../../components/ModalDe";
 import { useCollaborators } from "../../hooks/useCollaborators";
-import { formatCPF } from "../page";
+
+import CustomButton from "@/components/CustomButton";
 
 export default function ListCollaborators() {
   const {
@@ -14,10 +15,10 @@ export default function ListCollaborators() {
     setSearchTerm,
     isDependentsModalOpen,
     setIsDependentsModalOpen,
-    setIsDeleteModalOpen,
     isModalOpen,
     setIsModalOpen,
     isDeleteModalOpen,
+    setIsDeleteModalOpen,
     modalTitle,
     formData,
     selectedCollaborator,
@@ -33,17 +34,24 @@ export default function ListCollaborators() {
     handleDeleteClick,
   } = useCollaborators();
 
-  const sortCollaborators = (collaboratorsList: typeof collaborators) => {
-    return [...collaboratorsList].sort((a, b) => a.name.localeCompare(b.name));
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+  const handleToggleSelect = (id: number) => {
+    setSelectedIds((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((selectedId) => selectedId !== id)
+        : [...prevSelected, id]
+    );
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    if (/^\d+$/.test(value.replace(/\D/g, ""))) {
-      setSearchTerm(formatCPF(value));
-    } else {
-      setSearchTerm(value);
+  const handleDeleteSelected = () => {
+    if (selectedIds.length === 0) {
+      alert("Selecione pelo menos um colaborador para excluir.");
+      return;
+    }
+    if (confirm("Tem certeza que deseja excluir os colaboradores selecionados?")) {
+      selectedIds.forEach((id) => handleConfirmDelete({ id } as any));
+      setSelectedIds([]);
     }
   };
 
@@ -62,19 +70,32 @@ export default function ListCollaborators() {
               placeholder="Pesquisar"
               className={styles.searchInput}
               value={searchTerm}
-              onChange={handleSearchChange}
+              onChange={(e) => setSearchTerm(e.target.value)}
               maxLength={14}
             />
           </div>
         </div>
-        <button className={styles.addButton} onClick={handleAddClick}>
-          Adicionar Colaborador
-        </button>
+
+        <CustomButton text="Adicionar colaborador" onClick={handleAddClick} color="primary" />
+
+        {selectedIds.length > 0 && (
+          <CustomButton text={`Excluir Selecionados (${selectedIds.length})`} onClick={handleDeleteSelected} color="danger" />
+        )}
       </div>
+
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
             <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  onChange={(e) =>
+                    setSelectedIds(e.target.checked ? collaborators.map((c) => c.id) : [])
+                  }
+                  checked={selectedIds.length === collaborators.length && collaborators.length > 0}
+                />
+              </th>
               <th>Nome</th>
               <th>CPF</th>
               <th>Cargo</th>
@@ -82,41 +103,50 @@ export default function ListCollaborators() {
             </tr>
           </thead>
           <tbody>
-            {sortCollaborators(
-              collaborators.filter((collaborator) =>
-                collaborator.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                collaborator.cpf.includes(searchTerm)
+            {collaborators
+              .filter(
+                (collaborator) =>
+                  collaborator.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  collaborator.cpf.includes(searchTerm)
               )
-            ).map((collaborator) => (
-              <tr key={collaborator.id}>
-                <td>{collaborator.name}</td>
-                <td>{collaborator.cpf}</td>
-                <td>{collaborator.role}</td>
-                <td className={styles.dependentsActions}>
-                  <button
-                    onClick={() => handleManageDependents(collaborator)}
-                    className={styles.iconButton}
-                  >
-                    <img src="/icon-view.png" alt="Dependentes" className={styles.icon} />
-                  </button>
-                  <button
-                    onClick={() => handleEditClick(collaborator)}
-                    className={styles.iconButton}
-                  >
-                    <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteClick(collaborator)}
-                    className={styles.iconButton}
-                  >
-                    <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
-                  </button>
-                </td>
-              </tr>
-            ))}
+              .map((collaborator) => (
+                <tr key={collaborator.id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(collaborator.id)}
+                      onChange={() => handleToggleSelect(collaborator.id)}
+                    />
+                  </td>
+                  <td>{collaborator.name}</td>
+                  <td>{collaborator.cpf}</td>
+                  <td>{collaborator.role}</td>
+                  <td className={styles.dependentsActions}>
+                    <button
+                      onClick={() => handleManageDependents(collaborator)}
+                      className={styles.iconButton}
+                    >
+                      <img src="/icon-view.png" alt="Dependentes" className={styles.icon} />
+                    </button>
+                    <button
+                      onClick={() => handleEditClick(collaborator)}
+                      className={styles.iconButton}
+                    >
+                      <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(collaborator)}
+                      className={styles.iconButton}
+                    >
+                      <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
+
       <ModalCollaborator
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -124,27 +154,27 @@ export default function ListCollaborators() {
         title={modalTitle}
         initialData={formData}
       />
+
       {isDependentsModalOpen && selectedCollaborator && (
         <ModalDependents
           isOpen={isDependentsModalOpen}
           onClose={() => setIsDependentsModalOpen(false)}
           onSave={handleSaveDependents}
           initialDependents={
-            selectedCollaborator && selectedCollaborator.dependents
-              ? selectedCollaborator.dependents.map((dep) => ({
-                  ...dep,
-                  collaboratorId: selectedCollaborator.id,
-                }))
-              : []
+            selectedCollaborator?.dependents?.map((dep) => ({
+              ...dep,
+              collaboratorId: selectedCollaborator.id,
+            })) || []
           }
           collaboratorId={selectedCollaborator?.id ?? 0}
         />
       )}
+
       {isDeleteModalOpen && selectedCollaborator && (
         <DeleteModal
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
-          onDelete={() => handleConfirmDelete(selectedCollaborator!)}
+          onDelete={() => handleConfirmDelete(selectedCollaborator)}
           title="Confirmar Exclusão"
           message={`Tem certeza que deseja excluir o colaborador "${selectedCollaborator?.name}"? Essa ação é permanente.`}
         />

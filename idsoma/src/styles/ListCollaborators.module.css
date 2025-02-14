@@ -76,38 +76,27 @@
 }
 
 .tableContainer {
-  max-height: 550px; 
-  overflow-y: auto;
+  width: 100%;
+  overflow-x: auto;
 }
 
 .table {
   width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
-  table-layout: fixed;
-  margin-top: 20px;
 }
 
 .table th,
 .table td {
+  padding: 10px;
   text-align: left;
-  padding: 12px;
-  word-wrap: break-word;
-}
-
-.table th {
-  font-size: 16px;
-  color: #333;
-  position: sticky;
-  background-color: #ffffff;
-  top: 0;
-  z-index: 1;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
 }
 
 .dependentsActions {
   display: flex;
-  justify-content: space-between;
-  gap: 15px; 
-  cursor: pointer;
+  gap: 5px;
 }
 
 .iconButton {
@@ -115,20 +104,41 @@
   border: none;
   cursor: pointer;
   padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease;
-}
-
-.iconButton:hover {
-  transform: scale(1.1);
 }
 
 .icon {
-  width: 22px; 
-  height: 22px;
+  width: 20px;
+  height: 20px;
 }
+
+.table th:first-child,
+.table td:first-child {
+  width: 40px;
+  text-align: center;
+}
+
+.deleteButton {
+  background-color: #e74c3c;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.deleteButton:hover {
+  background-color: #c0392b;
+}
+
+@media screen and (max-width: 768px) {
+  .tableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 
 .logout{
   width: 25px; 
@@ -154,7 +164,6 @@
     margin-bottom: 5px; 
   }
 
-  /* 🔹 Agrupa a pesquisa + botão */
   .headerContent {
     display: flex;
     flex-direction: column;
@@ -163,7 +172,6 @@
     
   }
 
-  /* 🔹 Ajusta a pesquisa */
   .searchInputContainer {
     width: 100%;
     max-width: 153px;
@@ -175,7 +183,6 @@
     padding: 8px 8px 8px 35px;
   }
 
-  /* 🔹 Mantém o botão abaixo da pesquisa e alinhado corretamente */
   .addButton {
     max-width: 150px;
     font-size: 12px;
@@ -185,7 +192,7 @@
     align-self: flex-end;
   }
 
-  .tableContainer {
+  /* .tableContainer {
     overflow-x: auto;
   }
 
@@ -204,7 +211,7 @@
     width: 15px;
     height: 10px;
 
-}
+} */
 
 
 }

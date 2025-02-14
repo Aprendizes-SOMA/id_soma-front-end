@@ -1,0 +1,35 @@
+.button {
+  padding: 10px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.primary {
+  background-color: orange;
+  color: white;
+}
+
+.primary:hover {
+  background-color: darkorange;
+}
+
+.danger {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.danger:hover {
+  background-color: #c0392b;
+}
+
+.secondary {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.secondary:hover {
+  background-color: #7f8c8d;
+}
