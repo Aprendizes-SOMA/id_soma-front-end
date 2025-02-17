@@ -257,6 +257,7 @@ export function useCollaborators() {
     handleDeleteSelected,
     handleSearchChange,
     setSelectedIds,
-    selectedIds
+    selectedIds,
+    formatCPF
   };
 }

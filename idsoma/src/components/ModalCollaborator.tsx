@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import styles from "../styles/components/Modal.module.css";
-import { formatCPF } from "../app/page";
+import { useCollaborators } from "@/hooks/useCollaborators";
+
 interface ModalCollaboratorProps {
   isOpen: boolean;
   onClose: () => void;
@@ -29,6 +30,8 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
       );
     }
   }, [isOpen, title, initialData]);
+
+  const { formatCPF } = useCollaborators();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

@@ -3,22 +3,14 @@ import { useState } from "react";
 import Image from "next/image";
 import styles from "../styles/page.module.css";
 import { listCollaboratorsByCPF } from "../app/api/collaborator/index";
+import { useCollaborators } from "@/hooks/useCollaborators";
 
-const formatCPF = (value: string): string => {
-  const cleanedValue = value.replace(/\D/g, "");
-
-  if (cleanedValue.length <= 3) {
-    return cleanedValue;
-  } else if (cleanedValue.length <= 6) {
-    return `${cleanedValue.slice(0, 3)}.${cleanedValue.slice(3)}`;
-  } else if (cleanedValue.length <= 9) {
-    return `${cleanedValue.slice(0, 3)}.${cleanedValue.slice(3, 6)}.${cleanedValue.slice(6)}`;
-  } else {
-    return `${cleanedValue.slice(0, 3)}.${cleanedValue.slice(3, 6)}.${cleanedValue.slice(6, 9)}-${cleanedValue.slice(9, 11)}`;
-  }
-};
 
 export default function Home() {
+  const {
+    formatCPF
+  } = useCollaborators();
+  
   const [cpf, setCpf] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -83,5 +75,3 @@ export default function Home() {
     </div>
   );
 }
-
-export { formatCPF };
