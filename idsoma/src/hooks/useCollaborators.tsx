@@ -211,27 +211,24 @@ export function useCollaborators() {
   };
 
   const formatCPF = (value: string) => {
-    let cpf = value.replace(/\D/g, ""); 
-  
-    cpf = cpf.slice(0, 11);
-  
-    if (cpf.length > 9) {
-      cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, "$1.$2.$3-$4");
-    } else if (cpf.length > 6) {
-      cpf = cpf.replace(/(\d{3})(\d{3})(\d{0,3})/, "$1.$2.$3");
-    } else if (cpf.length > 3) {
-      cpf = cpf.replace(/(\d{3})(\d{0,3})/, "$1.$2");
-    }
-  
-    return cpf;
-  };
-  
-  
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedCPF = formatCPF(e.target.value);
-    setSearchTerm(formattedCPF);
+    const cleaned = value.replace(/\D/g, "").slice(0, 11);
+    if (cleaned.length <= 3) return cleaned;
+    if (cleaned.length <= 6)
+      return `${cleaned.slice(0, 3)}.${cleaned.slice(3)}`;
+    if (cleaned.length <= 9)
+      return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6)}`;
+    return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6, 9)}-${cleaned.slice(9)}`;
   };  
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+    const numeric = value.replace(/\D/g, "");
+    if (numeric && numeric.length <= 11) {
+      value = formatCPF(numeric);
+    }
+    setSearchTerm(value);
+  };
+  
   return {
     collaborators,
     searchTerm,

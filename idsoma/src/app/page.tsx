@@ -70,6 +70,7 @@ export default function Home() {
           onChange={(e) => setCpf(formatCPF(e.target.value))}
           maxLength={14}
         />
+
         <button
           type="submit"
           className={styles.button}

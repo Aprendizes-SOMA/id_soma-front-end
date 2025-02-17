@@ -42,6 +42,9 @@ export default function ListCollaborators() {
     handleToggleSelect
   } = useCollaborators();
 
+  const numericSearch = searchTerm.replace(/\D/g, "");
+  const inputMaxLength = (numericSearch && numericSearch.length <= 11) ? 14 : undefined;
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -68,7 +71,7 @@ export default function ListCollaborators() {
               className={styles.searchInput}
               value={searchTerm}
               onChange={handleSearchChange}
-              maxLength={14}
+              maxLength={inputMaxLength}
             />
           </div>
 
@@ -102,11 +105,19 @@ export default function ListCollaborators() {
           </thead>
           <tbody>
             {collaborators
-              .filter(
-                (collaborator) =>
-                  collaborator.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  collaborator.cpf.includes(searchTerm)
-              )
+              .filter((collaborator) => {
+                const searchLower = searchTerm.toLowerCase().trim();
+
+                const cpfSearch = searchTerm.replace(/\D/g, "");
+                const isNumeric = /^\d+$/.test(cpfSearch);
+
+                if (isNumeric) {
+                  return collaborator.cpf.replace(/\D/g, "").includes(cpfSearch);
+                } else {
+                  return collaborator.name.toLowerCase().includes(searchLower);
+                }
+              })
+              .sort((a, b) => a.name.localeCompare(b.name))
               .map((collaborator) => (
                 <tr key={collaborator.id}>
                   <td className={styles.checkboxContainer}>
