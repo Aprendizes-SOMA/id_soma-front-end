@@ -1,21 +1,20 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 import styles from "@/styles/ListCollaborators.module.css";
-
 import { useCollaborators } from "@/hooks/useCollaborators";
 
 import ModalCollaborator from "@/components/ModalCollaborator";
 import ModalDependents from "@/components/ModalDependents";
 import DeleteModal from "@/components/ModalDe";
 import CustomButton from "@/components/CustomButton";
+import ModalImportCSV from "@/components/ModalImportCSV";
 import ActionButton from "@/components/ActionButton";
 
 export default function ListCollaborators() {
   const {
     collaborators,
     searchTerm,
-    setSearchTerm,
     isDependentsModalOpen,
     setIsDependentsModalOpen,
     isModalOpen,
@@ -42,25 +41,47 @@ export default function ListCollaborators() {
     handleToggleSelect
   } = useCollaborators();
 
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+
+  const handleUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("https://id-soma.onrender.com/api/import-csv", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao importar CSV");
+      }
+
+      alert("CSV importado com sucesso!");
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao importar CSV:", error);
+      alert("Erro ao importar CSV");
+    }
+  };
+
   const numericSearch = searchTerm.replace(/\D/g, "");
-  const inputMaxLength = (numericSearch && numericSearch.length <= 11) ? 14 : undefined;
+  const inputMaxLength = numericSearch && numericSearch.length <= 11 ? 14 : undefined;
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.headerLeft}>
-        <button onClick={handleLogout} className={styles.logoutButton}>
-      <img 
-        src="/logout.png" 
-        alt="Logout" 
-        className={styles.logoutIcon} 
-      />
-      Logout
-    </button>
+          <button onClick={handleLogout} className={styles.logoutButton}>
+            <img src="/logout.png" alt="Logout" className={styles.logoutIcon} />
+            Logout
+          </button>
           <h1 className={styles.title}>Colaboradores</h1>
         </div>
 
         <div className={styles.headerRight}>
+          <CustomButton text="Importar CSV" onClick={() => setIsImportModalOpen(true)} color="secondary" />
+
           <div className={styles.searchInputContainer}>
             <img src="/lupa.png" alt="Pesquisar" className={styles.searchIcon} />
             <input
@@ -95,6 +116,7 @@ export default function ListCollaborators() {
                   checked={selectedIds.length === collaborators.length && collaborators.length > 0}
                 />
               </th>
+              <th>Matricula</th>
               <th>Nome</th>
               <th>CPF</th>
               <th>Cargo</th>
@@ -126,33 +148,26 @@ export default function ListCollaborators() {
                       onChange={() => handleToggleSelect(collaborator.id)}
                     />
                   </td>
+                  <td><strong>{collaborator.matricula}</strong></td>
                   <td>{collaborator.name}</td>
                   <td>{collaborator.cpf}</td>
                   <td>{collaborator.role}</td>
                   <td className={styles.actions}>
-                    <ActionButton 
-                      iconSrc="/icon-view.png" 
-                      altText="Dependentes" 
-                      onClick={() => handleManageDependents(collaborator)}
-                    />
-                    
-                    <ActionButton 
-                      iconSrc="/icon-edit.png" 
-                      altText="Editar" 
-                      onClick={() => handleEditClick(collaborator)}
-                    />
-
-                    <ActionButton 
-                      iconSrc="/icon-delete.png" 
-                      altText="Excluir" 
-                      onClick={() => handleDeleteClick(collaborator)}
-                    />
+                    <ActionButton iconSrc="/icon-view.png" altText="Dependentes" onClick={() => handleManageDependents(collaborator)} />
+                    <ActionButton iconSrc="/icon-edit.png" altText="Editar" onClick={() => handleEditClick(collaborator)} />
+                    <ActionButton iconSrc="/icon-delete.png" altText="Excluir" onClick={() => handleDeleteClick(collaborator)} />
                   </td>
                 </tr>
               ))}
           </tbody>
         </table>
       </div>
+
+      <ModalImportCSV
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onUpload={handleUpload}
+      />
 
       <ModalCollaborator
         isOpen={isModalOpen}

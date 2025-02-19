@@ -1,6 +1,6 @@
 import axiosInstance from '../axiosInstance';
 
-export const addCollaborator = async (data: { name: string; cpf: string; adminId: number; role: string }) => {
+export const addCollaborator = async (data: { name: string; cpf: string; adminId: number; role: string; matricula: string }) => {
   try {
     const response = await axiosInstance.post('/collaborator', data);
     return response.data;
@@ -20,13 +20,13 @@ export const listCollaborators = async () => {
   }
 };
 
-export const updateCollaborator = async (id: number, data: { name?: string; cpf?: string; role?: string }) => {
+export const updateCollaborator = async (id: number, data: { name?: string; cpf?: string; role?: string; matricula?: string }) => {
   try {
-
     const response = await axiosInstance.put(`/collaborator/${id}`, {
       name: data.name,
       cpf: data.cpf,
-      role: data.role
+      role: data.role,
+      matricula: data.matricula,
     });
 
     return response.data;
@@ -35,7 +35,6 @@ export const updateCollaborator = async (id: number, data: { name?: string; cpf?
     throw error;
   }
 };
-
 
 export const deleteCollaborator = async (id: number) => {
   try {

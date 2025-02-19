@@ -17,6 +17,7 @@ export function useCollaborators() {
     name: "",
     cpf: "",
     role: "",
+    matricula: "",
     dependents: [],
   });
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
@@ -83,13 +84,14 @@ export function useCollaborators() {
     }
   };
 
-  const handleAddCollaborator = async (data: { name: string; cpf: string; role: string }) => {
+  const handleAddCollaborator = async (data: { name: string; cpf: string; role: string; matricula: string }) => {
     try {
       setLoading(true);
       const newCollaborator = await addCollaborator({
         name: data.name,
         cpf: data.cpf,
         role: data.role,
+        matricula: data.matricula,
         adminId: 3,
       });
 
@@ -103,7 +105,7 @@ export function useCollaborators() {
     }
   };
 
-  const handleEditCollaborator = async (data: { name: string; cpf: string; role: string }) => {
+  const handleEditCollaborator = async (data: { name: string; cpf: string; role: string; matricula: string }) => {
     if (!selectedCollaborator) return;
     setLoading(true);
     try {
@@ -111,6 +113,7 @@ export function useCollaborators() {
         name: data.name,
         cpf: data.cpf,
         role: data.role,
+        matricula: data.matricula
       });
 
       setCollaborators((prev) =>
@@ -149,7 +152,7 @@ export function useCollaborators() {
 
   const handleAddClick = () => {
     setModalTitle("Adicionar Colaborador");
-    setFormData({ id: 0, name: "", cpf: "", role: "", dependents: [] });
+    setFormData({ id: 0, name: "", cpf: "", role: "", matricula: "", dependents: [] });
     setEditMode(false);
     setIsModalOpen(true);
   };
@@ -161,6 +164,7 @@ export function useCollaborators() {
       name: collaborator.name || "",
       cpf: collaborator.cpf || "",
       role: collaborator.role || "",
+      matricula: collaborator.matricula || "",
       dependents: collaborator.dependents || [],
     });
 

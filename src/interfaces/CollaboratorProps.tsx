@@ -3,5 +3,6 @@ interface Collaborator {
   name: string;
   cpf: string;
   role: string;
+  matricula: string;
   dependents: DependentProps[];
 }

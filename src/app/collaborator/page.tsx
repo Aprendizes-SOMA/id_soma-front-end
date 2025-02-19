@@ -11,6 +11,7 @@ interface CollaboratorData {
   name: string;
   cpf: string;
   role: string;
+  matricula: string;
   Dependents?: Dependent[];
 }
 
@@ -102,6 +103,9 @@ export default function Collaborator() {
         </p>
         <p>
           <strong>Cargo:</strong> {collaboratorData?.role}
+        </p>
+        <p>
+          <strong>Matrícula:</strong> {collaboratorData?.matricula}
         </p>
       </div>
       <div className={styles.dependentsTitle}>

@@ -6,9 +6,9 @@ import { useCollaborators } from "@/hooks/useCollaborators";
 interface ModalCollaboratorProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: { name: string; cpf: string; role: string }) => Promise<void>;
+  onSave: (data: { name: string; cpf: string; role: string; matricula: string }) => Promise<void>;
   title: string;
-  initialData?: { name: string; cpf: string; role: string };
+  initialData?: { name: string; cpf: string; role: string; matricula: string };
 }
 
 const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
@@ -16,7 +16,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
   onClose,
   onSave,
   title,
-  initialData = { name: "", cpf: "", role: "" },
+  initialData = { name: "", cpf: "", role: "", matricula: "" },
 }) => {
   const [formData, setFormData] = useState(initialData);
   const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
     if (isOpen) {
       setFormData(
         title === "Adicionar Colaborador"
-          ? { name: "", cpf: "", role: "" }
+          ? { name: "", cpf: "", role: "", matricula: "" }
           : initialData
       );
     }
@@ -36,7 +36,6 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    // Aplica a formatação automática ao CPF
     if (name === "cpf") {
       setFormData({ ...formData, [name]: formatCPF(value) });
     } else {
@@ -48,7 +47,8 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
     if (
       !formData.name.trim() ||
       !formData.cpf.trim() ||
-      !formData.role.trim()
+      !formData.role.trim() ||
+      !formData.matricula.trim()
     ) {
       alert("Por favor, preencha todos os campos.");
       return false;
@@ -119,6 +119,16 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
             onChange={handleChange}
             className={styles.input}
             placeholder="Informe o cargo do colaborador"
+            disabled={loading}
+          />
+          <label>Matricula:</label>
+          <input
+            type="text"
+            name="matricula"
+            value={formData.matricula}
+            onChange={handleChange}
+            className={styles.input}
+            placeholder="Informe a matricula colaborador"
             disabled={loading}
           />
         </form>
