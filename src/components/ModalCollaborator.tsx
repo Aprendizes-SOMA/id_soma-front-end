@@ -1,15 +1,10 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import styles from "../styles/components/Modal.module.css";
-import { useCollaborators } from "@/hooks/useCollaborators";
 
-interface ModalCollaboratorProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (data: { name: string; cpf: string; role: string; matricula: string }) => Promise<void>;
-  title: string;
-  initialData?: { name: string; cpf: string; role: string; matricula: string };
-}
+import React, { useState, useEffect } from "react";
+import styles from "../styles/Modal.module.css";
+import { useCollaborators } from "@/hooks/useCollaborators";
+import CustomButton from "@/components/CustomButton";
+import TextInput from "@/components/TextInput";
 
 const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
   isOpen,
@@ -35,12 +30,10 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    if (name === "cpf") {
-      setFormData({ ...formData, [name]: formatCPF(value) });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name === "cpf" ? formatCPF(value) : value,
+    }));
   };
 
   const validateForm = () => {
@@ -90,63 +83,50 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
       <div className={styles.modalContent}>
         <h2 className={styles.modalTitle}>{title}</h2>
         <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
-          <label>Nome:</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className={styles.input}
-            placeholder="Informe o nome do colaborador"
-            disabled={loading}
-          />
-          <label>CPF:</label>
-          <input
-            type="text"
-            name="cpf"
-            value={formData.cpf}
-            onChange={handleChange}
-            className={styles.input}
-            placeholder="Informe o CPF do colaborador"
-            maxLength={14}
-            disabled={loading}
-          />
-          <label>Cargo:</label>
-          <input
-            type="text"
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className={styles.input}
-            placeholder="Informe o cargo do colaborador"
-            disabled={loading}
-          />
-          <label>Matricula:</label>
-          <input
-            type="text"
-            name="matricula"
-            value={formData.matricula}
-            onChange={handleChange}
-            className={styles.input}
-            placeholder="Informe a matricula colaborador"
-            disabled={loading}
-          />
+          <div className={styles.inputGroup}>
+            <TextInput
+              label="Nome"
+              id="name"
+              name="name"
+              type="text"
+              value={formData.name}
+              placeholder="Informe o nome do colaborador"
+              onChange={handleChange}
+            />
+            <TextInput
+              label="CPF"
+              id="cpf"
+              name="cpf"
+              type="text"
+              value={formData.cpf}
+              placeholder="Informe o CPF do colaborador"
+              onChange={handleChange}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <TextInput
+              label="Cargo"
+              id="role"
+              name="role"
+              type="text"
+              value={formData.role}
+              placeholder="Informe o cargo do colaborador"
+              onChange={handleChange}
+            />
+            <TextInput
+              label="Matrícula"
+              id="matricula"
+              name="matricula"
+              type="text"
+              value={formData.matricula}
+              placeholder="Informe a matrícula do colaborador"
+              onChange={handleChange}
+            />
+          </div>
         </form>
         <div className={styles.modalActions}>
-          <button
-            className={styles.cancelButton}
-            onClick={onClose}
-            disabled={loading}
-          >
-            CANCELAR
-          </button>
-          <button
-            className={styles.saveButton}
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? "SALVANDO..." : "SALVAR"}
-          </button>
+          <CustomButton text="Cancelar" onClick={onClose} color="danger" disabled={loading} />
+          <CustomButton text={loading ? "Salvando..." : "Salvar"} onClick={handleSubmit} color="primary" disabled={loading} />
         </div>
       </div>
     </div>

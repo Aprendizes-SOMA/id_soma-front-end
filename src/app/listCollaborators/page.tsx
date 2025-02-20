@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+
+import React from "react";
 
 import styles from "@/styles/ListCollaborators.module.css";
 import { useCollaborators } from "@/hooks/useCollaborators";
@@ -10,6 +11,7 @@ import DeleteModal from "@/components/ModalDe";
 import CustomButton from "@/components/CustomButton";
 import ModalImportCSV from "@/components/ModalImportCSV";
 import ActionButton from "@/components/ActionButton";
+import NotificationModal from "@/components/NotificationModal";
 
 export default function ListCollaborators() {
   const {
@@ -38,38 +40,23 @@ export default function ListCollaborators() {
     handleDeleteClick,
     handleDeleteSelected,
     handleSearchChange,
-    handleToggleSelect
+    handleToggleSelect,
+    isImportModalOpen,
+    setIsImportModalOpen,
+    notification,
+    setNotification,
+    handleUpload,
+    inputMaxLength
   } = useCollaborators();
-
-  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-
-  const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch("https://id-soma.onrender.com/api/import-csv", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao importar CSV");
-      }
-
-      alert("CSV importado com sucesso!");
-      window.location.reload();
-    } catch (error) {
-      console.error("Erro ao importar CSV:", error);
-      alert("Erro ao importar CSV");
-    }
-  };
-
-  const numericSearch = searchTerm.replace(/\D/g, "");
-  const inputMaxLength = numericSearch && numericSearch.length <= 11 ? 14 : undefined;
 
   return (
     <div className={styles.container}>
+      <NotificationModal
+        isOpen={notification.isOpen}
+        type={notification.type as "success" | "error"}
+        message={notification.message}
+        onClose={() => setNotification({ isOpen: false, type: "success", message: "" })}
+      />
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <button onClick={handleLogout} className={styles.logoutButton}>

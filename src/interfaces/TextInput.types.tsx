@@ -4,7 +4,8 @@ interface TextInputProps {
   type: string;
   value: string;
   placeholder: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  name?: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   showPassword?: boolean;
   toggleShowPassword?: () => void;
 }

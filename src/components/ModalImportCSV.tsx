@@ -3,12 +3,6 @@ import React, { useState } from "react";
 import styles from "@/styles/ModalImportCSV.module.css";
 import CustomButton from "@/components/CustomButton";
 
-interface ModalImportCSVProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onUpload: (file: File, type: string) => void;
-}
-
 const ModalImportCSV: React.FC<ModalImportCSVProps> = ({ isOpen, onClose, onUpload }) => {
   const [file, setFile] = useState<File | null>(null);
   const [importType, setImportType] = useState("collaborators");

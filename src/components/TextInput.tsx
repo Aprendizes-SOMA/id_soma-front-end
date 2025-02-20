@@ -1,12 +1,14 @@
 "use client";
+
 import React from "react";
-import styles from "@/styles/components/TextInput.module.css";
+import styles from "@/styles/TextInput.module.css";
 
 const TextInput: React.FC<TextInputProps> = ({
   label,
   id,
   type,
   value,
+  name,
   placeholder,
   onChange,
   showPassword,
@@ -14,9 +16,7 @@ const TextInput: React.FC<TextInputProps> = ({
 }) => {
   return (
     <div className={styles.field}>
-      <label htmlFor={id} className={styles.label}>
-        {label}
-      </label>
+      <label htmlFor={id} className={styles.label}>{label}</label>
       <div className={styles.inputContainer}>
         <input
           id={id}
@@ -25,6 +25,7 @@ const TextInput: React.FC<TextInputProps> = ({
           placeholder={placeholder}
           onChange={onChange}
           className={styles.input}
+          name={name}
           required
         />
         {id === "password" && toggleShowPassword && (

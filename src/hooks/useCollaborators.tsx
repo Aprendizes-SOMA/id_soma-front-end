@@ -12,6 +12,8 @@ export function useCollaborators() {
   const [isDependentsModalOpen, setIsDependentsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState<string>("");
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [notification, setNotification] = useState({ isOpen: false, type: "success", message: "" });
   const [formData, setFormData] = useState<Collaborator>({
     id: 0,
     name: "",
@@ -24,6 +26,9 @@ export function useCollaborators() {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+  const numericSearch = searchTerm.replace(/\D/g, "");
+  const inputMaxLength = numericSearch && numericSearch.length <= 11 ? 14 : undefined;
 
   useEffect(() => {
     const fetchCollaborators = async () => {
@@ -46,7 +51,29 @@ export function useCollaborators() {
     }
   };
 
-  const handleSaveDependents = async (updatedDependents: DependentProps[]) => {
+  const handleUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("https://id-soma.onrender.com/api/import-csv", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao importar CSV");
+      }
+
+      setNotification({ isOpen: true, type: "success", message: "CSV importado com sucesso!" });
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (error) {
+      console.error("Erro ao importar CSV:", error);
+      setNotification({ isOpen: true, type: "error", message: "Erro ao importar CSV" });
+    }
+  };
+
+  const handleSaveDependents = async (updatedDependents: Dependent[]) => {
     if (!selectedCollaborator) return;
   
     try {
@@ -262,6 +289,12 @@ export function useCollaborators() {
     handleSearchChange,
     setSelectedIds,
     selectedIds,
-    formatCPF
+    formatCPF,
+    isImportModalOpen,
+    setIsImportModalOpen,
+    notification,
+    setNotification,
+    handleUpload,
+    inputMaxLength
   };
 }

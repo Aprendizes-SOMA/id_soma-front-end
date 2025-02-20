@@ -12,7 +12,7 @@
   margin-bottom: 20px;
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
-  gap: 10px; 
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -58,7 +58,7 @@
   font-size: 24px;
   font-weight: bold;
   color: #333;
-  margin: 0; 
+  margin: 0;
 }
 
 .searchInputContainer {
@@ -137,14 +137,17 @@
   white-space: nowrap;
 }
 
+.table th {
+  width: 15%;
+}
+
 .table th:first-child,
 .table td:first-child {
-  width: 40px;
+  width: 5%;
   text-align: center;
 }
 
 .deleteButton {
-
   color: white;
   padding: 8px 12px;
   border: none;
@@ -153,10 +156,6 @@
   font-size: 14px;
   margin-left: 10px;
 }
-
-/* .deleteButton:hover {
-  background-color: #c0392b;
-} */
 
 .checkboxInput {
   appearance: none;

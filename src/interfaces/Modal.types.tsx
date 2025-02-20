@@ -1,8 +1,10 @@
 import { ReactNode } from "react";
 
-export interface ModalProps {
+export interface DeleteModalProps { 
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: { name: string; cpf: string; role: string }) => void;
+  onDelete: () => void;
   children?: ReactNode;
+  title : string;
+  message : string;
 }

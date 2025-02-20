@@ -1,5 +1,5 @@
-import { DeleteModalProps } from "@/interfaces/ModalProps";
-import styles from "../styles/components/ModalDe.module.css";
+import { DeleteModalProps } from "@/interfaces/Modal.types";
+import styles from "../styles/ModalDe.module.css";
 
 export default function DeleteModal({
   isOpen,
