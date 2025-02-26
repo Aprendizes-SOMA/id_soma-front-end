@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
 
-export interface DeleteModalProps { 
+export interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onDelete: () => void;
+  onConfirm: () => void;
+  title: string;
+  message: string;
   children?: ReactNode;
-  title : string;
-  message : string;
 }

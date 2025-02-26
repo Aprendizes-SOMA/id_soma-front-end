@@ -7,13 +7,14 @@ import { useCollaborators } from "@/hooks/useCollaborators";
 
 import ModalCollaborator from "@/components/ModalCollaborator";
 import ModalDependents from "@/components/ModalDependents";
-import DeleteModal from "@/components/ModalDe";
 import CustomButton from "@/components/CustomButton";
 import ModalImportCSV from "@/components/ModalImportCSV";
 import ActionButton from "@/components/ActionButton";
 import NotificationModal from "@/components/NotificationModal";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
 export default function ListCollaborators() {
+  
   const {
     collaborators,
     searchTerm,
@@ -140,9 +141,24 @@ export default function ListCollaborators() {
                   <td>{collaborator.cpf}</td>
                   <td>{collaborator.role}</td>
                   <td className={styles.actions}>
-                    <ActionButton iconSrc="/icon-view.png" altText="Dependentes" onClick={() => handleManageDependents(collaborator)} />
-                    <ActionButton iconSrc="/icon-edit.png" altText="Editar" onClick={() => handleEditClick(collaborator)} />
-                    <ActionButton iconSrc="/icon-delete.png" altText="Excluir" onClick={() => handleDeleteClick(collaborator)} />
+                    <ActionButton 
+                      iconSrc="/icon-view.png" 
+                      altText="Dependentes" 
+                      onClick={() => handleManageDependents(collaborator)} 
+                      disabled={selectedIds.length > 0}
+                    />
+                    <ActionButton 
+                      iconSrc="/icon-edit.png" 
+                      altText="Editar" 
+                      onClick={() => handleEditClick(collaborator)} 
+                      disabled={selectedIds.length > 0}
+                    />
+                    <ActionButton 
+                      iconSrc="/icon-delete.png" 
+                      altText="Excluir" 
+                      onClick={() => handleDeleteClick(collaborator)} 
+                      disabled={selectedIds.length > 0} 
+                    />
                   </td>
                 </tr>
               ))}
@@ -180,10 +196,10 @@ export default function ListCollaborators() {
       )}
 
       {isDeleteModalOpen && selectedCollaborator && (
-        <DeleteModal
+        <ConfirmationModal
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
-          onDelete={() => handleConfirmDelete(selectedCollaborator)}
+          onConfirm={() => handleConfirmDelete(selectedCollaborator)}
           title="Confirmar Exclusão"
           message={`Tem certeza que deseja excluir o colaborador "${selectedCollaborator?.name}"? Essa ação é permanente.`}
         />

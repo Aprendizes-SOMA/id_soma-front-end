@@ -1,10 +1,13 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
-import styles from "../styles/ModalDependents.module.css";
-import DeleteModal from "@/components/ModalDe";
-import { addDependent, updateDependent, deleteDependent, listDependents } from "../app/api/dependent/dependents";
 
+import styles from "@/styles/ModalDependents.module.css";
+import ConfirmationModal from "@/components/ConfirmationModal";
+import CustomButton from "@/components/CustomButton";
+import ActionButton from "@/components/ActionButton";
 
+import { addDependent, updateDependent, deleteDependent, listDependents } from "@/app/api/dependent/dependents";
 
 const ModalDependents: React.FC<ModalDependentsProps> = ({
   isOpen,
@@ -20,6 +23,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedDependent, setSelectedDependent] = useState<Dependent | null>(null);
   const [editingDependent, setEditingDependent] = useState<Dependent | null>(null);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const adminId = 3;
 
   useEffect(() => {
@@ -92,16 +96,45 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     setSelectedDependent(null);
   };
 
-  const handleConfirmDelete = async () => {
-    if (selectedDependent) {
+  // const handleConfirmDelete = async () => {
+  //   if (selectedDependent) {
+  //     try {
+  //       await deleteDependent(selectedDependent.id!);
+  //       setDependents((prev) => prev.filter((dependent) => dependent.id !== selectedDependent.id));
+  //       handleCloseDeleteModal();
+  //     } catch (error) {
+  //       console.error("Erro ao excluir dependente:", error);
+  //       alert("Erro ao excluir dependente.");
+  //     }
+  //   }
+  // };
+
+  const toggleSelectDependent = (id: number) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((selectedId) => selectedId !== id) : [...prev, id]
+    );
+  };
+
+  const handleConfirmDelete = async (dependent: Dependent) => {
+      if (!dependent) return;
       try {
-        await deleteDependent(selectedDependent.id!);
-        setDependents((prev) => prev.filter((dependent) => dependent.id !== selectedDependent.id));
-        handleCloseDeleteModal();
-      } catch (error) {
-        console.error("Erro ao excluir dependente:", error);
-        alert("Erro ao excluir dependente.");
+        await deleteDependent(dependent.id);
+        setDependents((prev) => prev.filter((c) => c.id !== dependent.id));
+        setSelectedDependent(null);
+      } catch (error: any) {
+      } finally {
+        setIsDeleteModalOpen(false);
       }
+    }; 
+
+  const handleDeleteSelected = () => {
+    if (selectedIds.length === 0) {
+      alert("Selecione pelo menos um colaborador para excluir.");
+      return;
+    }
+    if (confirm("Tem certeza que deseja excluir os dependentes selecionados?")) {
+      selectedIds.forEach((id) => handleConfirmDelete({ id } as any));
+      setSelectedIds([]);
     }
   };
 
@@ -113,12 +146,23 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Lista de Dependentes</h2>
           {!showForm && (
-            <button className={styles.addDependentButton} onClick={() => setShowForm(true)}>
-              ADICIONAR DEPENDENTE
-            </button>
+            <CustomButton
+              text="Adicionar Dependente"
+              onClick={() => setShowForm(true)}
+              color="primary"
+            />
+          )}
+
+          {selectedIds.length > 0 && (
+            <CustomButton 
+              text={`Excluir Selecionados (${selectedIds.length})`} 
+              onClick={handleDeleteSelected} 
+              color="danger" 
+            />
           )}
         </div>
         <div className={styles.modalLine}></div>
+
         {loading ? (
           <div className={styles.loadingContainer}>
             <div className={styles.spinner}></div>
@@ -134,7 +178,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Nome do dependente:"
+                  placeholder="Nome do dependente"
                   className={styles.input}
                 />
                 <label>Parentesco:</label>
@@ -148,45 +192,77 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
                   <option value="Filho(a)">Filho(a) ou enteado(a)</option>
                   <option value="Cônjuge">Cônjuge</option>
                 </select>
-                <button className={styles.saveButton} onClick={handleAddOrEditDependent}>
-                  {editingDependent ? "ATUALIZAR" : "ADICIONAR"}
-                </button>
+                <div className={styles.buttonGroup}>
+                  <CustomButton text="Cancelar" onClick={() => {setShowForm(false); setEditingDependent(null);}} color="danger" />
+                  <CustomButton text={editingDependent ? "Atualizar" : "Adicionar"} onClick={handleAddOrEditDependent} color={"primary"} />
+                </div>
               </div>
             )}
-            <ul className={styles.dependentsList}>
-              {dependents.map((dependent) => (
-                <li key={dependent.id} className={styles.dependentItem}>
-                  <div className={styles.dependentInfo}>
-                    <span>
-                      <span className={styles.dependentLabel}>Nome:</span> {dependent.name}
-                    </span>
-                    <span>
-                      <span className={styles.dependentLabel}>Parentesco:</span> {dependent.parentesco}
-                    </span>
-                  </div>
-                  <div className={styles.actionButtons}>
-                    <button onClick={() => handleEditClick(dependent)} className={styles.iconButton}>
-                      <img src="/icon-edit.png" alt="Editar" className={styles.icon} />
-                    </button>
-                    <button onClick={() => handleOpenDeleteModal(dependent)} className={styles.iconButton}>
-                      <img src="/icon-delete.png" alt="Excluir" className={styles.icon} />
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            {dependents.length > 0 ? (
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th className={styles.checkboxContainer}>
+                      <input
+                        type="checkbox"
+                        className={styles.checkboxInput}
+                        onChange={(e) =>
+                          setSelectedIds(e.target.checked ? dependents.map((c) => c.id) : [])
+                        }
+                        checked={selectedIds.length === dependents.length && dependents.length > 0}
+                      />
+                    </th>
+                    <th>Nome</th>
+                    <th>Parentesco</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dependents.map((dependent) => (
+                    <tr key={dependent.id}>
+                      <td className={styles.checkboxContainer}>
+                        <input
+                          type="checkbox"
+                          className={styles.checkboxInput}
+                          checked={selectedIds.includes(dependent.id)}
+                          onChange={() => toggleSelectDependent(dependent.id)}
+                        />
+                      </td>
+                      <td>{dependent.name}</td>
+                      <td>{dependent.parentesco}</td>
+                      <td className={styles.actionButtons}>
+                        <ActionButton 
+                          iconSrc="/icon-edit.png" 
+                          altText="Editar" 
+                          onClick={() => handleEditClick(dependent)} 
+                          disabled={selectedIds.length > 0}  
+                        />
+                        <ActionButton 
+                          iconSrc="/icon-delete.png" 
+                          altText="Excluir" 
+                          onClick={() => handleOpenDeleteModal(dependent)}
+                          disabled={selectedIds.length > 0} 
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className={styles.noDependentsMessage}>Esse colaborador não tem dependentes.</p>
+            )}
           </>
         )}
+
         <div className={styles.modalActions}>
-          <button className={styles.cancelButton} onClick={onClose}>
-            VOLTAR
-          </button>
+          <CustomButton text="Voltar" onClick={onClose} color="secondary" />
         </div>
+
         {isDeleteModalOpen && selectedDependent && (
-          <DeleteModal
+          <ConfirmationModal
             isOpen={isDeleteModalOpen}
             onClose={handleCloseDeleteModal}
-            onDelete={handleConfirmDelete}
+            onConfirm={() => handleConfirmDelete(selectedDependent)}
             title="Confirmar Exclusão"
             message={`Tem certeza que deseja excluir o dependente "${selectedDependent.name}"? Essa ação é permanente.`}
           />

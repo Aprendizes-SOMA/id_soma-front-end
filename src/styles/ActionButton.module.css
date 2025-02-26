@@ -1,6 +1,6 @@
 .iconButton {
   background-color: transparent;
-  border: 1.5px solid #f5a623; 
+  border: 1.5px solid #f5a623;
   border-radius: 50%;
   width: 42px;
   height: 42px;
@@ -9,7 +9,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  box-shadow: none; /* Corrigido: box-shadow não aceita apenas uma cor */
+  box-shadow: none;
 }
 
 .icon {
@@ -19,12 +19,13 @@
 
 .iconButton:hover {
   background-color: transparent;
-  border-color: #f5a623; /* Alterado de #bbb para #f5a623 */
+  border-color: #f5a623;
   transform: scale(1.1);
 }
 
-.iconButton:focus {
-  outline: none;
-  border-color: #f5a623; /* Já estava correto */
-  transform: scale(0.95); /* Movido para dentro do :focus */
+.iconButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  border-color: #ccc;
 }

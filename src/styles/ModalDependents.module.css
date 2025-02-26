@@ -14,24 +14,139 @@
 .modalContent {
   background: white;
   padding: 20px;
-  border-radius: 20px;
-  width: 600px;
-  height: auto;
+  border-radius: 12px;
+  width: 700px;
   max-width: 95%;
+  max-height: 80vh;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  position: relative;
   border: 2px solid orange;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
 }
 
 .modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+  padding-bottom: 10px;
 }
 
 .modalTitle {
   font-size: 20px;
   font-weight: bold;
+}
+
+.modalLine {
+  width: 100%;
+  height: 1px;
+  margin: 10px 0;
+}
+
+.modalBody {
+  flex-grow: 1;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.inlineForm {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.inlineForm label {
+  font-weight: bold;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.tableContainer {
+  width: 100%;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th, .table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: transparent !important;
+  font-weight: bold;
+}
+
+.table td {
+  font-size: 14px;
+}
+
+.table input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.table th {
+  background-color: transparent;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 15px;
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding: 10px 0;
 }
 
 .addDependentButton {
@@ -48,141 +163,12 @@
   background-color: #e6951f;
 }
 
-.modalLine {
-  width: 100%;
-  height: 1px;
-  background-color: #ddd;
-  margin: 10px 0;
-}
-  
-.inlineForm {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px; 
-  margin-bottom: 15px;
-}
-
-.input {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.saveButton {
-  align-self: flex-end; 
-  background: #f5a623;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.saveButton:hover {
-  background: #e6951f;
-}
-
-
-.dependentsList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-  
-.dependentItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.dependentInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 14px;
-}
-
-.dependentLabel {
-  font-weight: bold; 
-}
-
-.dependentValue {
-  font-weight: normal;
-}
-
-
-.dependentName {
-  font-weight: bold;
-}
-
-.dependentRelationship {
-  font-weight: bold;
-}
-
-.actionButtons {
-  display: flex;
-  gap: 10px;
-}
-
-.iconButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.icon {
-  width: 16px;
-  height: 16px;
-}
-
-.modalActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.cancelButton {
-  background: #f5a623;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.cancelButton:hover {
-  background: #e6951f;
-}
-
-.saveButton {
-  background: #f5a623;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.saveButton:hover {
-  background: #e6951f;
-}
-
 .spinner {
   border: 6px solid #f3f3f3;
   border-top: 6px solid #f5a623;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   animation: spin 1s linear infinite;
   margin: 20px auto;
 }
@@ -206,62 +192,87 @@
   color: #666;
 }
 
+.checkboxInput {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #bbb;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  vertical-align: middle;
+}
+
+.checkboxInput:checked {
+  background-color: #f5a623;
+  border-color: #d88b1f;
+}
+
+.checkboxInput:checked::after {
+  content: "✔";
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  position: absolute;
+}
+
+.checkboxInput:hover {
+  border-color: #f5a623;
+}
+
+.checkboxInput:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(245, 166, 35, 0.5);
+}
+
+.noDependentsMessage {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #666;
+  padding: 20px;
+  border-radius: 5px;
+}
+
 @media (max-width: 768px) {
   .modalContent {
-    width: 80%;
-    max-width: 100%;
+    width: 90%;
     padding: 15px;
-    border-radius: 15px;
+    max-height: 85vh;
   }
 
   .modalTitle {
-    font-size: 15px;
+    font-size: 18px;
     text-align: center;
   }
 
-  .addDependentButton {
-    font-size: 10px;
-    padding: 5px 10px;
+  .tableContainer {
+    max-height: 35vh;
   }
 
-  .modalLine {
-    width: 100%;
-    margin: 8px 0;
-  }
-
-  .inlineForm {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; 
-    width: 100%;
-  }
-
-  .dependentLabel {
-    align-self: flex-start;
-    margin-bottom: 3px; 
-  }
-
-  .input {
-    width: 100%;
-    font-size: 13px;
+  .table th, .table td {
+    font-size: 12px;
     padding: 8px;
-    margin-bottom: 10px;
-  }
-
-  .dependentsList {
-    padding: 0;
   }
 
   .modalActions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .cancelButton, .saveButton {
-    width: 45%;
-    text-align: center;
+  .addDependentButton {
     font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
   }
 }

@@ -1,6 +1,6 @@
 interface Dependent {
   collaboratorId: number;
-  id?: number;
+  id: number;
   name: string;
   parentesco: string;
 }
