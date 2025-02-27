@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import styles from "@/styles/ListCollaborators.module.css";
-import { useCollaborators } from "@/hooks/useCollaborators";
 
 import ModalCollaborator from "@/components/ModalCollaborator";
 import ModalDependents from "@/components/ModalDependents";
@@ -12,43 +11,164 @@ import ModalImportCSV from "@/components/ModalImportCSV";
 import ActionButton from "@/components/ActionButton";
 import NotificationModal from "@/components/NotificationModal";
 import ConfirmationModal from "@/components/ConfirmationModal";
+import axiosInstance from "@/app/api/axiosInstance";
+import { updateCollaborator, listCollaborators, deleteCollaborator, addCollaborator } from "@/app/api/collaborator/collaborators";
+import { logoutAdmin } from "@/app/api/admin/auth";
+
+import { useRouter } from "next/navigation";
+
+import useSearch from "@/hooks/useSearch";
+import useFormatCPF from "@/hooks/useFormatCPF";
+import useDelete from "@/hooks/useDelete";
+import useAddOrEdit from "@/hooks/useAddOrEdit";
 
 export default function ListCollaborators() {
-  
+  const router = useRouter();
+  const { formatCPF } = useFormatCPF();
   const {
-    collaborators,
     searchTerm,
-    isDependentsModalOpen,
-    setIsDependentsModalOpen,
-    isModalOpen,
-    setIsModalOpen,
+    inputMaxLength,
+    handleSearchChange
+  } = useSearch();
+
+  const {
     selectedIds,
     setSelectedIds,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
-    modalTitle,
-    formData,
-    selectedCollaborator,
-    editMode,
-    handleLogout,
-    handleAddCollaborator,
-    handleEditCollaborator,
-    handleSaveDependents,
-    handleConfirmDelete,
-    handleAddClick,
-    handleEditClick,
-    handleManageDependents,
-    handleDeleteClick,
     handleDeleteSelected,
-    handleSearchChange,
-    handleToggleSelect,
-    isImportModalOpen,
-    setIsImportModalOpen,
-    notification,
-    setNotification,
-    handleUpload,
-    inputMaxLength
-  } = useCollaborators();
+    handleConfirmDelete,
+    handleToggleSelect
+  } = useDelete();
+
+  const {
+    handleAddOrEdit
+  } = useAddOrEdit();
+
+  const [notification, setNotification] = useState({ isOpen: false, type: "success", message: "" });
+  const [isDependentsModalOpen, setIsDependentsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [modalTitle, setModalTitle] = useState<string>("");
+  const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
+  const [formData, setFormData] = useState<Collaborator>({
+    id: 0,
+    name: "",
+    cpf: "",
+    role: "",
+    matricula: "",
+    dependents: [],
+  });
+
+  useEffect(() => {
+    const fetchCollaborators = async () => {
+      try {
+        const data = await listCollaborators();
+        setCollaborators(data);
+      } catch (err) {
+        console.error("Erro ao buscar colaboradores:", err);
+      }
+    };
+    fetchCollaborators();
+  }, []);
+
+  const handleAddOrEditCollaborator = async (data: { name: string; cpf: string; role: string; matricula: string }) => {
+    await handleAddOrEdit(
+      data,
+      selectedCollaborator,
+      addCollaborator,
+      updateCollaborator,
+      setCollaborators,
+      setSelectedCollaborator,
+      setFormData,
+      { adminId: 3 }
+    );
+    setIsModalOpen(false);
+  };  
+  
+  const handleAddClick = () => {
+    setModalTitle("Adicionar Colaborador");
+    setFormData({ id: 0, name: "", cpf: "", role: "", matricula: "", dependents: [] });
+    setEditMode(false);
+    setIsModalOpen(true);
+  };
+  
+  const handleEditClick = (collaborator: Collaborator) => {
+    setModalTitle("Editar Colaborador");
+    setFormData({
+      id: collaborator.id,
+      name: collaborator.name || "",
+      cpf: collaborator.cpf || "",
+      role: collaborator.role || "",
+      matricula: collaborator.matricula || "",
+      dependents: collaborator.dependents || [],
+    });
+  
+    setSelectedCollaborator(collaborator);
+    setEditMode(true);
+    setIsModalOpen(true);
+  };  
+
+  const handleDeleteClick = (collaborator: Collaborator) => {
+    setSelectedCollaborator(collaborator);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("https://id-soma.onrender.com/api/import-csv", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao importar CSV");
+      }
+
+      setNotification({ isOpen: true, type: "success", message: "CSV importado com sucesso!" });
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (error) {
+      console.error("Erro ao importar CSV:", error);
+      setNotification({ isOpen: true, type: "error", message: "Erro ao importar CSV" });
+    }
+  };
+
+  const handleManageDependents = async (collaborator: Collaborator) => {
+    try {
+      setSelectedCollaborator(collaborator);
+      setIsDependentsModalOpen(true);
+  
+      const response = await axiosInstance.get(`/dependents`, {
+        params: { collaboratorId: collaborator.id },
+      });
+  
+      setSelectedCollaborator((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          dependents: response.data,
+        };
+      });
+    } catch (error) {
+      console.error("Erro ao buscar dependentes:", error);
+      alert("Erro ao carregar dependentes. Por favor, tente novamente.");
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logoutAdmin();
+      router.push("/loginAdmin");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -85,7 +205,11 @@ export default function ListCollaborators() {
           <CustomButton text="Adicionar colaborador" onClick={handleAddClick} color="primary" />
 
           {selectedIds.length > 0 && (
-            <CustomButton text={`Excluir Selecionados (${selectedIds.length})`} onClick={handleDeleteSelected} color="danger" />
+            <CustomButton 
+              text={`Excluir Selecionados (${selectedIds.length})`} 
+              onClick={() => handleDeleteSelected(deleteCollaborator, setCollaborators, setSelectedCollaborator)}
+              color="danger" 
+            />
           )}
         </div>
       </div>
@@ -175,7 +299,7 @@ export default function ListCollaborators() {
       <ModalCollaborator
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSave={editMode ? handleEditCollaborator : handleAddCollaborator}
+        onSave={handleAddOrEditCollaborator}
         title={modalTitle}
         initialData={formData}
       />
@@ -184,22 +308,26 @@ export default function ListCollaborators() {
         <ModalDependents
           isOpen={isDependentsModalOpen}
           onClose={() => setIsDependentsModalOpen(false)}
-          onSave={handleSaveDependents}
-          initialDependents={
-            selectedCollaborator?.dependents?.map((dep) => ({
-              ...dep,
-              collaboratorId: selectedCollaborator.id,
-            })) || []
-          }
+          onSave={(updatedDependents) => {
+            setSelectedCollaborator((prev) =>
+              prev ? { ...prev, dependents: updatedDependents } : prev
+            );
+          }}
+          initialDependents={selectedCollaborator?.dependents ?? []}
           collaboratorId={selectedCollaborator?.id ?? 0}
-        />
+        />      
       )}
 
       {isDeleteModalOpen && selectedCollaborator && (
         <ConfirmationModal
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
-          onConfirm={() => handleConfirmDelete(selectedCollaborator)}
+          onConfirm={() => handleConfirmDelete(
+            selectedCollaborator,
+            deleteCollaborator,
+            setCollaborators,
+            setSelectedCollaborator
+          )}
           title="Confirmar Exclusão"
           message={`Tem certeza que deseja excluir o colaborador "${selectedCollaborator?.name}"? Essa ação é permanente.`}
         />
