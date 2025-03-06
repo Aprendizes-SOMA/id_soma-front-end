@@ -11,7 +11,12 @@ import TextInput from "@/components/TextInput";
 import useAddOrEdit from "@/hooks/useAddOrEdit";
 import useDelete from "@/hooks/useDelete";
 
-import { addDependent, updateDependent, deleteDependent, listDependents } from "@/app/api/dependent/dependents";
+import {
+  addDependent,
+  updateDependent,
+  deleteDependent,
+  listDependents
+} from "@/app/api/dependent/dependents";
 
 const ModalDependents: React.FC<ModalDependentsProps> = ({
   isOpen,
@@ -29,7 +34,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     parentesco: "",
     collaboratorId: 0,
   });
-  
+
   const [selectedDependent, setSelectedDependent] = useState<Dependent | null>(null);
   const [editingDependent, setEditingDependent] = useState<Dependent | null>(null);
   const adminId = 3;
@@ -44,9 +49,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     handleToggleSelect
   } = useDelete();
 
-  const {
-    handleAddOrEdit
-  } = useAddOrEdit();
+  const { handleAddOrEdit } = useAddOrEdit();
 
   useEffect(() => {
     const fetchDependents = async () => {
@@ -87,9 +90,9 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
       setEditingDependent,
       setFormData
     );
-    
+
     setShowForm(false);
-    onSave(dependents);    
+    onSave(dependents);
   };
 
   const handleEditClick = (dependent: Dependent) => {
@@ -101,7 +104,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
       collaboratorId: dependent.collaboratorId,
     });
     setShowForm(true);
-  };  
+  };
 
   const handleOpenDeleteModal = (dependent: Dependent) => {
     setSelectedDependent(dependent);
@@ -118,6 +121,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
+        {/* HEADER */}
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Lista de Dependentes</h2>
           {!showForm && (
@@ -127,129 +131,165 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
               color="primary"
             />
           )}
-
+  
           {selectedIds.length > 0 && (
-            <CustomButton 
-              text={`Excluir Selecionados (${selectedIds.length})`} 
-              onClick={() => handleDeleteSelected(deleteDependent, setDependents, setSelectedDependent)}
-              color="danger" 
+            <CustomButton
+              text={`Excluir Selecionados (${selectedIds.length})`}
+              onClick={() =>
+                handleDeleteSelected(
+                  deleteDependent,
+                  setDependents,
+                  setSelectedDependent
+                )
+              }
+              color="danger"
             />
           )}
         </div>
+  
         <div className={styles.modalLine}></div>
-
-        {loading ? (
-          <div className={styles.loadingContainer}>
-            <div className={styles.spinner}></div>
-            <p>Carregando dependentes...</p>
-          </div>
-        ) : (
-          <>
-            {showForm && (
-              <div className={styles.inlineForm}>
-                <TextInput
-                  label="Nome"
-                  id="name"
-                  name="name"
-                  type="text"
-                  value={formData.name}
-                  placeholder="Informe o nome do colaborador"
-                  onChange={handleChange}
-                />
-                <label>Parentesco:</label>
-                <select
-                  name="parentesco"
-                  value={formData.parentesco}
-                  onChange={handleChange}
-                  className={styles.input}
-                >
-                  <option value="">Selecione</option>
-                  <option value="Filho(a)">Filho(a) ou enteado(a)</option>
-                  <option value="Cônjuge">Cônjuge</option>
-                </select>
-                <div className={styles.buttonGroup}>
-                  <CustomButton text="Cancelar" onClick={() => {setShowForm(false); setEditingDependent(null);}} color="danger" />
-                  <CustomButton text={editingDependent ? "Atualizar" : "Adicionar"} onClick={handleSubmit} color={"primary"} />
+  
+        {/* BODY (form + tabela) */}
+        <div className={styles.modalBody}>
+          {loading ? (
+            <div className={styles.loadingContainer}>
+              <div className={styles.spinner}></div>
+              <p>Carregando dependentes...</p>
+            </div>
+          ) : (
+            <>
+              {showForm && (
+                <div className={styles.inlineForm}>
+                  <TextInput
+                    label="Nome"
+                    id="name"
+                    name="name"
+                    type="text"
+                    value={formData.name}
+                    placeholder="Informe o nome do dependente"
+                    onChange={handleChange}
+                  />
+                  <label>Parentesco:</label>
+                  <select
+                    name="parentesco"
+                    value={formData.parentesco}
+                    onChange={handleChange}
+                    className={styles.input}
+                  >
+                    <option value="">Selecione</option>
+                    <option value="Filho(a)">Filho(a) ou enteado(a)</option>
+                    <option value="Cônjuge">Cônjuge</option>
+                  </select>
+                  <div className={styles.buttonGroup}>
+                    <CustomButton
+                      text="Cancelar"
+                      onClick={() => {
+                        setShowForm(false);
+                        setEditingDependent(null);
+                      }}
+                      color="danger"
+                    />
+                    <CustomButton
+                      text={editingDependent ? "Atualizar" : "Adicionar"}
+                      onClick={handleSubmit}
+                      color="primary"
+                    />
+                  </div>
                 </div>
+              )}
+  
+              <div className={styles.tableSection}>
+                {dependents.length > 0 ? (
+                  <table className={styles.table}>
+                    <thead>
+                      <tr>
+                        <th>
+                          <input
+                            type="checkbox"
+                            className={styles.checkboxInput}
+                            onChange={(e) =>
+                              setSelectedIds(
+                                e.target.checked
+                                  ? dependents.map((c) => c.id)
+                                  : []
+                              )
+                            }
+                            checked={
+                              selectedIds.length === dependents.length &&
+                              dependents.length > 0
+                            }
+                          />
+                        </th>
+                        <th>Nome</th>
+                        <th>Parentesco</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dependents.map((dependent) => (
+                        <tr key={dependent.id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              className={styles.checkboxInput}
+                              checked={selectedIds.includes(dependent.id)}
+                              onChange={() => handleToggleSelect(dependent.id)}
+                            />
+                          </td>
+                          <td>{dependent.name}</td>
+                          <td>{dependent.parentesco}</td>
+                          <td className={styles.actionButtons}>
+                            <ActionButton
+                              iconSrc="/icon-edit.png"
+                              altText="Editar"
+                              onClick={() => handleEditClick(dependent)}
+                              disabled={selectedIds.length > 0}
+                            />
+                            <ActionButton
+                              iconSrc="/icon-delete.png"
+                              altText="Excluir"
+                              onClick={() => handleOpenDeleteModal(dependent)}
+                              disabled={selectedIds.length > 0}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p className={styles.noDependentsMessage}>
+                    Esse colaborador não tem dependentes.
+                  </p>
+                )}
               </div>
-            )}
-            {dependents.length > 0 ? (
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th className={styles.checkboxContainer}>
-                      <input
-                        type="checkbox"
-                        className={styles.checkboxInput}
-                        onChange={(e) =>
-                          setSelectedIds(e.target.checked ? dependents.map((c) => c.id) : [])
-                        }
-                        checked={selectedIds.length === dependents.length && dependents.length > 0}
-                      />
-                    </th>
-                    <th>Nome</th>
-                    <th>Parentesco</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dependents.map((dependent) => (
-                    <tr key={dependent.id}>
-                      <td className={styles.checkboxContainer}>
-                        <input
-                          type="checkbox"
-                          className={styles.checkboxInput}
-                          checked={selectedIds.includes(dependent.id)}
-                          onChange={() => handleToggleSelect(dependent.id)}
-                        />
-                      </td>
-                      <td>{dependent.name}</td>
-                      <td>{dependent.parentesco}</td>
-                      <td className={styles.actionButtons}>
-                        <ActionButton 
-                          iconSrc="/icon-edit.png" 
-                          altText="Editar" 
-                          onClick={() => handleEditClick(dependent)} 
-                          disabled={selectedIds.length > 0}  
-                        />
-                        <ActionButton 
-                          iconSrc="/icon-delete.png" 
-                          altText="Excluir" 
-                          onClick={() => handleOpenDeleteModal(dependent)}
-                          disabled={selectedIds.length > 0} 
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className={styles.noDependentsMessage}>Esse colaborador não tem dependentes.</p>
-            )}
-          </>
-        )}
-
+            </>
+          )}
+        </div>
+  
+        {/* FOOTER (botão Voltar) */}
         <div className={styles.modalActions}>
           <CustomButton text="Voltar" onClick={onClose} color="secondary" />
         </div>
-
+  
         {isDeleteModalOpen && selectedDependent && (
           <ConfirmationModal
             isOpen={isDeleteModalOpen}
             onClose={handleCloseDeleteModal}
-            onConfirm={() => handleConfirmDelete(
-              selectedDependent,
-              deleteDependent,
-              setDependents,
-              setSelectedDependent
-            )}
+            onConfirm={() =>
+              handleConfirmDelete(
+                selectedDependent,
+                deleteDependent,
+                setDependents,
+                setSelectedDependent
+              )
+            }
             title="Confirmar Exclusão"
             message={`Tem certeza que deseja excluir o dependente "${selectedDependent.name}"? Essa ação é permanente.`}
           />
         )}
       </div>
     </div>
-  );
+  );  
 };
 
 export default ModalDependents;
