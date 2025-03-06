@@ -22,6 +22,8 @@ import useFormatCPF from "@/hooks/useFormatCPF";
 import useDelete from "@/hooks/useDelete";
 import useAddOrEdit from "@/hooks/useAddOrEdit";
 
+import { importCSV } from "@/app/api/csv/import-csv";
+
 export default function ListCollaborators() {
   const router = useRouter();
   const { formatCPF } = useFormatCPF();
@@ -49,7 +51,6 @@ export default function ListCollaborators() {
   const [isDependentsModalOpen, setIsDependentsModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
-  const [loading, setLoading] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [modalTitle, setModalTitle] = useState<string>("");
@@ -118,19 +119,9 @@ export default function ListCollaborators() {
   };
 
   const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const response = await fetch("https://id-soma.onrender.com/api/import-csv", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao importar CSV");
-      }
-
+      await importCSV(file);
+  
       setNotification({ isOpen: true, type: "success", message: "CSV importado com sucesso!" });
       setTimeout(() => window.location.reload(), 2000);
     } catch (error) {

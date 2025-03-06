@@ -9,6 +9,7 @@ import ActionButton from "@/components/ActionButton";
 import TextInput from "@/components/TextInput";
 
 import useAddOrEdit from "@/hooks/useAddOrEdit";
+import useDelete from "@/hooks/useDelete";
 
 import { addDependent, updateDependent, deleteDependent, listDependents } from "@/app/api/dependent/dependents";
 
@@ -19,7 +20,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   initialDependents,
   collaboratorId,
 }) => {
-  const { handleAddOrEdit } = useAddOrEdit();
   const [dependents, setDependents] = useState<Dependent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -30,11 +30,23 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     collaboratorId: 0,
   });
   
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedDependent, setSelectedDependent] = useState<Dependent | null>(null);
   const [editingDependent, setEditingDependent] = useState<Dependent | null>(null);
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const adminId = 3;
+
+  const {
+    selectedIds,
+    setSelectedIds,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    handleDeleteSelected,
+    handleConfirmDelete,
+    handleToggleSelect
+  } = useDelete();
+
+  const {
+    handleAddOrEdit
+  } = useAddOrEdit();
 
   useEffect(() => {
     const fetchDependents = async () => {
@@ -45,7 +57,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
         setDependents(data);
       } catch (error) {
         console.error("Erro ao carregar dependentes:", error);
-        alert("Erro ao carregar dependentes. Verifique a API e tente novamente.");
       } finally {
         setLoading(false);
       }
@@ -102,35 +113,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     setSelectedDependent(null);
   };
 
-  const toggleSelectDependent = (id: number) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((selectedId) => selectedId !== id) : [...prev, id]
-    );
-  };
-
-  const handleConfirmDelete = async (dependent: Dependent) => {
-    if (!dependent) return;
-    try {
-      await deleteDependent(dependent.id);
-      setDependents((prev) => prev.filter((c) => c.id !== dependent.id));
-      setSelectedDependent(null);
-    } catch (error: any) {
-    } finally {
-      setIsDeleteModalOpen(false);
-    }
-  }; 
-
-  const handleDeleteSelected = () => {
-    if (selectedIds.length === 0) {
-      alert("Selecione pelo menos um colaborador para excluir.");
-      return;
-    }
-    if (confirm("Tem certeza que deseja excluir os dependentes selecionados?")) {
-      selectedIds.forEach((id) => handleConfirmDelete({ id } as any));
-      setSelectedIds([]);
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -149,7 +131,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
           {selectedIds.length > 0 && (
             <CustomButton 
               text={`Excluir Selecionados (${selectedIds.length})`} 
-              onClick={handleDeleteSelected} 
+              onClick={() => handleDeleteSelected(deleteDependent, setDependents, setSelectedDependent)}
               color="danger" 
             />
           )}
@@ -218,7 +200,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
                           type="checkbox"
                           className={styles.checkboxInput}
                           checked={selectedIds.includes(dependent.id)}
-                          onChange={() => toggleSelectDependent(dependent.id)}
+                          onChange={() => handleToggleSelect(dependent.id)}
                         />
                       </td>
                       <td>{dependent.name}</td>
@@ -255,7 +237,12 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
           <ConfirmationModal
             isOpen={isDeleteModalOpen}
             onClose={handleCloseDeleteModal}
-            onConfirm={() => handleConfirmDelete(selectedDependent)}
+            onConfirm={() => handleConfirmDelete(
+              selectedDependent,
+              deleteDependent,
+              setDependents,
+              setSelectedDependent
+            )}
             title="Confirmar Exclusão"
             message={`Tem certeza que deseja excluir o dependente "${selectedDependent.name}"? Essa ação é permanente.`}
           />
