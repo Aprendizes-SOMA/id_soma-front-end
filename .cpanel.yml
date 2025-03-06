@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - npm install
+    - npm run build
+    - /bin/cp -R out/* /home/somapiauic/public_html/soma-front
+
