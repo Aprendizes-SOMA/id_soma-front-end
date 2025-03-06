@@ -24,6 +24,8 @@ import useAddOrEdit from "@/hooks/useAddOrEdit";
 
 import { importCSV } from "@/app/api/csv/import-csv";
 
+import Image from 'next/image'
+
 export default function ListCollaborators() {
   const router = useRouter();
   const { formatCPF } = useFormatCPF();
@@ -172,7 +174,7 @@ export default function ListCollaborators() {
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <button onClick={handleLogout} className={styles.logoutButton}>
-            <img src="/logout.png" alt="Logout" className={styles.logoutIcon} />
+            <Image src="./logout.png" alt="Logout" className={styles.logoutIcon} height={30} width={30} />
             Logout
           </button>
           <h1 className={styles.title}>Colaboradores</h1>
@@ -182,7 +184,7 @@ export default function ListCollaborators() {
           <CustomButton text="Importar CSV" onClick={() => setIsImportModalOpen(true)} color="secondary" />
 
           <div className={styles.searchInputContainer}>
-            <img src="/lupa.png" alt="Pesquisar" className={styles.searchIcon} />
+            <Image src="./lupa.png" alt="Pesquisar" className={styles.searchIcon} width={30} height={30} />
             <input
               type="text"
               placeholder="Pesquise por nome ou CPF"

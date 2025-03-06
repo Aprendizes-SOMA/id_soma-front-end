@@ -3,6 +3,8 @@
 import React from "react";
 import styles from "@/styles/TextInput.module.css";
 
+import Image from 'next/image'
+
 const TextInput: React.FC<TextInputProps> = ({
   label,
   id,
@@ -29,11 +31,13 @@ const TextInput: React.FC<TextInputProps> = ({
           required
         />
         {id === "password" && toggleShowPassword && (
-          <img
-            src={showPassword ? "/versenha.png" : "/fechar-olho.png"}
+          <Image
+            src={showPassword ? "./versenha.png" : "./fechar-olho.png"}
             alt={showPassword ? "Ocultar senha" : "Mostrar senha"}
             className={styles.icon}
             onClick={toggleShowPassword}
+            width={35}
+            height={30}
           />
         )}
       </div>

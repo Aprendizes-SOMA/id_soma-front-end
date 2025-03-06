@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import styles from "../styles/page.module.css";
-import { listCollaboratorsByCPF } from "./api/collaborator/index";
+import styles from "@/styles/page.module.css";
+import { listCollaboratorsByCPF } from "@/app/api/collaborator/index";
 
 import useFormatCPF from "@/hooks/useFormatCPF";
 
@@ -41,7 +41,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
-        <Image src="/logo.png" alt="logo" width={80} height={80} />
+        <Image src="./logo.png" alt="logo" width={80} height={80} />
       </div>
       <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
       <p className={styles.description}>

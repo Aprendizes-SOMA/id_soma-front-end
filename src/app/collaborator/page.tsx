@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import styles from "../../styles/collaborator.module.css";
 import { listCollaboratorsByCPF } from "../api/collaborator/index";
 
+import Image from 'next/image'
+
 interface Dependent {
   name: string;
   parentesco: string;
@@ -54,7 +56,7 @@ export default function Collaborator() {
     return (
       <div className={styles.container}>
         <div className={styles.logo}>
-          <img src="/logo.png" alt="SOMA Verificação" />
+          <Image src="./logo.png" alt="SOMA Verificação" width={30} height={30} />
         </div>
         <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
         <div className={styles.loader}></div>
@@ -66,7 +68,7 @@ export default function Collaborator() {
     return (
       <div className={styles.container}>
         <div className={styles.logo}>
-          <img src="/logo.png" alt="SOMA Verificação" />
+          <Image src="/logo.png" alt="SOMA Verificação" width={30} height={30} />
         </div>
         <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
         <p className={styles.error}>{error}</p>
@@ -84,12 +86,12 @@ export default function Collaborator() {
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
-        <img src="/logo.png" alt="SOMA Verificação" />
+        <Image src="/logo.png" alt="SOMA Verificação" width={30} height={30} />
       </div>
       <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
       <h2 className={styles.successMessage}>
         Verificação Concluída!{" "}
-        <img src="/successmark.png" alt="Verificação Concluída" />
+        <Image src="/successmark.png" alt="Verificação Concluída" width={30} height={30} />
       </h2>
       <div className={styles.collaboratorTitle}>
         <h2 className={styles.sectionTitle}>Dados do Colaborador</h2>

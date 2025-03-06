@@ -32,7 +32,7 @@ const LoginAdmin = () => {
     <div className={styles.container}>
       <div className={styles.loginBox}>
         <div className={styles.logo}>
-          <Image src="/logo.png" alt="SOMA Verificação" width={50} height={50} />
+          <Image src="./logo.png" alt="SOMA Verificação" width={150} height={100} />
         </div>
         <h1 className={styles.title}>SOMA verificação</h1>
         <h2 className={styles.subtitle}>Login do Administrador</h2>
