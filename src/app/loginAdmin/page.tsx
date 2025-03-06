@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import styles from "@/styles/loginAdmin.module.css";
 import { useRouter } from "next/navigation";
 
+import Image from 'next/image'
+
 import { loginAdmin } from "@/app/api/admin/index";
 
 import TextInput from "@/components/TextInput";
@@ -30,7 +32,7 @@ const LoginAdmin = () => {
     <div className={styles.container}>
       <div className={styles.loginBox}>
         <div className={styles.logo}>
-          <img src="/logo.png" alt="SOMA Verificação" />
+          <Image src="/logo.png" alt="SOMA Verificação" width={50} height={50} />
         </div>
         <h1 className={styles.title}>SOMA verificação</h1>
         <h2 className={styles.subtitle}>Login do Administrador</h2>

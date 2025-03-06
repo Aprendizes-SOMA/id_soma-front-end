@@ -6,6 +6,9 @@ import styles from "@/styles/ModalDependents.module.css";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import CustomButton from "@/components/CustomButton";
 import ActionButton from "@/components/ActionButton";
+import TextInput from "@/components/TextInput";
+
+import useAddOrEdit from "@/hooks/useAddOrEdit";
 
 import { addDependent, updateDependent, deleteDependent, listDependents } from "@/app/api/dependent/dependents";
 
@@ -16,10 +19,17 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   initialDependents,
   collaboratorId,
 }) => {
+  const { handleAddOrEdit } = useAddOrEdit();
   const [dependents, setDependents] = useState<Dependent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ name: "", parentesco: "" });
+  const [formData, setFormData] = useState<Dependent>({
+    id: 0,
+    name: "",
+    parentesco: "",
+    collaboratorId: 0,
+  });
+  
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedDependent, setSelectedDependent] = useState<Dependent | null>(null);
   const [editingDependent, setEditingDependent] = useState<Dependent | null>(null);
@@ -51,40 +61,36 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleAddOrEditDependent = async () => {
+  const handleSubmit = async () => {
     if (!formData.name || !formData.parentesco) {
       alert("Preencha todos os campos antes de salvar.");
       return;
     }
 
-    try {
-      if (editingDependent) {
-        const updatedDependent = await updateDependent(editingDependent.id!, formData);
-        setDependents((prev) =>
-          prev.map((dep) => (dep.id === editingDependent.id ? { ...updatedDependent } : dep))
-        );
-      } else {
-        const newDependent = await addDependent({
-          ...formData,
-          collaboratorId: collaboratorId,
-          adminId: adminId,
-        });
-        setDependents((prev) => [...prev, newDependent]);
-      }
-      setFormData({ name: "", parentesco: "" });
-      setShowForm(false);
-      setEditingDependent(null);
-    } catch (error) {
-      console.error("Erro ao salvar dependente:", error);
-      alert("Erro ao salvar dependente. Por favor, tente novamente.");
-    }
+    await handleAddOrEdit(
+      { ...formData, collaboratorId, adminId },
+      editingDependent,
+      addDependent,
+      updateDependent,
+      setDependents,
+      setEditingDependent,
+      setFormData
+    );
+    
+    setShowForm(false);
+    onSave(dependents);    
   };
 
   const handleEditClick = (dependent: Dependent) => {
     setEditingDependent(dependent);
-    setFormData({ name: dependent.name, parentesco: dependent.parentesco });
+    setFormData({
+      id: dependent.id,
+      name: dependent.name,
+      parentesco: dependent.parentesco,
+      collaboratorId: dependent.collaboratorId,
+    });
     setShowForm(true);
-  };
+  };  
 
   const handleOpenDeleteModal = (dependent: Dependent) => {
     setSelectedDependent(dependent);
@@ -96,19 +102,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
     setSelectedDependent(null);
   };
 
-  // const handleConfirmDelete = async () => {
-  //   if (selectedDependent) {
-  //     try {
-  //       await deleteDependent(selectedDependent.id!);
-  //       setDependents((prev) => prev.filter((dependent) => dependent.id !== selectedDependent.id));
-  //       handleCloseDeleteModal();
-  //     } catch (error) {
-  //       console.error("Erro ao excluir dependente:", error);
-  //       alert("Erro ao excluir dependente.");
-  //     }
-  //   }
-  // };
-
   const toggleSelectDependent = (id: number) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((selectedId) => selectedId !== id) : [...prev, id]
@@ -116,16 +109,16 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   };
 
   const handleConfirmDelete = async (dependent: Dependent) => {
-      if (!dependent) return;
-      try {
-        await deleteDependent(dependent.id);
-        setDependents((prev) => prev.filter((c) => c.id !== dependent.id));
-        setSelectedDependent(null);
-      } catch (error: any) {
-      } finally {
-        setIsDeleteModalOpen(false);
-      }
-    }; 
+    if (!dependent) return;
+    try {
+      await deleteDependent(dependent.id);
+      setDependents((prev) => prev.filter((c) => c.id !== dependent.id));
+      setSelectedDependent(null);
+    } catch (error: any) {
+    } finally {
+      setIsDeleteModalOpen(false);
+    }
+  }; 
 
   const handleDeleteSelected = () => {
     if (selectedIds.length === 0) {
@@ -172,14 +165,14 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
           <>
             {showForm && (
               <div className={styles.inlineForm}>
-                <label>Nome:</label>
-                <input
-                  type="text"
+                <TextInput
+                  label="Nome"
+                  id="name"
                   name="name"
+                  type="text"
                   value={formData.name}
+                  placeholder="Informe o nome do colaborador"
                   onChange={handleChange}
-                  placeholder="Nome do dependente"
-                  className={styles.input}
                 />
                 <label>Parentesco:</label>
                 <select
@@ -194,7 +187,7 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
                 </select>
                 <div className={styles.buttonGroup}>
                   <CustomButton text="Cancelar" onClick={() => {setShowForm(false); setEditingDependent(null);}} color="danger" />
-                  <CustomButton text={editingDependent ? "Atualizar" : "Adicionar"} onClick={handleAddOrEditDependent} color={"primary"} />
+                  <CustomButton text={editingDependent ? "Atualizar" : "Adicionar"} onClick={handleSubmit} color={"primary"} />
                 </div>
               </div>
             )}

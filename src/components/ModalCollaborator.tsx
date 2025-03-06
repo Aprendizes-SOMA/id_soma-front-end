@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import styles from "../styles/Modal.module.css";
-import { useCollaborators } from "@/hooks/useCollaborators";
+import styles from "@/styles/Modal.module.css";
 import CustomButton from "@/components/CustomButton";
 import TextInput from "@/components/TextInput";
+
+import useFormatCPF from "@/hooks/useFormatCPF";
 
 const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
   isOpen,
@@ -15,6 +16,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
 }) => {
   const [formData, setFormData] = useState(initialData);
   const [loading, setLoading] = useState(false);
+  const { formatCPF } = useFormatCPF();
 
   useEffect(() => {
     if (isOpen) {
@@ -25,8 +27,6 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
       );
     }
   }, [isOpen, title, initialData]);
-
-  const { formatCPF } = useCollaborators();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -74,7 +74,7 @@ const ModalCollaborator: React.FC<ModalCollaboratorProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   if (!isOpen) return null;
 

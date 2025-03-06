@@ -3,13 +3,13 @@ import { useState } from "react";
 import Image from "next/image";
 import styles from "../styles/page.module.css";
 import { listCollaboratorsByCPF } from "./api/collaborator/index";
-import { useCollaborators } from "@/hooks/useCollaborators";
 
+import useFormatCPF from "@/hooks/useFormatCPF";
 
 export default function Home() {
   const {
     formatCPF
-  } = useCollaborators();
+  } = useFormatCPF();
   
   const [cpf, setCpf] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
