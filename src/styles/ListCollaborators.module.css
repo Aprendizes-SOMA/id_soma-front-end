@@ -1,17 +1,25 @@
 .container {
-  padding: 20px;
+  padding: 65px 20px 0 20px;
   max-width: 1200px;
   margin: 0 auto;
   font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  z-index: 1000;
+  padding: 10px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
   border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
   gap: 10px;
   flex-wrap: wrap;
 }
@@ -195,6 +203,25 @@
   box-shadow: 0 0 5px rgba(245, 166, 35, 0.5);
 }
 
+.pagination {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.pagination span {
+  font-size: 16px;
+  font-weight: bold;
+}
+
 @media screen and (max-width: 768px) {
   .tableContainer {
     overflow-x: auto;
@@ -229,5 +256,33 @@
   .addButton {
     width: 100%;
     max-width: 300px;
+  }
+
+  .tableContainer {
+    width: 95%;
+    height: 50vh;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .headerRight {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+
+  .searchInputContainer {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .pagination {
+    padding: 10px;
+    flex-wrap: wrap;
   }
 }

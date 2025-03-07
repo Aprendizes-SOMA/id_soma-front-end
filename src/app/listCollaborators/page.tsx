@@ -18,7 +18,6 @@ import { logoutAdmin } from "@/app/api/admin/auth";
 import { useRouter } from "next/navigation";
 
 import useSearch from "@/hooks/useSearch";
-import useFormatCPF from "@/hooks/useFormatCPF";
 import useDelete from "@/hooks/useDelete";
 import useAddOrEdit from "@/hooks/useAddOrEdit";
 
@@ -28,7 +27,6 @@ import Image from 'next/image'
 
 export default function ListCollaborators() {
   const router = useRouter();
-  const { formatCPF } = useFormatCPF();
   const {
     searchTerm,
     inputMaxLength,
@@ -53,6 +51,7 @@ export default function ListCollaborators() {
   const [isDependentsModalOpen, setIsDependentsModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
+  const [filteredCollaborators, setFilteredCollaborators] = useState<Collaborator[]>([]);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [modalTitle, setModalTitle] = useState<string>("");
@@ -66,6 +65,10 @@ export default function ListCollaborators() {
     dependents: [],
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+  const totalPages = Math.ceil(collaborators.length / itemsPerPage);
+
   useEffect(() => {
     const fetchCollaborators = async () => {
       try {
@@ -77,6 +80,16 @@ export default function ListCollaborators() {
     };
     fetchCollaborators();
   }, []);
+
+  useEffect(() => {
+    const filtered = collaborators.filter((collaborator) =>
+      collaborator.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      collaborator.cpf.includes(searchTerm)
+    );
+
+    setFilteredCollaborators(filtered);
+    setCurrentPage(1);
+  }, [searchTerm, collaborators]);
 
   const handleAddOrEditCollaborator = async (data: { name: string; cpf: string; role: string; matricula: string }) => {
     await handleAddOrEdit(
@@ -163,6 +176,18 @@ export default function ListCollaborators() {
     }
   };
 
+   const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <NotificationModal
@@ -207,124 +232,105 @@ export default function ListCollaborators() {
         </div>
       </div>
 
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th className={styles.checkboxContainer}>
-                <input
-                  type="checkbox"
-                  className={styles.checkboxInput}
-                  onChange={(e) =>
-                    setSelectedIds(e.target.checked ? collaborators.map((c) => c.id) : [])
-                  }
-                  checked={selectedIds.length === collaborators.length && collaborators.length > 0}
-                />
-              </th>
-              <th>Matricula</th>
-              <th>Nome</th>
-              <th>CPF</th>
-              <th>Cargo</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {collaborators
-              .filter((collaborator) => {
-                const searchLower = searchTerm.toLowerCase().trim();
+      <div className={styles.tableWrapper}>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th className={styles.checkboxContainer}>
+                  <input
+                    type="checkbox"
+                    className={styles.checkboxInput}
+                    onChange={(e) =>
+                      setSelectedIds(e.target.checked ? collaborators.map((c) => c.id) : [])
+                    }
+                    checked={selectedIds.length === collaborators.length && collaborators.length > 0}
+                  />
+                </th>
+                <th>Matricula</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Cargo</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCollaborators
+                .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                .map((collaborator) => (
+                  <tr key={collaborator.id}>
+                    <td className={styles.checkboxContainer}>
+                      <input
+                        type="checkbox"
+                        className={styles.checkboxInput}
+                        checked={selectedIds.includes(collaborator.id)}
+                        onChange={() => handleToggleSelect(collaborator.id)}
+                      />
+                    </td>
+                    <td><strong>{collaborator.matricula}</strong></td>
+                    <td>{collaborator.name}</td>
+                    <td>{collaborator.cpf}</td>
+                    <td>{collaborator.role}</td>
+                    <td className={styles.actions}>
+                      <ActionButton iconSrc="/icon-view.png" altText="Dependentes" onClick={() => handleManageDependents(collaborator)} />
+                      <ActionButton iconSrc="/icon-edit.png" altText="Editar" onClick={() => handleEditClick(collaborator)} />
+                      <ActionButton iconSrc="/icon-delete.png" altText="Excluir" onClick={() => handleDeleteClick(collaborator)} />
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
 
-                const cpfSearch = searchTerm.replace(/\D/g, "");
-                const isNumeric = /^\d+$/.test(cpfSearch);
+        <div className={styles.pagination}>
+          <CustomButton text="Anterior" onClick={handlePrevPage} disabled={currentPage === 1} />
+          <span>Página {currentPage} de {totalPages}</span>
+          <CustomButton text="Próximo" onClick={handleNextPage} disabled={currentPage === totalPages} />
+        </div>
 
-                if (isNumeric) {
-                  return collaborator.cpf.replace(/\D/g, "").includes(cpfSearch);
-                } else {
-                  return collaborator.name.toLowerCase().includes(searchLower);
-                }
-              })
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((collaborator) => (
-                <tr key={collaborator.id}>
-                  <td className={styles.checkboxContainer}>
-                    <input
-                      type="checkbox"
-                      className={styles.checkboxInput}
-                      checked={selectedIds.includes(collaborator.id)}
-                      onChange={() => handleToggleSelect(collaborator.id)}
-                    />
-                  </td>
-                  <td><strong>{collaborator.matricula}</strong></td>
-                  <td>{collaborator.name}</td>
-                  <td>{collaborator.cpf}</td>
-                  <td>{collaborator.role}</td>
-                  <td className={styles.actions}>
-                    <ActionButton 
-                      iconSrc="/icon-view.png" 
-                      altText="Dependentes" 
-                      onClick={() => handleManageDependents(collaborator)} 
-                      disabled={selectedIds.length > 0}
-                    />
-                    <ActionButton 
-                      iconSrc="/icon-edit.png" 
-                      altText="Editar" 
-                      onClick={() => handleEditClick(collaborator)} 
-                      disabled={selectedIds.length > 0}
-                    />
-                    <ActionButton 
-                      iconSrc="/icon-delete.png" 
-                      altText="Excluir" 
-                      onClick={() => handleDeleteClick(collaborator)} 
-                      disabled={selectedIds.length > 0} 
-                    />
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-
-      <ModalImportCSV
-        isOpen={isImportModalOpen}
-        onClose={() => setIsImportModalOpen(false)}
-        onUpload={handleUpload}
-      />
-
-      <ModalCollaborator
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleAddOrEditCollaborator}
-        title={modalTitle}
-        initialData={formData}
-      />
-
-      {isDependentsModalOpen && selectedCollaborator && (
-        <ModalDependents
-          isOpen={isDependentsModalOpen}
-          onClose={() => setIsDependentsModalOpen(false)}
-          onSave={(updatedDependents) => {
-            setSelectedCollaborator((prev) =>
-              prev ? { ...prev, dependents: updatedDependents } : prev
-            );
-          }}
-          initialDependents={selectedCollaborator?.dependents ?? []}
-          collaboratorId={selectedCollaborator?.id ?? 0}
-        />      
-      )}
-
-      {isDeleteModalOpen && selectedCollaborator && (
-        <ConfirmationModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen(false)}
-          onConfirm={() => handleConfirmDelete(
-            selectedCollaborator,
-            deleteCollaborator,
-            setCollaborators,
-            setSelectedCollaborator
-          )}
-          title="Confirmar Exclusão"
-          message={`Tem certeza que deseja excluir o colaborador "${selectedCollaborator?.name}"? Essa ação é permanente.`}
+        <ModalImportCSV
+          isOpen={isImportModalOpen}
+          onClose={() => setIsImportModalOpen(false)}
+          onUpload={handleUpload}
         />
-      )}
+
+        <ModalCollaborator
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleAddOrEditCollaborator}
+          title={modalTitle}
+          initialData={formData}
+        />
+
+        {isDependentsModalOpen && selectedCollaborator && (
+          <ModalDependents
+            isOpen={isDependentsModalOpen}
+            onClose={() => setIsDependentsModalOpen(false)}
+            onSave={(updatedDependents) => {
+              setSelectedCollaborator((prev) =>
+                prev ? { ...prev, dependents: updatedDependents } : prev
+              );
+            }}
+            initialDependents={selectedCollaborator?.dependents ?? []}
+            collaboratorId={selectedCollaborator?.id ?? 0}
+          />      
+        )}
+
+        {isDeleteModalOpen && selectedCollaborator && (
+          <ConfirmationModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+            onConfirm={() => handleConfirmDelete(
+              selectedCollaborator,
+              deleteCollaborator,
+              setCollaborators,
+              setSelectedCollaborator
+            )}
+            title="Confirmar Exclusão"
+            message={`Tem certeza que deseja excluir o colaborador "${selectedCollaborator?.name}"? Essa ação é permanente.`}
+          />
+        )}
+      </div>
     </div>
   );
 }
