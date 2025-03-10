@@ -272,9 +272,9 @@ export default function ListCollaborators() {
                     <td>{collaborator.cpf}</td>
                     <td>{collaborator.role}</td>
                     <td className={styles.actions}>
-                      <ActionButton iconSrc="/icon-view.png" altText="Dependentes" onClick={() => handleManageDependents(collaborator)} />
-                      <ActionButton iconSrc="/icon-edit.png" altText="Editar" onClick={() => handleEditClick(collaborator)} />
-                      <ActionButton iconSrc="/icon-delete.png" altText="Excluir" onClick={() => handleDeleteClick(collaborator)} />
+                      <ActionButton iconSrc="./icon-view.png" altText="Dependentes" onClick={() => handleManageDependents(collaborator)} />
+                      <ActionButton iconSrc="./icon-edit.png" altText="Editar" onClick={() => handleEditClick(collaborator)} />
+                      <ActionButton iconSrc="./icon-delete.png" altText="Excluir" onClick={() => handleDeleteClick(collaborator)} />
                     </td>
                   </tr>
                 ))}
