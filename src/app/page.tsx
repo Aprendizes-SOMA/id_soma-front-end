@@ -7,10 +7,8 @@ import { listCollaboratorsByCPF } from "@/app/api/collaborator/index";
 import useFormatCPF from "@/hooks/useFormatCPF";
 
 export default function Home() {
-  const {
-    formatCPF
-  } = useFormatCPF();
-  
+  const { formatCPF } = useFormatCPF();
+
   const [cpf, setCpf] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -25,15 +23,24 @@ export default function Home() {
     setError(null);
     try {
       const data = await listCollaboratorsByCPF(cpf);
-      if (!data) {
-        setError("Colaborador não encontrado.");
+
+      if (data?.error) {
+        setError(data.error);
         setLoading(false);
         return;
       }
+
       window.location.href = `/collaborator?cpf=${cpf}`;
-    } catch (err) {
+    } catch (err: any) {
       console.error("Erro ao buscar colaborador:", err);
-      setError("Erro ao buscar dados do colaborador. Tente novamente mais tarde.");
+
+      if (err.response?.data?.error) {
+        setError(err.response.data.error);
+      } else {
+        setError(
+          "Erro ao buscar dados do colaborador. Tente novamente mais tarde."
+        );
+      }
       setLoading(false);
     }
   };
@@ -63,11 +70,7 @@ export default function Home() {
           maxLength={14}
         />
 
-        <button
-          type="submit"
-          className={styles.button}
-          disabled={loading}
-        >
+        <button type="submit" className={styles.button} disabled={loading}>
           {loading ? "Verificando..." : "Verificar"}
         </button>
       </form>
