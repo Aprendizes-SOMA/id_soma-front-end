@@ -30,7 +30,7 @@ export default function Home() {
         return;
       }
 
-      window.location.href = `/collaborator?cpf=${cpf}`;
+      window.location.href = `/verification/collaborator?cpf=${cpf}`;
     } catch (err: any) {
       console.error("Erro ao buscar colaborador:", err);
 
