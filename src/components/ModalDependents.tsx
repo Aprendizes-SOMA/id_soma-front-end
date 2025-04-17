@@ -121,7 +121,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        {/* HEADER */}
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Lista de Dependentes</h2>
           {!showForm && (
@@ -149,7 +148,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
   
         <div className={styles.modalLine}></div>
   
-        {/* BODY (form + tabela) */}
         <div className={styles.modalBody}>
           {loading ? (
             <div className={styles.loadingContainer}>
@@ -240,13 +238,13 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
                           <td>{dependent.parentesco}</td>
                           <td className={styles.actionButtons}>
                             <ActionButton
-                              iconSrc="/icon-edit.png"
+                              iconSrc="./icon-edit.png"
                               altText="Editar"
                               onClick={() => handleEditClick(dependent)}
                               disabled={selectedIds.length > 0}
                             />
                             <ActionButton
-                              iconSrc="/icon-delete.png"
+                              iconSrc="./icon-delete.png"
                               altText="Excluir"
                               onClick={() => handleOpenDeleteModal(dependent)}
                               disabled={selectedIds.length > 0}
