@@ -21,7 +21,7 @@ const LoginAdmin = () => {
     event.preventDefault();
     try {
       await loginAdmin({ username, password });
-      router.push("/listCollaborators");
+      router.push("/verification/listCollaborators");
     } catch (error) {
       console.error("Erro no login:", error);
       setErrorMessage("Usuário ou senha inválidos!");
