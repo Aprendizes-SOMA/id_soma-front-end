@@ -170,7 +170,7 @@ export default function ListCollaborators() {
   const handleLogout = async () => {
     try {
       await logoutAdmin();
-      router.push("/loginAdmin");
+      router.push("/verification/loginAdmin");
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
     }
