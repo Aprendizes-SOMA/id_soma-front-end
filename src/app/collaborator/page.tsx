@@ -86,12 +86,12 @@ export default function Collaborator() {
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
-        <Image src="/logo.png" alt="SOMA Verificação" width={30} height={30} />
+        <Image src="./logo.png" alt="SOMA Verificação" width={30} height={30} />
       </div>
       <h1 className={styles.title}>SOMA VERIFICAÇÃO</h1>
       <h2 className={styles.successMessage}>
         Verificação Concluída!{" "}
-        <Image src="/successmark.png" alt="Verificação Concluída" width={30} height={30} />
+        <Image src="./successmark.png" alt="Verificação Concluída" width={30} height={30} />
       </h2>
       <div className={styles.collaboratorTitle}>
         <h2 className={styles.sectionTitle}>Dados do Colaborador</h2>
