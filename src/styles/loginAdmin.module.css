@@ -6,6 +6,7 @@
   width: 100vw;
   background-color: #f3f3f3;
   font-family: Arial, sans-serif;
+  overflow: hidden;
 }
 
 .loginBox {
@@ -88,5 +89,11 @@
 
   .logo img {
     width: 60%;
+  }
+}
+
+@media (min-width: 0px) and (max-width: 1200px) {
+  .container {
+    padding: 20%;
   }
 }
