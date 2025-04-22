@@ -264,7 +264,6 @@ const ModalDependents: React.FC<ModalDependentsProps> = ({
           )}
         </div>
   
-        {/* FOOTER (botão Voltar) */}
         <div className={styles.modalActions}>
           <CustomButton text="Voltar" onClick={onClose} color="secondary" />
         </div>
