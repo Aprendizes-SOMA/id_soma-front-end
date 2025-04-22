@@ -206,8 +206,6 @@ export default function ListCollaborators() {
         </div>
 
         <div className={styles.headerRight}>
-          <CustomButton text="Importar CSV" onClick={() => setIsImportModalOpen(true)} color="secondary" />
-
           <div className={styles.searchInputContainer}>
             <Image src="./lupa.png" alt="Pesquisar" className={styles.searchIcon} width={30} height={30} />
             <input
@@ -220,7 +218,11 @@ export default function ListCollaborators() {
             />
           </div>
 
-          <CustomButton text="Adicionar colaborador" onClick={handleAddClick} color="primary" />
+          <div className={styles.button}>
+            <CustomButton text="Importar CSV" onClick={() => setIsImportModalOpen(true)} color="secondary" />
+
+            <CustomButton text="Adicionar colaborador" onClick={handleAddClick} color="primary" />
+          </div>
 
           {selectedIds.length > 0 && (
             <CustomButton 
