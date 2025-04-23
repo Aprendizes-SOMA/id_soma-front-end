@@ -75,6 +75,7 @@
 
 .buttonGroup {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   gap: 10px;
   width: 100%;
@@ -240,7 +241,7 @@
   border-radius: 5px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .modalContent {
     width: 90%;
     height: auto;
@@ -270,7 +271,7 @@
   }
 
   .buttonGroup {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     width: 100%;
   }

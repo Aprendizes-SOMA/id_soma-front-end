@@ -123,6 +123,11 @@
   align-items: center;
 }
 
+.button {
+  display: flex;
+  gap: 10px;
+}
+
 .tableContainer {
   width: 100%;
   overflow-x: auto;

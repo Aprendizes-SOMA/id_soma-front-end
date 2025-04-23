@@ -65,8 +65,13 @@
   width: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .modalContent {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .modalConfirmationContent {
     width: 90%;
     padding: 20px;
   }
@@ -81,7 +86,8 @@
   }
 
   .modalActions {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: space-between;
   }
 }
