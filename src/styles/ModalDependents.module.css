@@ -83,6 +83,7 @@
 
 .tableSection {
   flex: 1;
+  overflow-x: auto;
   overflow-y: auto;
   padding-bottom: 20px;
 }
@@ -102,24 +103,18 @@
 
 .table {
   width: 100%;
+  min-width: 500px;
   border-collapse: collapse;
-  margin-top: 10px;
+  table-layout: auto;
 }
 
 .table th,
 .table td {
-  padding: 10px;
+  padding: 8px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-.table th {
-  background-color: transparent !important;
-  font-weight: bold;
-}
-
-.table td {
-  font-size: 14px;
+  vertical-align: middle;
+  white-space: nowrap;
+  border-bottom: 1px solid #ccc;
 }
 
 .actionButtons {
