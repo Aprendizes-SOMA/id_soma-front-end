@@ -43,7 +43,6 @@
   color: orange;
   border: 1.5px solid orange;
   background-color: transparent;
-  fill: orange;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
@@ -52,11 +51,20 @@
 .logoutIcon {
   width: 20px;
   height: 20px;
+  fill: orange;
+  stroke-width: 2;
+  transition: 0.3s ease;
 }
 
 .logoutButton:hover {
   background-color: orange;
   color: white;
+  transition: 0.3s ease;
+}
+
+.logoutButton:hover .logoutIcon {
+  fill: white;
+  transition: 0.3s ease;
 }
 
 .title {
