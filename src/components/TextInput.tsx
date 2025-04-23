@@ -36,7 +36,6 @@ const TextInput: React.FC<TextInputProps> = ({
             aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
           >
             {showPassword ? (
-              // 👁️ SVG olho aberto
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={styles.icon}
@@ -46,7 +45,6 @@ const TextInput: React.FC<TextInputProps> = ({
                 <path d="M12 4.5C7.5 4.5 3.6 7.3 2 12c1.6 4.7 5.5 7.5 10 7.5s8.4-2.8 10-7.5c-1.6-4.7-5.5-7.5-10-7.5zm0 12a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9zm0-7.5a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
               </svg>
             ) : (
-              // 🙈 SVG olho fechado
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={styles.icon}

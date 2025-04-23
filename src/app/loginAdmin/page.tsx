@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import styles from "@/styles/loginAdmin.module.css";
 import { useRouter } from "next/navigation";
 
-import Image from 'next/image'
-
 import { loginAdmin } from "@/app/api/admin/index";
 
 import TextInput from "@/components/TextInput";
